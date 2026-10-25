@@ -6,7 +6,7 @@
 
 ## Vision
 
-**A senior leader at a large investor asks a question about the portfolio and gets a correct answer, with its sources, in minutes. Two analysts asked the same question give the same number.**
+**Every data request from the CIO gets the right answer, fast: one number whoever answers, with the source, definition and date of each figure, in minutes.**
 
 This project moves toward that in two ways:
 - **Proof.** It measures which way of organising the data gets an analyst to a correct, sourced answer fastest, on 60 questions with known answers.
