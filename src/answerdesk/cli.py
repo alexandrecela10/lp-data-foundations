@@ -5,6 +5,7 @@
     python -m answerdesk.cli eval       # offline eval on seed 42 and the held-out world (seed 7, noisy names)
     python -m answerdesk.cli scale      # 1x, 10x, 100x timings
     python -m answerdesk.cli live       # live eval with claude-sonnet-5-5 (needs ANTHROPIC_API_KEY; costs money)
+    python -m answerdesk.cli explainer  # static/foundations.html, the "How the foundations work" page
     python -m answerdesk.cli ask "How exposed are we to Calder Packaging?" [--arm D] [--role analyst]
 """
 from __future__ import annotations
@@ -26,7 +27,7 @@ def _print_summary(res):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="answerdesk")
-    ap.add_argument("cmd", choices=["all", "build", "eval", "scale", "live", "ask"])
+    ap.add_argument("cmd", choices=["all", "build", "eval", "scale", "live", "ask", "explainer"])
     ap.add_argument("question", nargs="?")
     ap.add_argument("--arm", default="D")
     ap.add_argument("--role", default="analyst")
@@ -47,6 +48,9 @@ def main(argv=None):
         p = evals.RESULTS / "scale.json"
         p.write_text(json.dumps(rs, indent=1, default=str))
         print("saved", p)
+    if a.cmd in ("explainer", "all"):
+        from . import explainer
+        print("saved", explainer.render())
     if a.cmd == "live":
         if not os.environ.get("ANTHROPIC_API_KEY"):
             sys.exit("ANTHROPIC_API_KEY is not set. Live results stay 'not yet run'.")

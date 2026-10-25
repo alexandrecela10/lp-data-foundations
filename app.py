@@ -62,10 +62,8 @@ S = store()
 
 # ------------------------------------------------------------------ header and sidebar
 st.title("Portfolio Answer Desk")
-md("**You get a correct, sourced answer to a senior leader's portfolio question in minutes: "
-   "every route, every definition and the date of every number, ready to send.** It runs on one shared data "
-   "foundation (tables, a semantic layer of governed metrics, and a graph for routes and people) with a different "
-   "front end per request. The Foundation test tab shows how we know.")
+md("**You get a correct, sourced answer to a senior leader's portfolio question in minutes, ready to send.**")
+st.caption("How the foundations work shows five ways to organise the data, how each answers, and where each breaks.")
 st.caption(DISCLAIMER)
 
 with st.sidebar:
@@ -79,11 +77,16 @@ with st.sidebar:
         st.info("Offline: no AI calls. A fixed reader stands in for the AI; code computes every number.")
     st.header("Your morning")
     st.markdown("1. **Portfolio chat**: answer the CIO\n2. **Committee pack**: export Thursday's pack\n"
-                "3. **Manager briefing**: brief the head of PE\n4. **Foundation test**: see why it works")
+                "3. **Manager briefing**: brief the head of PE\n4. **How the foundations work**: see why it works")
     footer()
 
-tabs = st.tabs(["Portfolio chat", "Committee pack", "Manager briefing", "SQL notebook", "Foundation test",
-                "How it works", "Under the hood"])
+tabs = st.tabs(["Portfolio chat", "Committee pack", "Manager briefing", "How the foundations work", "Under the hood"])
+EXPLAINER = ROOT / "static" / "foundations.html"
+
+
+@st.cache_data
+def explainer_html(mtime: float) -> str:
+    return EXPLAINER.read_text()
 
 
 # ------------------------------------------------------------------ helpers for answers
@@ -239,9 +242,11 @@ with tabs[2]:
     st.subheader("Decide: send the briefing")
     st.download_button("Download briefing (Markdown)", note_md, file_name="brennick-briefing.md", type="primary")
 
-# ------------------------------------------------------------------ 4. SQL notebook
-with tabs[3]:
-    md("**SQL notebook: for the data team, read-only SQL on the same governed tables, limited to your role.**")
+# ------------------------------------------------------------------ 5a. SQL notebook (top of Under the hood)
+with tabs[4]:
+    md("**Under the hood: how one answer was made, what was checked, and the choices behind it.**")
+    st.subheader("SQL notebook")
+    md("For the data team: read-only SQL on the same governed tables, limited to your role.")
     sql = st.text_area("Query", "SELECT fund_id, as_of, name_reported, company_id, match_method, value\nFROM gold.holdings\n"
                                 "WHERE company_id = 'C0001' ORDER BY as_of DESC LIMIT 10", height=120)
     if st.button("Run query", key="runsql"):
@@ -251,11 +256,17 @@ with tabs[3]:
             st.error(esc(str(e)[:300]))
     st.caption("Try `SELECT mgmt_fee_pct FROM gold.positions` as Sara: the column doesn't exist in her copy of the data.")
 
-# ------------------------------------------------------------------ 5. Foundation test
-with tabs[4]:
+# ------------------------------------------------------------------ 4. How the foundations work
+with tabs[3]:
+    md("**How the foundations work: the same question through five setups, animated, with where each one breaks.**")
+    if EXPLAINER.exists():
+        st.components.v1.html(explainer_html(EXPLAINER.stat().st_mtime), height=1250, scrolling=True)
+        st.caption("[Open full screen](app/static/foundations.html). Rebuild with `python -m answerdesk.cli explainer`.")
+    else:
+        st.caption("static/foundations.html not found. Build it with `python -m answerdesk.cli explainer`.")
     off = results("offline-seed42.json")
     held = results("offline-heldout-seed7-noisy.json")
-    md("**Foundation test: which data setup gets Sara a correct, sourced answer she'd send, fastest.**")
+    st.subheader("The scores behind the chapters")
     if off:
         sm = off["summary"]
         md(f"**Decision: use C+ids (semantic layer plus an identity table) for numbers and routes, and add the graph only for "
@@ -344,20 +355,10 @@ with tabs[4]:
         ss.fund_pick = pick
         st.success(esc(f"Recorded: {pick}"))
 
-# ------------------------------------------------------------------ 6. How it works
-with tabs[5]:
-    md("**How it works: the same question three ways, a graph you can step through, and one metric defined once.**")
-    st.subheader("1. Walk the graph to Calder Packaging")
-    a_cal, _ = interfaces.chat(S, "How exposed are we to Calder Packaging?", role, "D")
-    n = total_hops(a_cal)
-    ss.setdefault("edu_hop", 0)
-    c1, c2 = st.columns([1, 4])
-    if c1.button("Next hop", key="edu_next"):
-        ss.edu_hop = min(ss.edu_hop + 1, n)
-    if c1.button("Start again", key="edu_reset"):
-        ss.edu_hop = 0
-    c1.caption(f"Hop {ss.edu_hop} of {n}")
-    c2.graphviz_chart(dot_routes(a_cal, ss.edu_hop))
+# ------------------------------------------------------------------ 4b. the same question in code, one metric everywhere
+a_cal, _ = interfaces.chat(S, "How exposed are we to Calder Packaging?", role, "D")
+with tabs[3], st.expander("The same question in code, and one metric in every screen"):
+    st.subheader("1. The routes, as a walk along links")
     _sh = access.role_db(S, role).execute("SELECT lp_share FROM gold.reports WHERE fund_id = 'FOF01' ORDER BY as_of DESC LIMIT 1").fetchone()[0]
     _st = access.role_db(S, role).execute("SELECT share FROM gold.fof_stakes WHERE fund_id = 'F0009' ORDER BY as_of DESC LIMIT 1").fetchone()[0]
     md("A **graph** stores things (our pension plan, funds, companies, people) and the links between them. A question like "
@@ -387,9 +388,9 @@ with tabs[5]:
        "commitment instead of value (the Investment team's old v1), the dashboard would show a different number from "
        "the chat on the same morning. See the Committee pack tab, \"Two teams, two definitions\".")
 
-# ------------------------------------------------------------------ 7. Under the hood
-with tabs[6]:
-    md("**Under the hood: how one answer was made, what was checked, and the choices behind it.**")
+# ------------------------------------------------------------------ 5. Under the hood
+with tabs[4]:
+    st.subheader("How the pieces connect")
     st.graphviz_chart("""digraph { rankdir=LR; node [shape=box, style=rounded, fontsize=10];
       src [label="6 sources\\n(holdings, notices, reports,\\nletters, reference, news)"]; b [label="bronze\\n(as received)"];
       s [label="silver\\n(fixed fields, contracts,\\nidentity matching)"]; g [label="gold\\n(typed tables, lineage)"];
