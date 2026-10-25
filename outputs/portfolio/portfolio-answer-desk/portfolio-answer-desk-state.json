@@ -3,19 +3,38 @@
   "work_type": "portfolio-case-study",
   "last_run": "2026-10-25",
   "status": "draft, not published",
-  "built_from": ["evals/results/offline-seed42.json", "evals/results/offline-heldout-seed7-noisy.json", "evals/results/scale.json",
-                 "outputs/opportunity-analyses/portfolio-answer-desk-opportunity.md", "outputs/prds/portfolio-answer-desk-solution-review.md"],
-  "criteria_passed": [2, 3, 4, 5, 6, 7],
-  "criteria_partial": [1, 8],
+  "built_from": [
+    "evals/results/offline-seed42.json",
+    "evals/results/live-claude-sonnet-5-5.json",
+    "evals/results/offline-heldout-seed7-noisy.json",
+    "evals/results/scale.json",
+    "outputs/opportunity-analyses/portfolio-answer-desk-opportunity.md",
+    "outputs/prds/portfolio-answer-desk-solution-review.md"
+  ],
+  "criteria_passed": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "criteria_partial": [
+    1,
+    8
+  ],
   "decisions_made": [
-    "Hero numbers prove value: expected time to a sendable answer, correct of 60, same answer on rerun and rephrase, wrong numbers shown as sourced. Technique metrics (identity matches, timings) sit in the resources.",
-    "Every hero number is labelled offline; the live run is named as not yet run.",
-    "Demo and code buttons read 'deploy pending' and 'private until published' instead of linking to pages a visitor can't open."
+    "Hero numbers are live results (Claude Sonnet 5.5): 60 of 60 correct, 0 wrong numbers with a source, 100% same answer on a rerun, $0.007 per answer; each against documents plus a chatbot or AI-written SQL.",
+    "Headline changed to what the live run supports: a correct, sourced answer in seconds, ready to check and send. 'Before 09:00' dropped: checking time is unobserved.",
+    "Expected time per question moved out of the hero: it rests on the assumed checking model.",
+    "Pill 'Defines each metric once' retagged Data eng.",
+    "foundations.html (the animated explainer) sits next to the page and is linked from Main learnings.",
+    "Demo and code buttons read 'deploy pending' and 'private until published' instead of linking to pages a visitor can't open.",
+    "C+ids gained letter search (PM decision 2026-10-25); the guardrail now holds for C+ids and D, and the learnings say so."
   ],
   "still_open": [
     "PM: deploy app.py to Streamlit Community Cloud (Python 3.11, no secrets) and replace the demo button.",
-    "PM: should the headline wait for the live run? Recommendation: yes.",
     "PM: confirm keeping 'Calder Packaging' (brief-defined; no exact real match found)."
   ],
-  "next_trigger": "Rebuild the page after the live run or the demo deploy."
+  "next_trigger": "Rebuild after the demo deploy or the timed human run."
 }

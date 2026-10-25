@@ -412,12 +412,14 @@ def _nums(s: str) -> list[float]:
 
 
 class SemanticIds(SemanticArm):
-    key, name = "C+ids", "Semantic layer + identity table"
+    # letter search too, so C+ids and D differ only by the graph (changed 2026-10-25; before, D also had letter search)
+    key, name = "C+ids", "Semantic layer + identity table + letter search"
     identity = "resolved"
+    use_search = True
 
 
 class GraphArm(SemanticArm):
-    key, name = "D", "Semantic layer + graph (+ letter search)"
+    key, name = "D", "C+ids + graph"
     identity = "resolved"
     use_graph = True
     use_search = True

@@ -1,0 +1,3 @@
+[server]
+# serves static/foundations.html at app/static/foundations.html (the full-screen explainer)
+enableStaticServing = true

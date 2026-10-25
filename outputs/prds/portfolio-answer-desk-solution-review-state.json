@@ -7,14 +7,29 @@
   "loop_count": 1,
   "loop_limit": 3,
   "graph_result": "advanced",
-  "criteria_passed": [1, 2, 3, 4, 5, 6, 7],
+  "criteria_passed": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
   "criteria_failed": [],
   "blockers_resolved_this_run": [
-    "disclaimer on every surface", "per-role views for every foundation", "hosted demo offline only",
-    "two dates per event", "number checker fails closed", "dedupe, cycle guard, depth limit",
-    "scale runs local, committed", "baselines strengthened, offline labelled mechanism test",
-    "definitions first, held-out world", "C+ids arm and pre-registered threshold",
-    "baseline unobserved, timed run designed", "refusal, empty, pending-review and offline states"
+    "disclaimer on every surface",
+    "per-role views for every foundation",
+    "hosted demo offline only",
+    "two dates per event",
+    "number checker fails closed",
+    "dedupe, cycle guard, depth limit",
+    "scale runs local, committed",
+    "baselines strengthened, offline labelled mechanism test",
+    "definitions first, held-out world",
+    "C+ids arm and pre-registered threshold",
+    "baseline unobserved, timed run designed",
+    "refusal, empty, pending-review and offline states"
   ],
   "decisions_made": [
     "Product name: Portfolio Answer Desk (name check: outsider can guess the job). Test bench inside: Foundation test.",
@@ -30,5 +45,8 @@
   "known_failure_modes": [
     "Offline A and B are stand-ins written by the same author as C and D; their failures show mechanism limits, not Claude's error rate."
   ],
-  "next_trigger": "Re-run the review after the live eval, if any arm's live correctness differs from offline by 3 or more questions."
+  "next_trigger": "Re-run the review after the live eval, if any arm's live correctness differs from offline by 3 or more questions.",
+  "revisions": [
+    "PM review 2026-10-25: two Strategic Fit sections merged into one; success metrics and decision rules as tables; terms box added; five setups in one table; build gate text changed from 'C or D' to 'D' to match tests/test_eval_gate.py (noted in the PRD); plainer words throughout."
+  ]
 }

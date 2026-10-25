@@ -19,7 +19,7 @@ Define every governed metric once in `src/answerdesk/semantic/metrics.yaml` (own
 
 - **Point in time is the hard part, and it fits.** Every metric filters on two dates (when it happened, when we learnt it). Example: as of 9 September the Calder write-down doesn't count; as of 10 September it does. Look-through exposure also needs a recursive walk and event adjustments. In our own layer that is one SQL template.
 - **Measured dependency cost** (`uv pip install --dry-run`, 2026-10-25): our layer adds 1 package (PyYAML). Boring Semantic Layer adds 14 (it brings Ibis). MetricFlow with dbt-duckdb adds 59 and needs a dbt project.
-- **Measured result:** C, C+ids and D answer all 20 committee-pack questions correctly offline, including the "last quarter's definition" trap (unfunded v1 against v2), and return the same answer on rerun and on 3 rephrasings (`evals/results/offline-seed42.json`).
+- **Measured result:** C, C+ids and D answer all 20 committee-pack questions correctly offline, including the "last quarter's definition" trap (unfunded v1 against v2), and return the same answer on rerun and on 3 rephrasings (`evals/results/offline-seed42.json`). Live, with `claude-sonnet-5-5` reading each question, the same three setups again answered 20 of 20 and gave the same answer on the rerun for every question (`evals/results/live-claude-sonnet-5-5.json`). B, where Claude writes the SQL itself, answered 3 of 20 pack questions live.
 
 ## What was NOT chosen
 

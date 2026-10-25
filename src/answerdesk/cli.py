@@ -5,6 +5,7 @@
     python -m answerdesk.cli eval       # offline eval on seed 42 and the held-out world (seed 7, noisy names)
     python -m answerdesk.cli scale      # 1x, 10x, 100x timings
     python -m answerdesk.cli live       # live eval with claude-sonnet-5-5 (needs ANTHROPIC_API_KEY; costs money)
+    python -m answerdesk.cli explainer  # static/foundations.html, the "How the foundations work" page
     python -m answerdesk.cli ask "How exposed are we to Calder Packaging?" [--arm D] [--role analyst]
 """
 from __future__ import annotations
@@ -26,10 +27,11 @@ def _print_summary(res):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="answerdesk")
-    ap.add_argument("cmd", choices=["all", "build", "eval", "scale", "live", "ask"])
+    ap.add_argument("cmd", choices=["all", "build", "eval", "scale", "live", "ask", "explainer"])
     ap.add_argument("question", nargs="?")
     ap.add_argument("--arm", default="D")
     ap.add_argument("--role", default="analyst")
+    ap.add_argument("--arms", help="live only: rerun these setups (comma-separated) and merge into the saved live results")
     a = ap.parse_args(argv)
     if a.cmd == "build":
         st = pipeline.build()
@@ -47,16 +49,30 @@ def main(argv=None):
         p = evals.RESULTS / "scale.json"
         p.write_text(json.dumps(rs, indent=1, default=str))
         print("saved", p)
+    if a.cmd in ("explainer", "all"):
+        from . import explainer
+        print("saved", explainer.render())
     if a.cmd == "live":
         if not os.environ.get("ANTHROPIC_API_KEY"):
             sys.exit("ANTHROPIC_API_KEY is not set. Live results stay 'not yet run'.")
         os.environ["ANSWERDESK_LIVE"] = "1"
         from . import llm
         print(llm.NOTICE)
-        res = evals.run(seed=42, reruns=3)
+        arms = a.arms.split(",") if a.arms else None
+        res = evals.run(seed=42, reruns=2, arms=arms)
         res["meta"]["mode"] = f"live ({llm.MODEL})"
+        billed = res["meta"]["all_passes"]
+        # a live call that failed fell back offline; one such answer makes the run unfair, so it doesn't count
+        res["meta"]["valid"] = billed["live_failures"] == 0
+        if arms:  # one setup changed: rerun it alone and merge into the full live results
+            res = evals.merge(json.loads((evals.RESULTS / "live-claude-sonnet-5-5.json").read_text()), res)
         print("saved", evals.save(res, "live-claude-sonnet-5-5.json"))
         _print_summary(res)
+        print(f"passes {billed['passes']}  calls {billed['llm_calls']}  cost ${billed['cost_usd']}  "
+              f"live failures {billed['live_failures']}")
+        if not res["meta"]["valid"]:
+            print("INVALID: some live calls failed and fell back offline. Examples:", *billed["failure_examples"], sep="\n  ")
+            sys.exit(1)
     if a.cmd == "ask":
         from .interfaces import chat
         st = pipeline.build()

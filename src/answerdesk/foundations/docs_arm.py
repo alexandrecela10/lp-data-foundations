@@ -106,8 +106,8 @@ class DocsArm(Foundation):
         if self.live:
             try:
                 return self.live_answer(text, it)
-            except Exception:
-                pass
+            except Exception as e:
+                self.failed("answer", e)
         fn = getattr(self, f"t_{it.task}", None)
         if fn is None:
             return refuse(self.key, "I found nothing in the documents that answers this.")

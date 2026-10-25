@@ -102,8 +102,8 @@ class SqlArm(Foundation):
         if self.live:
             try:
                 return self.live_answer(text, it)
-            except Exception:
-                pass
+            except Exception as e:
+                self.failed("answer", e)
         fn = getattr(self, f"t_{it.task}", None)
         if fn is None:
             return refuse(self.key, "I couldn't write a query for this from the tables I have.")

@@ -4,4 +4,4 @@ from .sql_arm import SqlArm
 
 ARMS = {"A": DocsArm, "B": SqlArm, "C": SemanticArm, "C+ids": SemanticIds, "D": GraphArm}
 LABELS = {"A": "Documents + search", "B": "Tables + AI-written SQL", "C": "Semantic layer",
-          "C+ids": "Semantic layer + identity table", "D": "Semantic layer + graph (+ letter search)"}
+          "C+ids": "Semantic layer + identity table + letter search", "D": "C+ids + graph"}
