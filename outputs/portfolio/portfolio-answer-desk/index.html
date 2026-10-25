@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Portfolio Answer Desk | Alexandre Cela</title>
-<meta name="description" content="You answer a senior leader's portfolio question correctly, with every route, definition and source, in under a minute of checking.">
+<meta name="description" content="When the CIO asks about the portfolio, you send the right number, with its sources, in minutes.">
 <!-- Lato matches the LinkedIn banner typeface -->
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -138,18 +138,18 @@
 
 <header class="hero">
   <div class="eyebrow">Case study · Private equity, LP portfolio · Semantic layer and graph</div>
-  <h1>You get a correct, sourced answer about a company in the news in seconds, ready to check and send to the CIO.</h1>
-  <p class="lede">You're a portfolio analyst at a large LP (an investor in many private equity funds). A company in the news hides behind five holding routes and three spellings, so finding your exposure takes the morning. Portfolio Answer Desk gives you the number, every route, the definition and the date of every figure, ready to send.</p>
+  <h1>When the CIO asks about the portfolio, you send the right number, with its sources, in minutes.</h1>
+  <p class="lede">You're a portfolio analyst at a large LP (an investor in many private equity funds). The CIO asks about a company in the news, the committee wants its pack, the head of private equity wants a view on a manager. Today each request takes hours to a day of searching reports and spreadsheets, and two analysts can send two different numbers. Portfolio Answer Desk gives you one answer, with every route, definition and date, ready to send.</p>
   <div class="cta">
     <span class="btn off">Demo: deploy pending (runs on Streamlit Community Cloud)</span>
     <a class="btn off" href="https://github.com/alexandrecela10/lp-data-foundations">Code on GitHub</a>
-    <span class="dim" style="font-size:14px">Synthetic data, invented names. Tested live with Claude Sonnet 5.5; the demo runs offline, with fixed readers in place of the AI.</span>
+    <span class="dim" style="font-size:14px">Synthetic data, invented names. Tested live with Claude Sonnet 5.5, at $0.007 per answer; the demo runs offline, with fixed readers in place of the AI.</span>
   </div>
   <div class="stats">
     <div class="stat"><b>60 of 60</b><span>leaders' questions answered correctly with Claude reading them, against 7 with documents and a chatbot (live test)</span></div>
     <div class="stat"><b>0</b><span>wrong numbers shown with a source, against 7 with documents and a chatbot (live test)</span></div>
     <div class="stat"><b>100%</b><span>same answer when the 60 questions were asked again, against 80% when the AI writes the SQL (live test)</span></div>
-    <div class="stat"><b>$0.007</b><span>per answer, against $0.016 with documents and a chatbot (live test, Claude Sonnet 5.5)</span></div>
+    <div class="stat"><b>0.6 min</b><span>expected time per request, checking included, against 106 min with documents and a chatbot (live test; checking times assumed)</span></div>
   </div>
   <dl class="glance">
     <div><dt>For</dt><dd>Large LPs and their data teams</dd></div>
@@ -162,8 +162,8 @@
 
 <section class="read">
   <div class="num">01 · VISION</div>
-  <h2>Every leader's portfolio question gets one correct answer, with its sources, in minutes.</h2>
-  <p>Today an analyst searches reports, letters and spreadsheets by hand, and two analysts can return two numbers. With one shared foundation, the chat, the committee pack and the briefing note all ask the same governed metrics.</p>
+  <h2>Every data request from the CIO gets the right answer, fast.</h2>
+  <p><strong>Right</strong> means one number whoever answers, with the source, definition and date of each figure. <strong>Fast</strong> means minutes from the question to an answer you can send. This project tests which data foundation gets there, on 60 requests with known answers, and shows how each one works.</p>
 </section>
 
 <section>
@@ -342,7 +342,7 @@
 <strong>Owner:</strong> PM (drafted by Claude, run unattended with PM approval)
 <strong>Status:</strong> Go</p>
 <h2>Vision</h2>
-<p><strong>A senior leader at a large investor asks a question about the portfolio and gets a correct answer, with its sources, in minutes. Two analysts asked the same question give the same number.</strong></p>
+<p><strong>Every data request from the CIO gets the right answer, fast: one number whoever answers, with the source, definition and date of each figure, in minutes.</strong></p>
 <p>This project moves toward that in two ways:
 - <strong>Proof.</strong> It measures which way of organising the data gets an analyst to a correct, sourced answer fastest, on 60 questions with known answers.
 - <strong>Teaching.</strong> It explains the building blocks behind it in plain words, so a data leader can pick them knowingly.</p>
