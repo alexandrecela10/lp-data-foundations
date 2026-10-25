@@ -267,14 +267,25 @@ with tabs[3]:
     off = results("offline-seed42.json")
     held = results("offline-heldout-seed7-noisy.json")
     st.subheader("The scores behind the chapters")
-    if off:
-        sm = off["summary"]
+    live = results("live-claude-sonnet-5-5.json")
+    live = live if live and "summary" in live and live["meta"].get("valid", True) else None
+    runs = (["Live: Claude reads every question"] if live else []) + ["Offline: fixed rules stand in for the AI"]
+    which = st.radio("Results", runs, horizontal=True, key="which_run")
+    res = live if which.startswith("Live") else off
+    if res:
+        sm = res["summary"]
         md(f"**Decision: use C+ids (semantic layer plus an identity table) for numbers and routes, and add the graph only for "
-           f"links between people and managers.** Offline, D answered {sm['D']['correct']}/60 and C+ids {sm['C+ids']['correct']}/60; "
+           f"links between people and managers.** {which.split(':')[0]}, D answered {sm['D']['correct']}/60 and C+ids {sm['C+ids']['correct']}/60; "
            f"on the CIO's request they tie at {sm['D']['request_1']}/20 each, so by the rule set before the run the graph "
            f"doesn't earn its place for routes. It wins on 4 manager-history questions: 2 need people links, 2 need letter search.")
-        st.warning("Offline results test mechanisms, not Claude. The AI is replaced by fixed readers; the live run with "
-                   "claude-sonnet-5-5 is not yet run (one command in the README).")
+        if res is live:
+            pa = res["meta"]["all_passes"]
+            st.caption(esc(f"Live run {res['meta']['run_at']}: claude-sonnet-5-5 read every question for every setup, the passages in A "
+                           f"and wrote the SQL in B. {pa['passes']} passes, {pa['llm_calls']} calls, {pa['live_failures']} failed, "
+                           f"${pa['cost_usd']:.2f} billed. Same answer on the rerun: "
+                           + ", ".join(f"{a} {round(100 * res['same_answer_on_rerun'][a])}%" for a in ARM_ORDER) + "."))
+        else:
+            st.warning("Offline, fixed readers stand in for the AI: these scores show what each setup can do, not Claude's error rate.")
         df = pd.DataFrame([dict(setup=f"{a}: {LABELS[a]}", request=f"Request {r}", correct=sm[a][f"request_{r}"])
                            for a in ARM_ORDER for r in (1, 2, 3)])
         st.altair_chart(alt.Chart(df).mark_bar().encode(
@@ -303,7 +314,7 @@ with tabs[3]:
                "- **D** adds links between people and managers (where a departed partner went) and letter search.")
         with st.expander("Is the result fragile? Sensitivity of the ranking to the checking-time model"):
             st.dataframe(pd.DataFrame([dict(variant=v["variant"], ranking=" < ".join(v["ranking"]),
-                                            **{a: round(v["median_s"][a] or 0) for a in ARM_ORDER}) for v in off["sensitivity"]]),
+                                            **{a: round(v["median_s"][a] or 0) for a in ARM_ORDER}) for v in res["sensitivity"]]),
                          hide_index=True, width="stretch")
             st.caption("Median seconds to a sendable answer, correct answers only. Fastest first.")
         with st.expander("Held-out world (seed 7, spellings the pipeline was never tuned on)"):
@@ -317,7 +328,7 @@ with tabs[3]:
                    f"exact names only {idq['exact name only (C, B)']['right']} right, {idq['exact name only (C, B)']['wrong']} wrong, "
                    f"{idq['exact name only (C, B)']['missed']} missed. No test question touched the unmatched names: a gap in the test set.")
         with st.expander("Every question, every setup"):
-            rows = pd.DataFrame(off["rows"])[["arm", "qid", "question", "correct", "detail", "traps"]]
+            rows = pd.DataFrame(res["rows"])[["arm", "qid", "question", "correct", "detail", "traps"]]
             st.dataframe(rows, hide_index=True, width="stretch")
     sc = results("scale.json")
     st.subheader("At 10x and 100x the data")
@@ -433,7 +444,7 @@ with tabs[4]:
         sm = off["summary"]
         md(f"- D answered {sm['D']['correct']}/60, C+ids {sm['C+ids']['correct']}/60, C {sm['C']['correct']}/60, B {sm['B']['correct']}/60, A {sm['A']['correct']}/60 (offline, mechanism test).\n"
            f"- Wrong numbers shown with a source: D {sm['D']['wrong_but_sourced']}, A {sm['A']['wrong_but_sourced']}.\n"
-           f"- Same answer on a rerun: {round(100 * off['same_answer_on_rerun']['D'])}% for D (offline; live reruns not yet run).\n"
+           f"- Live with claude-sonnet-5-5: D {results('live-claude-sonnet-5-5.json')['summary']['D']['correct']}/60, A {results('live-claude-sonnet-5-5.json')['summary']['A']['correct']}/60; D gave the same answer on the rerun for every question.\n"
            f"- Held-out world with new spellings: D {results('offline-heldout-seed7-noisy.json')['summary']['D']['correct']}/60.")
     with st.expander("Choices behind it (plain English, one picture each)"):
         st.dataframe(pd.DataFrame([

@@ -18,15 +18,17 @@ Time to a sendable answer = answer time + Sara's checking time. Answer time = me
 
 The brief asks for it, and it is the metric that matters to Sara. It can't be measured without people, so it is a model until the timed run.
 
-## The measured trade-off (offline, 60 questions)
+## The measured trade-off (60 questions, offline / live)
+
+Live answer time is the measured time of each Claude call, not the assumed 3 s.
 
 | Setup | Correct | Median time, correct answers only | Expected time per question (fails = 2 h) |
 |---|---|---|---|
-| A documents + search | 18 | 51 s | 84 min |
-| B AI-written SQL | 22 | 86 s | 77 min |
-| C semantic layer | 41 | 28 s | 38 min |
-| C+ids | 56 | 33 s | 8.6 min |
-| D | 60 | 33 s | 0.7 min |
+| A documents + search | 18 / 7 | 51 s / 54 s | 84 min / 106 min |
+| B AI-written SQL | 22 / 11 | 86 s / 61 s | 77 min / 98 min |
+| C semantic layer | 41 / 41 | 28 s / 27 s | 38 min / 38 min |
+| C+ids | 56 / 56 | 33 s / 32 s | 8.6 min / 8.6 min |
+| D | 60 / 60 | 33 s / 32 s | 0.7 min / 0.6 min |
 
 **Sensitivity** (`sensitivity` in the results file): halving or doubling the per-number times keeps the order C < C+ids = D < A < B on median time. If Sara rechecks 50% of sourced numbers by hand, A becomes fastest on median time (51 s against 86 s) because it shows fewer numbers. **So the time advantage depends on Sara trusting a shown source; the correctness advantage (60 against 18) does not.** Median time over correct answers flatters C, whose correct answers are the easier ones; the expected time per question doesn't.
 

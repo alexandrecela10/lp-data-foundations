@@ -16,7 +16,7 @@ Look-through exposure walks routes with a recursive SQL query (depth limit 5, cy
 
 ## Why: the measured trade-off
 
-**Correctness at the demo size** (`evals/results/offline-seed42.json`): recursive SQL and the graph return the same Calder Packaging total (\$8.06m, 5 routes) and the same answers on all 20 event questions. The graph adds 4 correct answers, all on people links or letters, none on routes.
+**Correctness at the demo size** (`evals/results/offline-seed42.json`): recursive SQL and the graph return the same Calder Packaging total (\$8.06m, 5 routes) and the same answers on all 20 event questions. The graph adds 4 correct answers, all on people links or letters, none on routes. The live run (`claude-sonnet-5-5` reading each question) gave the same result: C+ids and D 20 of 20 on the event questions, D 60 of 60 overall.
 
 **Time** (`evals/results/scale.json`, median of repeated runs, one laptop):
 

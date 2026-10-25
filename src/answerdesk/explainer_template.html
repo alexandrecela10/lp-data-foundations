@@ -257,6 +257,7 @@ async function walk(svg, st, keys, cls = "on", speed = 1) {
 // Each chapter: steps are async functions of (ctx). Going to step i replays steps 0..i-1 instantly, then animates i.
 const S = D.setups;
 const sc = (a, src = off) => src && src.arms[a];
+const both = (a, k) => `${sc(a, off)[k]} offline` + (liveOk ? `, ${sc(a, live)[k]} live` : "");
 function liveBox(a) {
   const o = sc(a, off), l = liveOk ? sc(a, live) : null;
   const row = (k, f) => `<tr><td>${k}</td><td class="num">${f(o)}</td><td class="num">${l ? f(l) : "pending"}</td></tr>`;
@@ -265,9 +266,9 @@ function liveBox(a) {
     ${row("Correct of 60", x => x.correct)}${row("CIO's question (of 20)", x => x.r1)}${row("Committee pack (of 20)", x => x.r2)}
     ${row("Manager decision (of 20)", x => x.r3)}${row("Wrong numbers with a source", x => x.wrong_sourced)}
     ${row("Same answer on a rerun", x => pct(x.rerun))}${row("Cost per answer", x => "$" + x.cost.toFixed(4))}</table>
-    <p class="meta">Offline, fixed rules stand in for the AI, so this shows what the setup can do at best. Live, Claude reads the question${a === "A" ? " and the passages" : a === "B" ? " and writes the query" : ""}.
+    <p class="meta">Offline, fixed rules stand in for the AI. Live, Claude reads the question${a === "A" ? " and the passages" : a === "B" ? " and writes the query" : ""}.
     ${l ? "" : live && live.valid === false ? " The latest live run was invalid (calls fell back offline) and isn't shown." : " The live run hasn't finished yet."}</p>
-    <h3>Why it missed, offline</h3><p class="meta" style="margin:0">${fails(o)}</p>`;
+    <h3>Why it missed</h3><p class="meta" style="margin:0">Offline: ${fails(o)}.${l ? ` Live: ${fails(l)}.` : ""}</p>`;
 }
 
 const chapters = [];
@@ -298,10 +299,10 @@ ch({ id: "ideal", title: "What a right answer looks like", acc: "ideal",
 const aLines = S.A.lines.filter(l => l.label !== "total");
 const aMap = aLines.length === S.A.routes.length ? aLines.map((l, i) => ({ ...l, sig: S.A.routes[i] })) : [];
 ch({ id: "A", title: "A. Documents + search", acc: "A",
-  lesson: "Search finds the right documents but can't do the arithmetic, so the total comes out wrong, and it still has sources attached.",
+  lesson: `Here, search found all 5 lines, but the total came out at ${m(S.A.value)}: our share inside the fund of funds and the write-down weren't applied, and every line still cited a report.`,
   aside: () => `<h3>How it works</h3><ul><li>Fund reports, letters and notices are stored as text.</li><li>Search pulls the passages that mention the company.</li><li>The AI reads them and writes the answer.</li></ul>
-    <h3>Good at</h3><ul><li>Questions about what letters said, with citations.</li><li>No data modelling to start.</li></ul>
-    <h3>Weak at</h3><ul><li>Totals across routes: it can't apply our share inside a fund of funds.</li><li>Changes found in letters, such as write-downs.</li><li>Wrong numbers look trustworthy because they carry sources.</li></ul>` + liveBox("A"),
+    <h3>What went right in this test</h3><ul><li>Manager questions, which mostly ask what letters said (of 20): ${both("A", "r3")}.</li><li>It needed no tables or definitions set up first.</li></ul>
+    <h3>What went wrong in this test</h3><ul><li>Fund of funds lines were booked at their full value: for Calder, $73.20m where our share is $0.88m.</li><li>The write-down sat in a letter, and nothing connected the letter to the number.</li><li>Wrong numbers shown with a source: ${both("A", "wrong_sourced")}.</li></ul>` + liveBox("A"),
   extra: c => `<h3 class="kicker">What it read</h3><table id="aTbl"><tr><th>Passage</th><th class="num">It wrote</th><th class="num">Right</th><th>Verdict</th></tr></table>`,
   steps: [
     async c => c.say(`Search pulls 12 passages mentioning "Calder". The AI reads each one and adds up the lines.`),
@@ -319,10 +320,10 @@ ch({ id: "A", title: "A. Documents + search", acc: "A",
 const bRows = S.B.lines.filter(l => l.label !== "total").map(l => ({ ...l, sig: bSig(l.label) }));
 const bMissing = R.filter(r => !S.B.routes.includes(r.id));
 ch({ id: "B", title: "B. Tables + AI-written SQL", acc: "B",
-  lesson: "The AI writes a query in seconds, but the business rules aren't in the tables, so mistakes come back silently.",
+  lesson: `Here, the query counted one route twice, missed the spelling "Calder Pack." and used values from before the write-down. It returned ${m(S.B.value)} with no error.`,
   aside: () => `<h3>How it works</h3><ul><li>Clean tables in a warehouse (holdings, reports, stakes).</li><li>The AI reads the table list and writes SQL.</li><li>Code runs the query, read-only.</li></ul>
-    <h3>Good at</h3><ul><li>Any question the tables can answer, with no setup per question.</li><li>Exploration by the data team, who can read the SQL.</li></ul>
-    <h3>Weak at</h3><ul><li>Rules that live in people's heads: look-through shares, write-downs, spellings, "what we knew when".</li><li>Silent errors: a join that counts a row twice still returns a number.</li><li>Stability: a rerun can write a different query.</li></ul>` + liveBox("B"),
+    <h3>What went right in this test</h3><ul><li>Both questions about where Brennick's former partners went, offline and live: one join on the people table.</li><li>No wrong number was shown with a source, because B shows none: Sara checks every number by hand.</li></ul>
+    <h3>What went wrong in this test</h3><ul><li>The tables don't hold the rules: our share inside a fund of funds, write-downs from letters, other spellings, when we learnt something.</li><li>A join matched two report rows, so a route counted twice and no error was raised.</li><li>Committee pack (of 20): ${both("B", "r2")}.</li></ul>` + liveBox("B"),
   extra: c => `<div class="row"><div><h3 class="kicker">The query it wrote (offline stand-in)</h3><pre id="bSql"></pre></div>
     <div><h3 class="kicker">What came back</h3><table id="bTbl"><tr><th>Row</th><th class="num">Value</th><th>Verdict</th></tr></table></div></div>`,
   steps: [
@@ -348,10 +349,10 @@ ch({ id: "B", title: "B. Tables + AI-written SQL", acc: "B",
 // 3. C: semantic layer
 const cMissing = R.filter(r => !S.C.routes.includes(r.id));
 ch({ id: "C", title: "C. Tables + semantic layer", acc: "C",
-  lesson: "One agreed definition gives the same number every time, but only for names the data already recognises.",
+  lesson: `Here, the agreed definition applied the write-down, but only the 2 routes under the exact name "Calder Packaging Ltd" were found: ${m(S.C.value)}.`,
   aside: () => `<h3>How it works</h3><ul><li>A list of agreed calculations, each with one definition, owner and version.</li><li>The AI only picks one from the menu, with filters and a date.</li><li>Code turns the pick into SQL and computes.</li></ul>
-    <h3>Good at</h3><ul><li>The committee pack: 20 of 20, the same number on every rerun.</li><li>Refusing questions with no agreed definition.</li><li>The write-down is applied, because the definition says so.</li></ul>
-    <h3>Weak at</h3><ul><li>Messy identity: a report that spells the company differently drops out.</li><li>Upfront work: someone has to agree and own each definition.</li></ul>` + liveBox("C"),
+    <h3>What went right in this test</h3><ul><li>Committee pack (of 20): ${both("C", "r2")}, the same answer on every rerun.</li><li>All 7 trap questions refused, including a measure with no agreed definition.</li><li>The write-down was applied, because the definition counts letters learnt since the report.</li></ul>
+    <h3>What went wrong in this test</h3><ul><li>Routes under other spellings were dropped: the CIO's question scored ${both("C", "r1")} of 20.</li><li>Those partial totals carried sources: ${both("C", "wrong_sourced")} wrong numbers shown with a source.</li><li>Each calculation needed a definition, an owner and a version written first.</li></ul>` + liveBox("C"),
   extra: c => `<div class="row"><div><h3 class="kicker">The AI picks this, nothing else</h3><pre>metric: lookthrough_exposure (v2, owner ${esc(D.definitions.owner)})
 company: Calder Packaging
 as_of: ${D.today}</pre><p class="meta">${esc(D.definitions.v2_plain)}</p></div>
@@ -375,10 +376,10 @@ as_of: ${D.today}</pre><p class="meta">${esc(D.definitions.v2_plain)}</p></div>
 // 4. C+ids: identity table
 const idq = D.identity || {};
 ch({ id: "C+ids", title: "C+ids. Add an identity table", acc: "C+ids",
-  lesson: "A plain table that says which names are the same company closes the gap. Spelling was the real problem, not the number of hops.",
+  lesson: `Here, one table mapping the 3 spellings to one company brought back the 3 missing routes: ${m(S["C+ids"].value)}. What C missed was spelling, not the number of hops.`,
   aside: () => `<h3>How it works</h3><ul><li>Same as C, plus one table: every name a manager wrote, and the company it means.</li><li>Close matches go to a person to confirm; nothing uncertain is counted.</li></ul>
-    <h3>Good at</h3><ul><li>The CIO's question: 20 of 20.</li><li>Matching names: ${idq["identity table (C+ids, D)"] ? `${idq["identity table (C+ids, D)"].right} of ${idq["identity table (C+ids, D)"].names} names right, against ${idq["exact name only (C, B)"].right} by exact name only` : "every name in the test world"}.</li></ul>
-    <h3>Weak at</h3><ul><li>Upkeep: new spellings arrive with every report, and someone reviews the doubtful ones.</li><li>People links: no calculation was defined for "where did a partner go".</li></ul>` + liveBox("C+ids"),
+    <h3>What went right in this test</h3><ul><li>The CIO's question (of 20): ${both("C+ids", "r1")}.</li><li>Matching names: ${idq["identity table (C+ids, D)"] ? `${idq["identity table (C+ids, D)"].right} of ${idq["identity table (C+ids, D)"].names} names right, against ${idq["exact name only (C, B)"].right} by exact name only` : "every name in the test world"}.</li></ul>
+    <h3>What went wrong in this test</h3><ul><li>Manager questions (of 20): ${both("C+ids", "r3")}. No calculation was defined for where a partner went, and the letter reader missed a fee-offset letter.</li><li>${both("C+ids", "wrong_sourced")} wrong numbers shown with a source.</li><li>In the held-out world with new spellings, 11 of 184 names waited for a person to confirm.</li></ul>` + liveBox("C+ids"),
   extra: c => `<h3 class="kicker">The identity table</h3><table id="idTbl"><tr><th>Name in the report</th><th>Fund</th><th>Means</th><th>How matched</th></tr></table>`,
   steps: [
     async c => { for (const r of cMissing) { c.st.nodes[nameNodeOf(r)] = "unknown"; c.st.badges[nameNodeOf(r)] = { t: "unknown name", bad: true }; } for (const r of R.filter(r => !cMissing.includes(r))) { edgesOf(r).forEach(k => c.st.edges[k] = "on"); r.path.forEach(n => c.st.nodes[n] = "on"); c.st.total += r.value; c.st.found += 1; } c.say("Where C left off: 2 routes found, 3 stuck at names it doesn't recognise."); },
@@ -399,16 +400,16 @@ ch({ id: "C+ids", title: "C+ids. Add an identity table", acc: "C+ids",
 // 5. D: graph
 const ost = R.find(r => r.kind === "fof" && r.factor === 1) || R[0];
 ch({ id: "D", title: "D. Add a graph", acc: "D",
-  lesson: "A graph follows chains of links of any length and shows the path. On routes it tied C+ids; its edge is questions about relationships.",
+  lesson: `Here, the graph walk found the same 5 routes and ${m(S.D.value)} as C+ids. D's 4 extra correct answers in the test were manager questions: 2 on people links, 2 on a letter.`,
   aside: () => `<h3>How it works</h3><ul><li>Things (our plan, funds, companies, people) are points; ownership and employment are links.</li><li>A question becomes a walk: start at the company, follow every link back to us, multiply the shares on the way.</li></ul>
-    <h3>Good at</h3><ul><li>Chains of unknown length (a fund of funds inside a fund of funds) with no new code.</li><li>Showing Sara the path behind the number.</li><li>People links: where a former partner went.</li></ul>
-    <h3>Weak at</h3><ul><li>One more system to build, keep in sync and staff.</li><li>At this size it added nothing on routes: C+ids and D tie at 20 of 20.</li></ul>` + liveBox("D"),
+    <h3>What went right in this test</h3><ul><li>Correct: ${both("D", "correct")} of 60, with no wrong number shown with a source.</li><li>The walk records every hop, so the answer can show Sara the path behind each route.</li><li>Both people-link questions.</li></ul>
+    <h3>What it cost in this test</h3><ul><li>On routes it tied C+ids: 20 of 20 each, offline and live.</li><li>A second copy of the data, rebuilt for each as-of date: ${SC.length ? Math.round(SC.at(-1).graph_build_ms) + " ms at 100x" : "n/a"}.</li></ul>` + liveBox("D"),
   extra: c => {
     const pq = D.people.questions;
     return `<div class="row stack"><div><h3 class="kicker">The arithmetic of one walk</h3><table id="mathTbl"><tr><th>Hop</th><th>Link</th></tr></table><p class="meta" id="mathRes"></p></div>
     <div><h3 class="kicker">People links: ${esc(D.people.manager)}'s former partners</h3><svg class="g" id="pplSvg" viewBox="0 0 520 170"></svg>
     <table><tr><th>Question</th>${ARMS.map(a => `<th class="num">${a}</th>`).join("")}</tr>${Object.values(pq).map(q => `<tr><td>${esc(q.question)}</td>${ARMS.map(a => `<td class="num">${q.arms[a] ? "&#10003;" : "&#10007;"}</td>`).join("")}</tr>`).join("")}</table>
-    <p class="meta">B also got these right: SQL on a people table can follow one link. C and C+ids can't, because nobody defined a calculation for people. The graph is the general tool; a table is enough for one hop.</p></div></div>`;
+    <p class="meta">B also got these right: SQL on a people table can follow one link. C and C+ids can't, because nobody defined a calculation for people. Each people question in this test needed one link.</p></div></div>`;
   },
   steps: [
     async c => { c.say("The graph resolves the name first, then walks back from the company along every link."); drawPeople(0); },
@@ -442,10 +443,10 @@ function drawPeople(stage) {
 // 6. graph vs warehouse tables
 const SC = D.scale;
 ch({ id: "vs", title: "Graph or warehouse table?", acc: "ideal", noGraph: true,
-  lesson: "Both found the same 5 routes at every size. Pick by who maintains it and which questions dominate, not by speed at LP data sizes.",
-  aside: () => `<h3>When a warehouse table wins</h3><ul><li>Totals and pack metrics: one definition, read by every tool.</li><li>Everyone on an LP data team already writes SQL.</li><li>One system to secure, back up and audit.</li></ul>
-    <h3>When a graph wins</h3><ul><li>Chains of unknown length and questions about relationships (people, co-investors).</li><li>Explaining the path behind a number.</li><li>Once built, a whole-portfolio sum ran faster in memory.</li></ul>
-    <h3>What it costs</h3><ul><li>Building the graph: ${SC.length ? Math.round(SC.at(-1).graph_build_ms) + " ms at 100x, every time the data changes" : "n/a"}.</li><li>A second copy of the data to keep in sync.</li></ul>`,
+  lesson: "Recursive SQL and the graph found the same 5 routes and the same total at 1x, 10x and 100x the data. What differed was timing and upkeep.",
+  aside: () => `<h3>Recursive SQL, in this build</h3><ul><li>Lives in the same database as the agreed calculations, so the dashboard, notebook and chat read one number.</li><li>One query handles any depth of fund of funds (up to the limit of 5 set in the query).</li><li>At 100x: ${SC.length ? Math.round(SC.at(-1).route_sql_ms) : "n/a"} ms for one company's routes.</li></ul>
+    <h3>The graph, in this build</h3><ul><li>Holds people and employers as well as ownership, so "where did a partner go" is one hop.</li><li>Once built, a sum over the whole portfolio ran in ${SC.length ? Math.round(SC.at(-1).portfolio_sum_graph_only_ms) : "n/a"} ms at 100x, against ${SC.length ? Math.round(SC.at(-1).portfolio_sum_sql_ms) : "n/a"} ms in SQL.</li><li>The graph query (DuckPGQ) took ${SC.length ? Math.round(SC.at(-1).route_pgq_ms) : "n/a"} ms at 100x, not counting setting up its tables.</li></ul>
+    <h3>What the graph cost</h3><ul><li>Building the graph: ${SC.length ? Math.round(SC.at(-1).graph_build_ms) + " ms at 100x, every time the data changes" : "n/a"}.</li><li>A second copy of the data to keep in sync.</li></ul>`,
   extra: c => `<div class="tabs" id="codeTabs"></div><pre id="codePre"></pre>
     <h3 class="kicker" style="margin-top:14px">Measured at 1x, 10x and 100x the data</h3>
     <div class="row stack"><div><b>Finding one company's routes</b><div class="legend" id="lg1"></div><svg class="g" id="sc1"></svg></div>
@@ -496,7 +497,7 @@ function tip(ev, html) { const t = $("#tip"); if (!ev) { t.style.display = "none
 // 7. break it yourself
 const PIT = D.point_in_time, DEF = D.definitions;
 ch({ id: "break", title: "Break it yourself", acc: "ideal",
-  lesson: "Each building block prevents one specific wrong answer. Switch one off and watch the number move.",
+  lesson: "Switch off one building block and the Calder answer changes. Every value here was computed in this test.",
   aside: () => `<h3>What each switch shows</h3><ul><li><b>Identity table:</b> spellings decide coverage.</li><li><b>One definition:</b> two teams, two numbers, same morning.</li><li><b>When we learnt it:</b> a past answer can't use a letter we hadn't received.</li><li><b>Code does the maths:</b> an AI adding lines from documents gets the shares wrong.</li></ul>
     <p class="meta">All values are computed from the same synthetic world; nothing here is typed in.</p>`,
   extra: () => `<div class="card" style="padding:4px 14px" id="toggles"></div>`,
