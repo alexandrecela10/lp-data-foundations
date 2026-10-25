@@ -1,0 +1,20 @@
+{
+  "work_name": "portfolio-answer-desk-opportunity",
+  "work_type": "opportunity-analysis",
+  "input_file": "context-library/strategy/brief.md",
+  "goal_file": "outputs/opportunity-analyses/portfolio-answer-desk-opportunity-goals.md",
+  "last_run": "2026-10-25",
+  "recommendation": "Go",
+  "why": "Concrete pain (Calder Packaging case), a 60-question test set with known answers can prove or break the claim, open-source parts with no servers.",
+  "what_would_change_it": "If the timed human run shows Sara already answers request 1 in under 15 minutes by hand, the time gain is too small to justify the definitions and identity work.",
+  "criteria_passed": [1, 2, 3, 4, 5, 6, 7],
+  "criteria_failed": [],
+  "decisions_made": [
+    "Working name 'Portfolio Answer Desk'; final name chosen in the PRD name check.",
+    "Commercial numbers limited to public sources found (Preqin 2025, CSC 2023 via Real Deals, ILPA); no public LP count or monitoring-time survey found, so FTE saving is marked assumed."
+  ],
+  "still_open": [
+    "PM question (recorded instead of waiting): is a timed run with one real analyst on 10 questions possible before the case study is published?"
+  ],
+  "next_trigger": "Proceed to /prd-draft (PM approved unattended run)."
+}
