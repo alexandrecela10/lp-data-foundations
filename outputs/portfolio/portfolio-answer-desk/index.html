@@ -142,7 +142,7 @@
   <p class="lede">You're a portfolio analyst at a large LP (an investor in many private equity funds). A company in the news hides behind five holding routes and three spellings, so finding your exposure takes the morning. Portfolio Answer Desk gives you the number, every route, the definition and the date of every figure, ready to send.</p>
   <div class="cta">
     <span class="btn off">Demo: deploy pending (runs on Streamlit Community Cloud)</span>
-    <span class="btn off">Code: private until published</span>
+    <a class="btn off" href="https://github.com/alexandrecela10/lp-data-foundations">Code on GitHub</a>
     <span class="dim" style="font-size:14px">Synthetic data, invented names. Tested live with Claude Sonnet 5.5; the demo runs offline, with fixed readers in place of the AI.</span>
   </div>
   <div class="stats">
@@ -195,7 +195,7 @@
     <tr><td>When I build the committee pack, I want last quarter's definitions as of a set date, so the numbers need no rework.</td><td>If each metric has one versioned definition, reruns and rephrasings agree, because nobody rewrites the formula.</td><td>Same answer on rerun and rephrasing: 100%. <b class="res">100% on rerun and on rephrasing, offline and live; 20/20 correct</b></td><td>Fewer pack corrections; unobserved</td></tr>
     <tr><td>When the head of PE weighs a re-up, I want the numbers plus every issue the manager raised, so nothing is missed.</td><td>If numbers come from governed metrics and issues from cited letters, every issue appears with its source.</td><td>Planted letter issues found with a citation: 100%. <b class="res">5 of 5; 20/20 correct offline and live</b></td><td>Fewer surprises at the re-up; unobserved</td></tr>
   </table></div>
-  <p class="dim" style="margin-top:12px">Must not get worse: wrong numbers shown with a source. Result: 0 for D, offline and live; 2 for C+ids, which is still open. Sources: <code>evals/results/offline-seed42.json</code> (fixed readers stand in for the AI) and <code>evals/results/live-claude-sonnet-5-5.json</code> (Claude Sonnet 5.5 reads every question; 960 calls, $6.25).</p>
+  <p class="dim" style="margin-top:12px">Must not get worse: wrong numbers shown with a source. Result: 0 for C+ids and D, offline and live. Sources: <code>evals/results/offline-seed42.json</code> (fixed readers stand in for the AI) and <code>evals/results/live-claude-sonnet-5-5.json</code> (Claude Sonnet 5.5 reads every question; 1,080 calls, $7.08 including a rerun of C+ids).</p>
 </section>
 
 <section>
@@ -244,8 +244,7 @@
     </ul></div>
     <div class="card"><div class="k">Next</div><ol>
       <li><strong>Timed run with 3 to 5 former LP analysts.</strong> Replaces the assumed checking times.</li>
-      <li><strong>Close the 2 wrong numbers with a source in C+ids,</strong> or ship D.</li>
-      <li><strong>Fuzzy name matching with a review queue.</strong> Closes the 11 names the held-out world left unmatched.</li>
+            <li><strong>Fuzzy name matching with a review queue.</strong> Closes the 11 names the held-out world left unmatched.</li>
     </ol></div>
   </div>
 </section>
@@ -260,17 +259,18 @@
 
   <details><summary>Main learnings <small>what this test showed, offline and live</small></summary>
   <div class="read"><ul>
-    <li><strong>With Claude reading the questions, the three setups built on agreed definitions scored the same as offline.</strong> C 41, C+ids 56, D 60 of 60, and every answer repeated on a rerun. In these setups Claude fills in the question's fields; code computes the number.</li>
+    <li><strong>With Claude reading the questions, the three setups built on agreed definitions scored the same as offline.</strong> C 41, C+ids 58, D 60 of 60, and every answer repeated on a rerun. In these setups Claude fills in the question's fields; code computes the number.</li>
     <li><strong>Where Claude wrote the answer from documents (A) or wrote the SQL (B), about half the correct answers were lost.</strong> A went from 18 to 7, B from 22 to 11. On reworded questions, both gave the same answer half the time.</li>
     <li><strong>Spelling, not hops, broke the semantic layer on Calder.</strong> Three of its five routes sat under "Calder Pack." and "Calderwick Holdings". The recursive query walked the fund of funds hop fine. An identity table fixed all 15 misses on the CIO's request (hypothesis 1).</li>
-    <li><strong>The graph tied the identity-table setup on routes,</strong> 20 to 20, offline and live. By a rule set before the run it had to win by 2 questions. Its 4 extra correct answers were manager questions; AI-written SQL on the people table also answered the 2 about former partners.</li>
+    <li><strong>The graph tied the identity-table setup on routes,</strong> 20 to 20, offline and live. By a rule set before the run it had to win by 2 questions. Its 2 extra correct answers ask where Brennick's former partners went; AI-written SQL on the people table answered both too.</li>
+    <li><strong>The identity-table setup changed once, after the first live run.</strong> It had no letter search, so the graph comparison mixed two differences, and it missed one letter issue in 2 answers. With letter search added it differs from D only by the graph: 58 of 60, no wrong number with a source.</li>
     <li><strong>One definition per metric settled the pack.</strong> C, C+ids and D scored 20 of 20 on the committee pack offline and live; AI-written SQL scored 6 offline and 3 live (hypothesis 2).</li>
     <li><strong>A first live attempt was invalid and looked fine.</strong> Every live read failed on an API schema limit and fell back to the offline reader without saying so, so the "live" scores copied offline. Failed calls now mark the run invalid.</li>
     <li><strong>The time result rests on trust in sources.</strong> Under the assumed model you check a sourced number in 5 s; if you recheck half by hand, the setups converge.</li>
   </ul></div>
   <p class="dim">Correct answers of 60, live (Claude Sonnet 5.5).</p>
-  <div class="chart"><svg viewBox="0 0 620 160" role="img" aria-label="Correct answers out of 60 per setup, live"><text class="lab" x="0" y="22">A</text><rect class="bar" x="70" y="10" width="56" height="18"></rect><text class="val" x="134" y="24">7</text><text class="lab" x="0" y="52">B</text><rect class="bar" x="70" y="40" width="88" height="18"></rect><text class="val" x="166" y="54">11</text><text class="lab" x="0" y="82">C</text><rect class="bar" x="70" y="70" width="328" height="18"></rect><text class="val" x="406" y="84">41</text><text class="lab" x="0" y="112">C+ids</text><rect class="bar" x="70" y="100" width="448" height="18"></rect><text class="val" x="526" y="114">56</text><text class="lab" x="0" y="142">D</text><rect class="bar" x="70" y="130" width="480" height="18"></rect><text class="val" x="558" y="144">60</text></svg></div>
-  <div class="scroll"><table><tr><th>Setup</th><th></th><th>Correct of 60, offline / live</th><th>CIO event</th><th>Pack</th><th>Manager</th><th>Wrong but sourced</th><th>Same on rerun, live</th><th>Expected time</th></tr><tr><td>A</td><td>Documents + search</td><td>18 / 7</td><td>4 / 2</td><td>4 / 2</td><td>10 / 3</td><td>27 / 7</td><td>90%</td><td>84.2 min / 106.1 min</td></tr><tr><td>B</td><td>Tables + AI-written SQL</td><td>22 / 11</td><td>3 / 2</td><td>6 / 3</td><td>13 / 6</td><td>0 / 0</td><td>80%</td><td>76.6 min / 98.3 min</td></tr><tr><td>C</td><td>Semantic layer</td><td>41 / 41</td><td>5 / 5</td><td>20 / 20</td><td>16 / 16</td><td>15 / 15</td><td>100%</td><td>38.4 min / 38.4 min</td></tr><tr><td>C+ids</td><td>Semantic layer + identity table</td><td>56 / 56</td><td>20 / 20</td><td>20 / 20</td><td>16 / 16</td><td>2 / 2</td><td>100%</td><td>8.6 min / 8.6 min</td></tr><tr><td>D</td><td>Semantic layer + graph (+ letter search)</td><td>60 / 60</td><td>20 / 20</td><td>20 / 20</td><td>20 / 20</td><td>0 / 0</td><td>100%</td><td>40 s / 39 s</td></tr></table></div>
+  <div class="chart"><svg viewBox="0 0 620 160" role="img" aria-label="Correct answers out of 60 per setup, live"><text class="lab" x="0" y="22">A</text><rect class="bar" x="70" y="10" width="56" height="18"></rect><text class="val" x="134" y="24">7</text><text class="lab" x="0" y="52">B</text><rect class="bar" x="70" y="40" width="88" height="18"></rect><text class="val" x="166" y="54">11</text><text class="lab" x="0" y="82">C</text><rect class="bar" x="70" y="70" width="328" height="18"></rect><text class="val" x="406" y="84">41</text><text class="lab" x="0" y="112">C+ids</text><rect class="bar" x="70" y="100" width="464" height="18"></rect><text class="val" x="542" y="114">58</text><text class="lab" x="0" y="142">D</text><rect class="bar" x="70" y="130" width="480" height="18"></rect><text class="val" x="558" y="144">60</text></svg></div>
+  <div class="scroll"><table><tr><th>Setup</th><th></th><th>Correct of 60, offline / live</th><th>CIO event</th><th>Pack</th><th>Manager</th><th>Wrong but sourced</th><th>Same on rerun, live</th><th>Expected time</th></tr><tr><td>A</td><td>Documents + search</td><td>18 / 7</td><td>4 / 2</td><td>4 / 2</td><td>10 / 3</td><td>27 / 7</td><td>90%</td><td>84.2 min / 106.1 min</td></tr><tr><td>B</td><td>Tables + AI-written SQL</td><td>22 / 11</td><td>3 / 2</td><td>6 / 3</td><td>13 / 6</td><td>0 / 0</td><td>80%</td><td>76.6 min / 98.3 min</td></tr><tr><td>C</td><td>Semantic layer</td><td>41 / 41</td><td>5 / 5</td><td>20 / 20</td><td>16 / 16</td><td>15 / 15</td><td>100%</td><td>38.4 min / 38.4 min</td></tr><tr><td>C+ids</td><td>Semantic layer + identity table + letter search</td><td>58 / 58</td><td>20 / 20</td><td>20 / 20</td><td>18 / 18</td><td>0 / 0</td><td>100%</td><td>4.7 min / 4.6 min</td></tr><tr><td>D</td><td>C+ids + graph</td><td>60 / 60</td><td>20 / 20</td><td>20 / 20</td><td>20 / 20</td><td>0 / 0</td><td>100%</td><td>40 s / 39 s</td></tr></table></div>
   <p class="dim">Explore it: <a href="foundations.html">How the foundations work</a>, an animated walk of the Calder question through each setup, built from these results.</p>
   </details>
 
@@ -309,7 +309,7 @@
   <details><summary>How success is tracked <small>leading and lagging metrics</small></summary>
   <div class="scroll"><table><tr><th>Metric</th><th>Type</th><th>Now</th></tr>
   <tr><td>Correct answers on the 60 questions</td><td>Leading</td><td>60/60 offline and live (D)</td></tr>
-  <tr><td>Wrong numbers shown with a source</td><td>Guardrail</td><td>0 (D); 2 (C+ids)</td></tr>
+  <tr><td>Wrong numbers shown with a source</td><td>Guardrail</td><td>0 (C+ids and D)</td></tr>
   <tr><td>Time to a sendable answer</td><td>Lagging</td><td>assumed model; timed run next</td></tr>
   <tr><td>Refusal traps refused</td><td>Guardrail</td><td>7/7</td></tr>
   <tr><td>Pack corrections per quarter</td><td>Lagging</td><td>unobserved</td></tr>

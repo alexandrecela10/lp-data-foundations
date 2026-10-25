@@ -16,8 +16,8 @@ In the shipped combination the language model only reads the question into fixed
 
 ## Why
 
-- **Measured:** wrong numbers shown with a source, out of 60 questions offline: documents + search (A) 27, semantic layer (C) 15, C plus identity table 2, D 0 (`evals/results/offline-seed42.json`). A's are the dangerous kind: a fund of funds' look-through line multiplied by our share of the fund of funds, shown with a real citation.
-- **Live** (`evals/results/live-claude-sonnet-5-5.json`, `claude-sonnet-5-5`): A 7 wrong numbers with a source, B 0, C 15, C+ids 2, D 0. Where Claude only filled in the question's fields (C, C+ids, D), every score matched offline and the rerun gave the same answer on all 60 questions. Where Claude also read passages (A) or wrote SQL (B), A fell from 18 to 7 correct and B from 22 to 11; the number checker withheld many of A's answers ("number check failed").
+- **Measured:** wrong numbers shown with a source, out of 60 questions offline: documents + search (A) 27, semantic layer (C) 15, C+ids 2 before it gained letter search and 0 after, D 0 (`evals/results/offline-seed42.json`). A's are the dangerous kind: a fund of funds' look-through line multiplied by our share of the fund of funds, shown with a real citation.
+- **Live** (`evals/results/live-claude-sonnet-5-5.json`, `claude-sonnet-5-5`): A 7 wrong numbers with a source, B 0, C 15, C+ids 0 (after it gained letter search), D 0. Where Claude only filled in the question's fields (C, C+ids, D), every score matched offline and the rerun gave the same answer on all 60 questions. Where Claude also read passages (A) or wrote SQL (B), A fell from 18 to 7 correct and B from 22 to 11; the number checker withheld many of A's answers ("number check failed").
 - **Example and counterfactual.** The AI picks `lookthrough_exposure` for Calder Packaging; code returns \$8.06m from 5 routes. Had the AI written the number itself, \$8.1m and \$81m would read the same to the checker of a chat window; here a number not in the computed set fails closed (`tests/test_governance.py::test_number_checker_fails_closed`).
 
 ## What was NOT chosen

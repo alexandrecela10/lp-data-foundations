@@ -375,11 +375,11 @@ as_of: ${D.today}</pre><p class="meta">${esc(D.definitions.v2_plain)}</p></div>
 
 // 4. C+ids: identity table
 const idq = D.identity || {};
-ch({ id: "C+ids", title: "C+ids. Add an identity table", acc: "C+ids",
+ch({ id: "C+ids", title: "C+ids. Add an identity table and letter search", acc: "C+ids",
   lesson: `Here, one table mapping the 3 spellings to one company brought back the 3 missing routes: ${m(S["C+ids"].value)}. What C missed was spelling, not the number of hops.`,
-  aside: () => `<h3>How it works</h3><ul><li>Same as C, plus one table: every name a manager wrote, and the company it means.</li><li>Close matches go to a person to confirm; nothing uncertain is counted.</li></ul>
+  aside: () => `<h3>How it works</h3><ul><li>Same as C, plus one table: every name a manager wrote, and the company it means.</li><li>Close matches go to a person to confirm; nothing uncertain is counted.</li><li>Letter search with citations for manager questions, the same as D. So C+ids and D differ only by the graph.</li></ul>
     <h3>What went right in this test</h3><ul><li>The CIO's question (of 20): ${both("C+ids", "r1")}.</li><li>Matching names: ${idq["identity table (C+ids, D)"] ? `${idq["identity table (C+ids, D)"].right} of ${idq["identity table (C+ids, D)"].names} names right, against ${idq["exact name only (C, B)"].right} by exact name only` : "every name in the test world"}.</li></ul>
-    <h3>What went wrong in this test</h3><ul><li>Manager questions (of 20): ${both("C+ids", "r3")}. No calculation was defined for where a partner went, and the letter reader missed a fee-offset letter.</li><li>${both("C+ids", "wrong_sourced")} wrong numbers shown with a source.</li><li>In the held-out world with new spellings, 11 of 184 names waited for a person to confirm.</li></ul>` + liveBox("C+ids"),
+    <h3>What went wrong in this test</h3><ul><li>Manager questions (of 20): ${both("C+ids", "r3")}. The 2 it missed ask where Brennick's former partners went: no calculation was defined for people.</li><li>${both("C+ids", "wrong_sourced")} wrong numbers shown with a source.</li><li>In the held-out world with new spellings, 11 of 184 names waited for a person to confirm.</li></ul>` + liveBox("C+ids"),
   extra: c => `<h3 class="kicker">The identity table</h3><table id="idTbl"><tr><th>Name in the report</th><th>Fund</th><th>Means</th><th>How matched</th></tr></table>`,
   steps: [
     async c => { for (const r of cMissing) { c.st.nodes[nameNodeOf(r)] = "unknown"; c.st.badges[nameNodeOf(r)] = { t: "unknown name", bad: true }; } for (const r of R.filter(r => !cMissing.includes(r))) { edgesOf(r).forEach(k => c.st.edges[k] = "on"); r.path.forEach(n => c.st.nodes[n] = "on"); c.st.total += r.value; c.st.found += 1; } c.say("Where C left off: 2 routes found, 3 stuck at names it doesn't recognise."); },
@@ -400,10 +400,10 @@ ch({ id: "C+ids", title: "C+ids. Add an identity table", acc: "C+ids",
 // 5. D: graph
 const ost = R.find(r => r.kind === "fof" && r.factor === 1) || R[0];
 ch({ id: "D", title: "D. Add a graph", acc: "D",
-  lesson: `Here, the graph walk found the same 5 routes and ${m(S.D.value)} as C+ids. D's 4 extra correct answers in the test were manager questions: 2 on people links, 2 on a letter.`,
+  lesson: `Here, the graph walk found the same 5 routes and ${m(S.D.value)} as C+ids. D's ${sc("D").correct - sc("C+ids").correct} extra correct answers were the questions about where Brennick's former partners went.`,
   aside: () => `<h3>How it works</h3><ul><li>Things (our plan, funds, companies, people) are points; ownership and employment are links.</li><li>A question becomes a walk: start at the company, follow every link back to us, multiply the shares on the way.</li></ul>
     <h3>What went right in this test</h3><ul><li>Correct: ${both("D", "correct")} of 60, with no wrong number shown with a source.</li><li>The walk records every hop, so the answer can show Sara the path behind each route.</li><li>Both people-link questions.</li></ul>
-    <h3>What it cost in this test</h3><ul><li>On routes it tied C+ids: 20 of 20 each, offline and live.</li><li>A second copy of the data, rebuilt for each as-of date: ${SC.length ? Math.round(SC.at(-1).graph_build_ms) + " ms at 100x" : "n/a"}.</li></ul>` + liveBox("D"),
+    <h3>What it cost in this test</h3><ul><li>On routes it tied C+ids: 20 of 20 each, offline and live.</li><li>B, with one SQL join on the people table, also answered both people questions.</li><li>A second copy of the data, rebuilt for each as-of date: ${SC.length ? Math.round(SC.at(-1).graph_build_ms) + " ms at 100x" : "n/a"}.</li></ul>` + liveBox("D"),
   extra: c => {
     const pq = D.people.questions;
     return `<div class="row stack"><div><h3 class="kicker">The arithmetic of one walk</h3><table id="mathTbl"><tr><th>Hop</th><th>Link</th></tr></table><p class="meta" id="mathRes"></p></div>

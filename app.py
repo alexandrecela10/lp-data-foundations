@@ -274,10 +274,10 @@ with tabs[3]:
     res = live if which.startswith("Live") else off
     if res:
         sm = res["summary"]
-        md(f"**Decision: use C+ids (semantic layer plus an identity table) for numbers and routes, and add the graph only for "
+        md(f"**Decision: use C+ids (semantic layer, identity table, letter search) for numbers and routes, and add the graph only for "
            f"links between people and managers.** {which.split(':')[0]}, D answered {sm['D']['correct']}/60 and C+ids {sm['C+ids']['correct']}/60; "
            f"on the CIO's request they tie at {sm['D']['request_1']}/20 each, so by the rule set before the run the graph "
-           f"doesn't earn its place for routes. It wins on 4 manager-history questions: 2 need people links, 2 need letter search.")
+           f"doesn't earn its place for routes. It adds the 2 questions about where Brennick's former partners went.")
         if res is live:
             pa = res["meta"]["all_passes"]
             st.caption(esc(f"Live run {res['meta']['run_at']}: claude-sonnet-5-5 read every question for every setup, the passages in A "

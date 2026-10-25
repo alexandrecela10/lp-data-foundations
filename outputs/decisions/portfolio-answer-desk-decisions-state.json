@@ -8,7 +8,7 @@
     "PAD-03": "AI picks a governed metric; code computes; number check fails closed.",
     "PAD-04": "Bronze, silver, gold in DuckDB 1.4.4; batch by source schedule (streaming result reused from Secondaries Radar).",
     "PAD-05": "Checking-time model stated as an assumption, with a sensitivity table.",
-    "PAD-06": "C+ids foundation, graph only for people links, letter search for issues; chat, dashboard, briefing note per request."
+    "PAD-06": "C+ids foundation (semantic layer, identity table, letter search), graph only for people links; chat, dashboard, briefing note per request."
   },
   "criteria_passed": [
     1,
@@ -20,7 +20,7 @@
   ],
   "still_open": [
     "Live run done 2026-10-25 (claude-sonnet-5-5, 960 calls, 0 failed, $6.25): C, C+ids and D unchanged from offline; A 18 to 7, B 22 to 11. PAD-06 trigger fired for A and B; decision stands.",
-    "C+ids shows 2 wrong numbers with a source (guardrail is zero): fix those 2 answers or recommend D. PM to decide.",
+    "C+ids gained letter search (PM decision 2026-10-25): now differs from D only by the graph; 58/60 and 0 wrong numbers with a source, offline and live.",
     "Timed human run can still change PAD-05.",
     "PM to ratify and move to context-library/decisions/."
   ],
