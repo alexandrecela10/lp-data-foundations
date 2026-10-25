@@ -3,7 +3,7 @@
 **Stage:** Solution Review
 **Last Updated:** 2026-10-25
 **Owner:** PM (drafted by Claude, unattended run approved by the PM)
-**Status:** In Review
+**Status:** Reviewed, blockers fixed (see `portfolio-answer-desk-solution-review-review-synthesis.md`)
 
 **What it is.** A portfolio question desk for the private equity team of a large LP. Sara types or picks a question from a senior leader; she gets back a sendable answer: the number, the routes behind it, the definition used, the source and as-of date of every figure. Inside it sits a test bench that runs the same 60 questions through four data foundations and measures which gets Sara to a correct, sourced answer fastest. It can't yet read real fund reports or connect to a real accounting system: all data is synthetic.
 
@@ -15,7 +15,7 @@ Carried from `outputs/opportunity-analyses/portfolio-answer-desk-opportunity.md`
 
 | # | Problem | Today | Hypothesis | Success metric | Expected impact |
 |---|---|---|---|---|---|
-| 1 | An event question takes hours because the company hides behind several routes and spellings | Hours (assumed, from the brief) | If routes and spellings are linked once in the data, then every route is found in seconds, because code walks the links | Time to a correct, sourced answer Sara would send, request 1: under 10 minutes, 20 questions | Answer before the 09:00 meeting; unobserved |
+| 1 | An event question takes hours because the company hides behind several routes and spellings | Unobserved (the brief says hours to a day; never timed) | If routes and spellings are linked once in the data, then every route is found in seconds, because code walks the links | Time to a correct, sourced answer Sara would send, request 1: under 10 minutes, 20 questions | Answer before the 09:00 meeting; unobserved |
 | 2 | The committee pack drifts because each analyst computes IRR, TVPI and calls their own way | Unobserved | If each metric has one versioned definition computed as of a set date, then reruns and rephrasings agree, because nobody rewrites the formula | Same answer on rerun and rephrasing, request 2: 100% of 20 questions | Fewer pack corrections; unobserved |
 | 3 | A manager decision mixes numbers and letters, so issues get missed | Unobserved | If numbers come from the governed layer and issues from cited letters, then every issue appears with its source | Planted letter issues found with a citation, request 3: 100% | Fewer surprises at re-up; unobserved |
 
@@ -50,6 +50,14 @@ Carried forward from the opportunity analysis. Scope unchanged.
 
 ---
 
+## Strategic Fit: risk, not only time
+
+**The value is avoiding wrong numbers, not only saving time.** Assumed: one pack correction a quarter, 6 hours each, plus the cost of a wrong exposure figure reaching the CIO during an event. Time saved alone (about 0.3 of a role) does not justify agreeing definitions across teams. **Build against buy (production):** buy the storage and BI layer; build the definitions, the identity links and the governance, because no vendor ships them filled in. **Assumed setup effort per LP:** 4 to 8 weeks to agree 10 core definitions and link company identities.
+
+**Request priority:** request 1 first (most leadership attention), then 2 and 3 as reuse of the same foundation.
+
+---
+
 ## Non-Goals
 
 - **Real data or real systems.** No access, and the names policy forbids it. Synthetic only.
@@ -76,7 +84,7 @@ Carried forward from the opportunity analysis. Scope unchanged.
 | $X.Xm through 4 routes, after the 10 Sep write-down.       |
 |  1 Halvane V (fund)          $..m  report 30 Jun, letter   |
 |  2 Selbrook FoF III > ...    $..m  report 30 Jun           |
-|  3 Co-investment CPG Hold.   $..m  statement 30 Jun        |
+|  3 Co-invest Calderwick Hold. $..m  statement 30 Jun      |
 |  4 Tellmar III (bought 2024) $..m  report 30 Jun           |
 | Definition: look-through exposure v2, owner Risk team      |
 | Freshness: holdings 1 day, reports 118 days, letters 46 d  |
@@ -102,6 +110,11 @@ Carried forward from the opportunity analysis. Scope unchanged.
 
 ## Solution Overview
 
+**States designed (review fix):** refusal card (what was asked, why refused, who can answer, "Answer what I can see instead"); "1 letter item not counted, waiting for review" line under any total it affects; empty card for a company we don't hold; offline banner when the AI stand-in answered. Every route shows its own as-of date; sources older than 90 days read "stale"; the first line says "as of mixed dates" when they differ. Each metric carries one plain sentence of what's counted, in US dollars. Sara can add a note that travels with the copied answer. "Copy answer to send" copies the paragraph, routes, sources, as-of dates and the disclaimer. Every screen, copy and export carries "Synthetic data. Not investment advice."
+
+**Arms scored:** A, B, C, C+ids (C plus an alias table, to test whether the graph earns its place), D. Offline, A gets query expansion from the company reference text and B gets curated views with column notes and parent links, so the baselines are strong, not strawmen.
+
+
 Four foundations share one synthetic world. Each is paired with the front end that suits each request.
 
 | # | Foundation | What the AI does | What code does |
@@ -125,7 +138,10 @@ Four foundations share one synthetic world. Each is paired with the front end th
 |---|---|
 | **Primary tasks** | Route (which foundation path), extract (question to a metric request), generate (answer text from computed numbers) |
 | **Inputs available** | The question, the asker's role, the metric menu (C, D), table list (B), retrieved passages (A) |
-| **Constraints** | Every number comes from code or a cited passage. The AI never does arithmetic in text. Synthetic data only |
+| **Constraints** | Every number comes from code or a cited passage, inserted through placeholders. A checker extracts every number from the final text and fails closed if one is not in the computed set. The AI never does arithmetic in text. Synthetic data only |
+| **Access** | Every foundation queries per-role DuckDB views; search drops documents the role can't see. The role picker is a demo switch, not a login |
+| **Point in time** | Every event has two dates: when it took effect and when we learnt of it. "As of D" counts only what we learnt on or before D |
+| **Hosted demo** | Offline only, no key. Live calls only on a local run with a key, with the notice "Questions go to Anthropic. Do not enter real data." |
 | **Disallowed** | Numbers from news; numbers with no source; answering a metric with no governed definition; showing data the role can't see; real organisation names |
 | **Model** | `claude-sonnet-5-5` when `ANTHROPIC_API_KEY` is set; an offline stand-in otherwise |
 | **Latency budget** | p50 under 10 s, p95 under 30 s for one answer, live; offline under 1 s |
@@ -135,22 +151,27 @@ Four foundations share one synthetic world. Each is paired with the front end th
 | Scenario | User input | Expected output | Rejection criteria |
 |---|---|---|---|
 | Happy path | "How exposed are we to Calder Packaging?" | Total, 4 routes, write-down of 10 Sep applied, definition, as-of per number | N/A |
-| Spelling | "What do we hold in CPG Holdings?" | Same company, same total, says "CPG Holdings is the holding company of Calder Packaging Ltd" | N/A |
+| Spelling | "What do we hold in Calderwick Holdings?" | Same company, same total, says "Calderwick Holdings is the holding company of Calder Packaging Ltd" | N/A |
 | Follow-up | "And excluding co-investments?" | Total minus the co-investment route, same definition | N/A |
 | Point in time | "As of 5 September, how exposed were we to Calder?" | No write-down applied: the letter arrived 10 September | N/A |
-| Should refuse, role | Sara asks "What fees do we pay on the CPG co-investment?" | Refusal: her role can't see co-investment fee terms; names who can | Column-level access |
+| Should refuse, role | Sara asks "What fees do we pay on the Calderwick co-investment?" | Refusal: her role can't see co-investment fee terms; names who can | Column-level access |
 | Should refuse, no definition | "What's our PME against the index?" | Refusal: no governed definition of PME; names the metric owner to ask | No definition in the registry |
 | Should refuse, news number | "News says Calder's debt is $400m, what's our share?" | Refuses to use the news figure; offers exposure from governed data | News is never a source of numbers |
 
 **Graceful degradation:** live call fails, then offline stand-in answers and says so; low-confidence letter event, then shown as "waiting for review", not counted.
 
-**Evaluation plan:** 60 questions (20 per request) with known answers from the generator, traps included. Gate in pytest: C and D must answer every non-trap question correctly offline and refuse every refusal trap.
+**Evaluation plan:** 60 questions (20 per request) with known answers from the generator, traps included. Definitions are written first in `docs/DEFINITIONS.md`; truth code reads generator objects only. A held-out world (another seed, with extra spelling noise the pipeline was never tuned on) is scored separately. The pytest gate is a regression gate on the build (pipeline, access, disclaimer, number checker), labelled a mechanism test. It is not the ranking: the ranking is confirmed by the live run.
 
 ---
 
 ## Success Metrics
 
-**Primary:** time until Sara has a correct, sourced answer she would send, including checking time. A wrong answer fails, however fast. Checking time is a stated model (assumed): 20 s to read, 5 s per number shown with source and definition, 120 s per number she must verify by hand. Baseline: hours (assumed). Target: under 10 minutes per question on the winning combination.
+**Primary:** time until Sara has a correct, sourced answer she would send, including checking time. A wrong answer fails, however fast. Checking time is a stated model (assumed): 20 s to read, 5 s per number shown with source and definition, 120 s per number she must verify by hand. Baseline: unobserved; the timed run below measures it. Target: under 10 minutes per question on the winning combination. Sensitivity: half and double the per-number times, and 0%, 50% or 100% of sourced numbers rechecked by hand.
+
+**Pre-registered thresholds (set before any run):**
+- Correctness is ranked first, on its own, as counts out of 20 per request.
+- The graph earns its place only if D beats C+ids (C plus an alias table) by 2 or more correct questions on request 1, or by 2 or more minutes median time. Otherwise the recommendation is C+ids, with the graph kept for teaching.
+- A live result counts only if all arms get the same model, prompt budget and retries.
 
 **Also measured:** correctness (number within 0.5%, and routes), latency p50 and p95, cost per answer, freshness, correct refusals, same answer on rerun, build effort (moving parts, lines of code), and results at 10 and 100 times the data.
 
@@ -165,7 +186,7 @@ Four foundations share one synthetic world. Each is paired with the front end th
 **Approach:** demo first, on Streamlit Community Cloud, no servers.
 - **Phase 1:** offline demo and committed eval results. Passing: all tests pass with no key.
 - **Phase 2:** live eval with `claude-sonnet-5-5` run locally by the PM (one command). Passing: guardrail holds.
-- **Phase 3 (next):** timed human run on 10 questions with one analyst.
+- **Phase 3 (next, gate before any headline is published):** timed human run. 3 to 5 former LP analysts; three arms (manual with documents and spreadsheets, A, the winner); counterbalanced order; a different but equally hard company per arm; questions from all three requests. Record time to "send", numbers reopened, correct or not, would send (yes or no), confidence 1 to 5. One practice session first. Refit the checking-time model from it.
 
 **Rollback:** if the live run breaks the guardrail, the demo stays offline-only.
 
@@ -184,7 +205,9 @@ Four foundations share one synthetic world. Each is paired with the front end th
 
 ## Open Questions
 
-- [ ] Can one analyst do a timed run on 10 questions? @PM
+- [ ] Who runs the timed test, and can 3 to 5 former LP analysts take part? @PM
+- [ ] Should the case study headline wait for the live run? Recommendation: yes. @PM
+- [ ] Keep optional E as a scale timing only? Recommendation: yes. @PM
 - [ ] Which team owns look-through exposure in a real LP: risk or investment? @PM (synthetic owner: Risk team)
 
 ---
