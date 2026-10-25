@@ -1,4 +1,4 @@
-"""Eval harness: run every arm on the 60 questions, score against known answers, measure.
+"""Evaluation: run every arm on the 60 questions, score against known answers, measure.
 
 Main metric: time until Sara has a correct, sourced answer she would send = answer latency +
 checking time (answer.py, ASSUMED model). A wrong answer is a fail, however fast. For an expected

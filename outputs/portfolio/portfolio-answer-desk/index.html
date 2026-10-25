@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio Answer Desk | Alexandre Cela</title>
+<meta name="description" content="You answer a senior leader's portfolio question correctly, with every route, definition and source, in under a minute of checking.">
+<!-- Lato matches the LinkedIn banner typeface -->
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  /* Brand: navy background, blue accent (LinkedIn banner). Layout: company case-study pattern. */
+  :root { --bg:#070b24; --panel:#0e1538; --line:#24306b; --text:#e8ecff; --dim:#9aa6d6; --accent:#4f7cff;
+          --pass:#3ecf8e; --fail:#ff6b6b; --key:#ffd23f; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:18px/1.65 Lato, system-ui, sans-serif; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 24px; }
+  .read { max-width:760px; }
+  a { color:var(--accent); }
+  .dim { color:var(--dim); }
+  /* Hero */
+  .hero { padding:72px 0 40px; }
+  .eyebrow { color:var(--accent); font-weight:900; font-size:13px; letter-spacing:.14em; text-transform:uppercase; }
+  .hero h1 { font-size:52px; line-height:1.1; font-weight:900; margin:14px 0 18px; max-width:900px; }
+  @media (max-width:700px) { .hero h1 { font-size:34px; } }
+  .lede { font-size:21px; color:var(--dim); max-width:760px; margin:0; }
+  .cta { display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:26px; }
+  .btn { background:var(--accent); color:#fff; font-weight:900; padding:12px 20px; border-radius:8px; text-decoration:none; }
+  .btn.off { background:transparent; border:1px solid var(--line); color:var(--dim); font-weight:700; }
+  /* Stat strip */
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin:40px 0 0; }
+  @media (max-width:800px) { .stats { grid-template-columns:1fr 1fr; } }
+  .stat { padding:22px 18px 22px 0; }
+  .stat b { display:block; font-size:38px; font-weight:900; line-height:1.1; }
+  .stat span { color:var(--dim); font-size:14px; }
+  .shot { margin:40px 0 0; }
+  .shot img, figure img { width:100%; display:block; border:1px solid var(--line); border-radius:12px; }
+  figcaption { color:var(--dim); font-size:14px; margin-top:8px; }
+  /* At a glance */
+  .glance { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin:36px 0 0; font-size:15px; }
+  @media (max-width:800px) { .glance { grid-template-columns:1fr 1fr; } }
+  .glance dt { color:var(--dim); font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+  .glance dd { margin:4px 0 0; }
+  /* Numbered sections */
+  section { padding:64px 0 0; }
+  .num { color:var(--accent); font-weight:900; font-size:14px; letter-spacing:.12em; }
+  h2 { font-size:34px; line-height:1.2; margin:6px 0 18px; font-weight:900; }
+  h3 { font-size:19px; margin:0 0 8px; }
+  p { margin:0 0 14px; }
+  .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .cards.two { grid-template-columns:1fr 1fr; }
+  @media (max-width:800px) { .cards, .cards.two { grid-template-columns:1fr; } }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:22px; font-size:16px; }
+  .card .k { color:var(--accent); font-weight:900; font-size:13px; letter-spacing:.1em; text-transform:uppercase; }
+  .card dl { margin:0; }
+  .card dt { color:var(--dim); font-size:12px; text-transform:uppercase; letter-spacing:.06em; margin-top:12px; }
+  .card dd { margin:2px 0 0; }
+  .rate { font-weight:900; color:#fff; }
+  .pull { border-left:3px solid var(--accent); padding:4px 0 4px 20px; font-size:24px; line-height:1.4; font-weight:700; margin:28px 0; max-width:820px; }
+  table { width:100%; border-collapse:collapse; font-size:15px; }
+  .scroll { overflow-x:auto; }
+  th, td { text-align:left; vertical-align:top; padding:12px; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.05em; }
+  td b.res { color:var(--pass); }
+  ul, ol { padding-left:20px; margin:8px 0; }
+  li { margin:4px 0; }
+  .steps { counter-reset:s; list-style:none; padding:0; }
+  .steps li { counter-increment:s; padding-left:44px; position:relative; margin:14px 0; }
+  .steps li::before { content:counter(s); position:absolute; left:0; top:0; width:30px; height:30px; border-radius:50%;
+                      background:var(--panel); border:1px solid var(--accent); color:var(--accent); font-weight:900;
+                      font-size:14px; display:flex; align-items:center; justify-content:center; }
+  /* Resources: collapsed */
+  .resources { margin-top:72px; border-top:2px solid var(--accent); padding-top:24px; }
+  details { border-bottom:1px solid var(--line); padding:18px 0; }
+  summary { cursor:pointer; font-weight:900; font-size:20px; list-style:none; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"+"; color:var(--accent); display:inline-block; width:26px; }
+  details[open] summary::before { content:"\2212"; }
+  summary small { color:var(--dim); font-weight:400; font-size:15px; margin-left:8px; }
+  details[open] > *:not(summary) { margin-top:14px; }
+  details h4 { font-size:17px; margin:26px 0 8px; }
+  details .card { font-size:15px; }
+  /* Data room grid (main learnings) */
+  .room { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; overflow:hidden; margin:0; }
+  .room figcaption { margin:0 0 8px; }
+  .room .row { display:flex; align-items:center; gap:2px; margin:2px 0; }
+  .room .fname { width:150px; flex:none; font-size:12px; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .cell { width:11px; height:11px; border-radius:3px; background:#1b2552; display:inline-block; flex:none; }
+  .cell.lit { background:var(--accent); }
+  .cell.key { box-shadow:0 0 0 2px var(--key); }
+  .legend { font-size:13px; color:var(--dim); }
+  .legend .cell { vertical-align:middle; margin:0 4px 0 10px; }
+  .rooms { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .lanes { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+  .lanes .fname { width:96px; }
+  .lanes .cell { width:9px; height:9px; }
+  .lanes .room { padding:10px; }
+  @media (max-width:800px) { .rooms, .lanes { grid-template-columns:1fr; } }
+  .pages { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:700px) { .pages { grid-template-columns:1fr; } }
+  .chart { margin:10px 0; }
+  .chart svg { width:100%; max-width:640px; height:auto; }
+  .chart .bar { fill:var(--accent); }
+  .chart .lab { fill:var(--dim); font-size:13px; }
+  .chart .val { fill:var(--text); font-size:13px; font-weight:700; }
+  .chip { font-weight:900; font-size:12px; padding:1px 8px; border-radius:10px; }
+  .chip.pass { color:#062b1b; background:var(--pass); }
+  .chip.fail { color:#2b0606; background:var(--fail); }
+  .type { font-family:ui-monospace, Menlo, monospace; font-size:12px; color:var(--key); }
+  .tree { font-size:14px; line-height:1.9; }
+  footer { margin:72px 0 48px; color:var(--dim); font-size:14px; }
+  /* The original documents, rendered from markdown */
+  .doc { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:8px 28px 24px; font-size:15px; max-width:900px; }
+  .doc h1 { font-size:24px; margin:20px 0 8px; } .doc h2 { font-size:20px; margin:26px 0 8px; } .doc h3 { font-size:16px; }
+  .doc table { margin:10px 0; display:block; overflow-x:auto; } .doc hr { border:0; border-top:1px solid var(--line); margin:20px 0; }
+  .doc blockquote { border-left:3px solid var(--accent); margin:12px 0; padding:2px 14px; color:var(--dim); }
+  .doc code { font-size:13px; color:var(--dim); }
+  /* Blocks moved from the earlier page layout */
+  .card h3 { margin:0 0 12px; font-size:13px; letter-spacing:.1em; color:var(--accent); text-transform:uppercase; }
+  .formula { font-family:ui-monospace, Menlo, monospace; font-size:15px; color:var(--dim); margin:0 0 14px; }
+  .box { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px 24px; font-size:16px; }
+  code { font-family:ui-monospace, Menlo, monospace; font-size:14px; }
+  pre { white-space:pre-wrap; font-size:14px; }
+  details .cards { grid-template-columns:1fr 1fr; }
+  @media (max-width:800px) { details .cards { grid-template-columns:1fr; } }
+  details table { display:block; overflow-x:auto; }
+  details code { overflow-wrap:anywhere; }
+  .deck { width:100%; height:80vh; border:1px solid var(--line); border-radius:12px; background:#fff; }
+  /* Technique pills: the technical craft behind each project */
+  .craft { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:26px 0 0; }
+  .craft .lbl { color:var(--dim); font-size:12px; text-transform:uppercase; letter-spacing:.08em; margin-right:6px; }
+  .pill { font-size:13px; line-height:1.4; background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:4px 12px; }
+  .pill b { font-size:10px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; margin-right:6px; color:var(--accent); }
+  .pill.de b { color:#3ecf8e; } .pill.ds b { color:#ffd23f; } .pill.ev b { color:#ff9f6b; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Case study · Private equity, LP portfolio · Semantic layer and graph</div>
+  <h1>You send the CIO a correct, sourced answer about a company in the news before the 09:00 meeting.</h1>
+  <p class="lede">You're a portfolio analyst at a large LP (an investor in many private equity funds). A company in the news hides behind five holding routes and three spellings, so finding your exposure takes the morning. Portfolio Answer Desk gives you the number, every route, the definition and the date of every figure, ready to send.</p>
+  <div class="cta">
+    <span class="btn off">Demo: deploy pending (runs on Streamlit Community Cloud)</span>
+    <span class="btn off">Code: private until published</span>
+    <span class="dim" style="font-size:14px">Synthetic data, invented names. The AI is optional; offline fixed readers stand in for it.</span>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>40 s</b><span>expected time to a sendable answer per question, against 84.2 min with documents and a chatbot (assumed checking model, offline)</span></div>
+    <div class="stat"><b>60 of 60</b><span>leaders' questions answered correctly, against 18 with documents and a chatbot (offline test)</span></div>
+    <div class="stat"><b>100%</b><span>same answer on a rerun and on a rephrased question, so this quarter's pack matches last quarter's</span></div>
+    <div class="stat"><b>0</b><span>wrong numbers shown with a source, against 27 with documents and a chatbot</span></div>
+  </div>
+  <dl class="glance">
+    <div><dt>For</dt><dd>Large LPs and their data teams</dd></div>
+    <div><dt>Users</dt><dd>You, the analyst, and the CIO, the committee and the head of PE, who decide on your answer</dd></div>
+    <div><dt>Data</dt><dd>Synthetic: 25 funds, 291 companies, 2,300 documents from 6 sources; rerun at 10x and 100x</dd></div>
+    <div><dt>Built with</dt><dd>Python, DuckDB, a YAML semantic layer, NetworkX, Streamlit; Claude Sonnet 5.5 optional</dd></div>
+  </dl>
+  <div class="craft"><span class="lbl">Techniques</span><span class="pill ai"><b>AI</b>Picks a metric, never writes numbers</span><span class="pill ai"><b>AI</b>Checks every number in the answer</span><span class="pill de"><b>Data eng</b>Matches company names across managers</span><span class="pill de"><b>Data eng</b>Walks every ownership route</span><span class="pill de"><b>Data eng</b>Knows what we knew, and when</span><span class="pill ds"><b>Data science</b>Defines each metric once</span></div>
+</header>
+
+<section class="read">
+  <div class="num">01 · VISION</div>
+  <h2>Every leader's portfolio question gets one correct answer, with its sources, in minutes.</h2>
+  <p>Today an analyst searches reports, letters and spreadsheets by hand, and two analysts can return two numbers. With one shared foundation, the chat, the committee pack and the briefing note all ask the same governed metrics.</p>
+</section>
+
+<section>
+  <div class="num">02 · THE PROBLEM</div>
+  <h2 class="read">Three things go wrong today.</h2>
+  <div class="cards">
+    <div class="card"><div class="k">1 · You miss routes to a company</div><p>Calder Packaging sits behind a fund, a fund of funds, a co-investment and a stake bought second-hand, under three spellings. The write-down is only in a manager letter.</p></div>
+    <div class="card"><div class="k">2 · Your pack drifts from last quarter's</div><p>Each analyst computes IRR, TVPI, unfunded and the call forecast their own way, as of whatever date the data has.</p></div>
+    <div class="card"><div class="k">3 · You miss issues in manager letters</div><p>Numbers live in one place, letters in another, and who moved where in someone's head.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="num">03 · THE SOLUTION</div>
+  <h2 class="read">The AI picks a governed metric. Code computes and checks every number. You decide what to send.</h2>
+  <div class="cards">
+    <div class="card"><div class="k">What it is</div><p>A portfolio question desk for an LP's private equity team: chat, a governed dashboard and a briefing-note writer on one data foundation.</p></div>
+    <div class="card"><div class="k">What it does</div><p>You type a question in plain words. It returns the number, every route, the definition, the date and source of every figure, or a refusal that names who can answer.</p></div>
+    <div class="card"><div class="k">What you get</div><p>A faster, correct reply to the CIO, a committee pack on last quarter's definitions, and a manager briefing with every issue quoted.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="num">04 · HYPOTHESES AND IMPACT</div>
+  <h2 class="read">One job, one bet, one number each.</h2>
+  <div class="scroll"><table>
+    <tr><th>Your job</th><th>Hypothesis</th><th>Metric and target, then result</th><th>Expected impact</th></tr>
+    <tr><td>When a company is in the news, I want every route and the latest value, so I can reply before 09:00.</td><td>If routes and spellings are linked once in the data, every route is found in seconds, because code walks the links.</td><td>Time to a correct, sourced answer on 20 event questions: under 10 minutes. Baseline unobserved: <b class="res">20/20 correct, median 53 s (assumed checking model)</b></td><td>Reply before the meeting; unobserved until a timed run</td></tr>
+    <tr><td>When I build the committee pack, I want last quarter's definitions as of a set date, so the numbers need no rework.</td><td>If each metric has one versioned definition, reruns and rephrasings agree, because nobody rewrites the formula.</td><td>Same answer on rerun and rephrasing: 100%. <b class="res">100% on rephrasing, 100% on rerun (offline); 20/20 correct</b></td><td>Fewer pack corrections; unobserved</td></tr>
+    <tr><td>When the head of PE weighs a re-up, I want the numbers plus every issue the manager raised, so nothing is missed.</td><td>If numbers come from governed metrics and issues from cited letters, every issue appears with its source.</td><td>Planted letter issues found with a citation: 100%. <b class="res">5 of 5; 20/20 correct</b></td><td>Fewer surprises at the re-up; unobserved</td></tr>
+  </table></div>
+  <p class="dim" style="margin-top:12px">Must not get worse: wrong numbers shown with a source. Result: 0 for the shipped setup. Source: <code>evals/results/offline-seed42.json</code>, an offline test where fixed readers stand in for the AI.</p>
+</section>
+
+<section>
+  <div class="num">05 · THE VALUE</div>
+  <h2 class="read">What it's worth, and what it asks of you.</h2>
+  <p class="pull">The value is the wrong number that never reaches the CIO. With documents and a chatbot, 27 of 60 answers showed a wrong number with a real citation.</p>
+  <p class="dim">Time saved is smaller: about 0.3 of a full-time role for an LP with 2 analysts spending 20% of their time on ad hoc questions (assumed).</p>
+  <div class="cards two" style="margin-top:22px">
+    <div class="card"><div class="k">You, the analyst</div><dl>
+      <dt>You get</dt><dd>"I send a correct answer with every route and source before 09:00, and it matches last quarter's pack."</dd>
+      <dt>Will you believe it?</dt><dd><span class="rate">Medium.</span> Every number shows its source and date, and it refuses instead of guessing; the live AI run is not yet done.</dd>
+      <dt>How fast</dt><dd><span class="rate">High.</span> Answers compute in milliseconds; checking is the time you spend.</dd>
+      <dt>What it takes</dt><dd><span class="rate">Low.</span> You ask in plain words and read a route table.</dd>
+      <dt>What you give up</dt><dd><span class="rate">Low.</span> Your own spreadsheet formulas.</dd>
+    </dl></div>
+    <div class="card"><div class="k">Your data leader</div><dl>
+      <dt>They get</dt><dd>"One definition per metric, with an owner, a version and tests; an audit log of every answer."</dd>
+      <dt>Will they believe it?</dt><dd><span class="rate">Medium.</span> The test set and results are public; the data is synthetic.</dd>
+      <dt>How fast</dt><dd><span class="rate">Medium.</span> Weeks to agree definitions and link company names (assumed).</dd>
+      <dt>What it takes</dt><dd><span class="rate">High.</span> Owners for each metric and a person to confirm uncertain name matches.</dd>
+      <dt>What they give up</dt><dd><span class="rate">Medium.</span> Teams' local definitions.</dd>
+    </dl></div>
+  </div>
+  <p style="margin-top:18px"><strong>The weak link is belief.</strong> The cheapest fix: run the live evaluation and a timed test with 3 to 5 analysts, and publish both.</p>
+</section>
+
+<section class="read">
+  <div class="num">06 · LIMITATIONS</div>
+  <h2>What this doesn't prove yet.</h2>
+  <ul>
+    <li><strong>Data:</strong> synthetic, generated with known answers; real reports are messier than these four layouts.</li>
+    <li><strong>AI:</strong> offline, fixed readers stand in for the AI, so the results show what each setup can and can't do, not Claude's error rate. The live run is not yet done.</li>
+    <li><strong>Users:</strong> no analyst has used it. The checking times are assumptions; if you recheck half the sourced numbers by hand, the time advantage disappears, the correctness one doesn't.</li>
+    <li><strong>Test set:</strong> 60 questions written by the same author as the setups. A held-out world with new spellings scored the same, but no question touched the 11 names left unmatched there.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="num">07 · SCOPE AND NEXT STEPS</div>
+  <h2 class="read">What it won't do, and what comes next.</h2>
+  <div class="cards two">
+    <div class="card"><div class="k">Non-goals</div><ul>
+      <li><strong>Real systems.</strong> No access, and the names policy keeps everything synthetic.</li>
+      <li><strong>Forecasting returns.</strong> The call forecast is a stated rule, not a model of managers.</li>
+      <li><strong>Streaming.</strong> Measured in a sibling project: batch gave the same answers with fewer moving parts.</li>
+    </ul></div>
+    <div class="card"><div class="k">Next</div><ol>
+      <li><strong>Live evaluation with Claude Sonnet 5.5.</strong> Same model and budget for all five setups, 3 reruns.</li>
+      <li><strong>Timed run with 3 to 5 former LP analysts.</strong> Replaces the assumed checking times.</li>
+      <li><strong>Fuzzy name matching with a review queue.</strong> Closes the 11 names the held-out world left unmatched.</li>
+    </ol></div>
+  </div>
+</section>
+
+<div class="resources">
+  <div class="num">RESOURCES</div>
+  <h2>Go deeper.</h2>
+
+  <details><summary>Try the demo, step by step <small>three steps, in order</small></summary>
+<div class="read"><ol class="steps"><li><strong>In Portfolio chat, ask how exposed you are to Calder Packaging.</strong> Read the five routes, then press "Next hop" to watch the graph walk them.</li><li><strong>Ask what fees you pay on the Calderwick co-investment.</strong> You get a refusal that names who can see fee terms; switch role to the head of PE and ask again.</li><li><strong>Open Committee pack and Foundation test.</strong> Export the pack, then see how the five setups did on the 60 questions.</li></ol></div>
+  </details>
+
+  <details><summary>Main learnings <small>what the build showed</small></summary>
+  <div class="read"><ul>
+    <li><strong>Spelling broke the semantic layer, not hops.</strong> Recursive SQL walked the fund of funds hop fine; three of Calder's five routes sat under other spellings. An identity table fixed all 15 misses (hypothesis 1).</li>
+    <li><strong>The graph didn't earn its place for routes at this size.</strong> By a rule set before the run, D had to beat the identity-table setup by 2 questions on the CIO's request; it tied 20 to 20. It won only on links between people and managers.</li>
+    <li><strong>Documents and a chatbot are dangerous on numbers, good on letters.</strong> They found every manager issue with a citation, and showed 27 wrong numbers with citations (hypothesis 3).</li>
+    <li><strong>One definition per metric settled the pack.</strong> Every governed setup scored 20/20 on the committee pack; AI-written SQL scored 6 (hypothesis 2).</li>
+    <li><strong>The time result rests on trust in sources.</strong> Under the assumed model you check a sourced number in 5 s; if you recheck half by hand, the setups converge.</li>
+  </ul></div>
+  <div class="chart"><svg viewBox="0 0 620 160" role="img" aria-label="Correct answers out of 60 per setup"><text class="lab" x="0" y="22">A</text><rect class="bar" x="70" y="10" width="144" height="18"></rect><text class="val" x="222" y="24">18</text><text class="lab" x="0" y="52">B</text><rect class="bar" x="70" y="40" width="176" height="18"></rect><text class="val" x="254" y="54">22</text><text class="lab" x="0" y="82">C</text><rect class="bar" x="70" y="70" width="328" height="18"></rect><text class="val" x="406" y="84">41</text><text class="lab" x="0" y="112">C+ids</text><rect class="bar" x="70" y="100" width="448" height="18"></rect><text class="val" x="526" y="114">56</text><text class="lab" x="0" y="142">D</text><rect class="bar" x="70" y="130" width="480" height="18"></rect><text class="val" x="558" y="144">60</text></svg></div>
+  <div class="scroll"><table><tr><th>Setup</th><th></th><th>Correct of 60</th><th>CIO event</th><th>Pack</th><th>Manager</th><th>Wrong but sourced</th><th>Expected time</th></tr><tr><td>A</td><td>Documents + search</td><td>18</td><td>4</td><td>4</td><td>10</td><td>27</td><td>84.2 min</td></tr><tr><td>B</td><td>Tables + AI-written SQL</td><td>22</td><td>3</td><td>6</td><td>13</td><td>0</td><td>76.6 min</td></tr><tr><td>C</td><td>Semantic layer</td><td>41</td><td>5</td><td>20</td><td>16</td><td>15</td><td>38.4 min</td></tr><tr><td>C+ids</td><td>Semantic layer + identity table</td><td>56</td><td>20</td><td>20</td><td>16</td><td>2</td><td>8.6 min</td></tr><tr><td>D</td><td>Semantic layer + graph (+ letter search)</td><td>60</td><td>20</td><td>20</td><td>20</td><td>0</td><td>40 s</td></tr></table></div>
+  </details>
+
+  <details><summary>Hypotheses in full <small>before and after, and the test for each</small></summary>
+  <div class="cards">
+    <div class="card"><h3>Event question</h3><p><strong>Before:</strong> search folders; routes under other spellings missed. <strong>After:</strong> identity links plus a route walk return all 5 routes. <strong>Test:</strong> 20 questions incl. three spellings, a date before the letter, a follow-up.</p></div>
+    <div class="card"><h3>Committee pack</h3><p><strong>Before:</strong> each analyst's formula. <strong>After:</strong> one versioned definition per metric, as of a set date. <strong>Test:</strong> 20 questions incl. rephrasings, a rerun, last quarter's definition, PME and gross IRR (must refuse).</p></div>
+    <div class="card"><h3>Manager decision</h3><p><strong>Before:</strong> numbers and letters apart. <strong>After:</strong> governed numbers plus cited letters plus people links. <strong>Test:</strong> 20 questions incl. fee terms the analyst can't see and an advice question (must refuse).</p></div>
+  </div>
+  </details>
+
+  <details><summary>All sub-problems <small>tackled, partial, not tackled, with the code that proves it</small></summary>
+  <div class="scroll"><table><tr><th>Sub-problem</th><th>Status</th><th>Where</th></tr>
+  <tr><td>Find every ownership route</td><td>Tackled</td><td><code>semantic/layer.py</code> EXPOSURE_SQL, <code>graph.py</code> routes</td></tr>
+  <tr><td>Match company spellings</td><td>Tackled (171 of 171 names); partial on new spellings (11 of 184 left for a person)</td><td><code>pipeline.py</code> build_identity</td></tr>
+  <tr><td>Point in time</td><td>Tackled</td><td>two dates on every fact; <code>tests/test_data.py</code></td></tr>
+  <tr><td>One definition per metric</td><td>Tackled</td><td><code>semantic/metrics.yaml</code>, <code>tests/test_metrics.py</code></td></tr>
+  <tr><td>Access by role</td><td>Tackled (demo switch, not a login)</td><td><code>access.py</code>, <code>tests/test_governance.py</code></td></tr>
+  <tr><td>Read letters into events</td><td>Partial: fixed patterns miss loosely worded issues; search covers them</td><td><code>pipeline.py</code> PATTERNS, <code>foundations/search.py</code></td></tr>
+  <tr><td>Real report layouts and PDFs</td><td>Not tackled</td><td>synthetic text only</td></tr>
+  </table></div>
+  </details>
+
+  <details><summary>How it's built <small>input, process, output, and how it was evaluated</small></summary>
+  <div class="read">
+  <p><strong>Input:</strong> six synthetic sources with their own rhythm: holdings (daily), call and distribution notices (about weekly), fund reports (quarterly, 40 to 90 days late, four layouts), manager letters, reference data, news every 15 minutes.</p>
+  <p><strong>Process:</strong> documents land as received (bronze), are read into checked fields with bad rows blocked (silver: 26 malformed notices blocked), and become typed tables with the source of every row (gold). The AI reads the question into fixed fields; the semantic layer computes; the graph walks routes and people; a checker blocks any number not computed.</p>
+  <p><strong>Output:</strong> a chat answer, a 3-view committee dashboard with export, a manager briefing note, a read-only SQL notebook.</p>
+  <p><strong>Evaluation:</strong> 60 questions with answers known from the generator, five setups, scored on correctness first, then time to a sendable answer under a stated checking model. A held-out world (another seed, new spellings) scored separately.</p>
+  <div class="scroll"><table><tr><th>Checking model changed</th><th>Ranking, fastest first</th></tr><tr><td>base</td><td>C &lt; C+ids &lt; D &lt; A &lt; B</td></tr><tr><td>half the per-number times</td><td>C &lt; C+ids &lt; D &lt; A &lt; B</td></tr><tr><td>double</td><td>C &lt; C+ids &lt; D &lt; A &lt; B</td></tr><tr><td>50% of sourced numbers rechecked by hand</td><td>A &lt; C &lt; C+ids &lt; D &lt; B</td></tr><tr><td>all sourced numbers rechecked</td><td>A &lt; B &lt; C &lt; C+ids &lt; D</td></tr></table></div>
+  <h4>At 10x and 100x the data</h4>
+  <div class="scroll"><table><tr><th>Size</th><th>Funds</th><th>Documents</th><th>Rebuild</th><th>Routes, recursive SQL</th><th>Routes, graph build + walk</th><th>Routes, DuckPGQ</th></tr><tr><td>1x</td><td>25</td><td>2,300</td><td>1.0 s</td><td>37 ms</td><td>20 + 2 ms</td><td>13 ms</td></tr><tr><td>10x</td><td>563</td><td>33,835</td><td>4.2 s</td><td>80 ms</td><td>59 + 29 ms</td><td>16 ms</td></tr><tr><td>100x</td><td>5,902</td><td>333,578</td><td>99.0 s</td><td>538 ms</td><td>438 + 297 ms</td><td>25 ms</td></tr></table></div>
+  </div>
+  </details>
+
+  <details><summary>How success is tracked <small>leading and lagging metrics</small></summary>
+  <div class="scroll"><table><tr><th>Metric</th><th>Type</th><th>Now</th></tr>
+  <tr><td>Correct answers on the 60 questions</td><td>Leading</td><td>60/60 offline</td></tr>
+  <tr><td>Wrong numbers shown with a source</td><td>Guardrail</td><td>0</td></tr>
+  <tr><td>Time to a sendable answer</td><td>Lagging</td><td>assumed model; timed run next</td></tr>
+  <tr><td>Refusal traps refused</td><td>Guardrail</td><td>7/7</td></tr>
+  <tr><td>Pack corrections per quarter</td><td>Lagging</td><td>unobserved</td></tr>
+  </table></div>
+  </details>
+
+  <details><summary>Trade-offs <small>what was chosen, over what, and the cost</small></summary>
+  <div class="scroll"><table><tr><th>Chose</th><th>Over</th><th>Gain</th><th>Cost</th></tr>
+  <tr><td>AI picks, code computes</td><td>AI writes the answer</td><td>No number the code didn't compute</td><td>Questions outside the menu are refused</td></tr>
+  <tr><td>Own YAML semantic layer</td><td>MetricFlow (59 packages), Boring Semantic Layer (14)</td><td>1 dependency; point in time fits</td><td>No standard format for other tools</td></tr>
+  <tr><td>Recursive SQL for routes, graph for people</td><td>Graph everywhere</td><td>One copy of the data; same answers</td><td>No graph query language for analysts</td></tr>
+  <tr><td>Batch by source schedule</td><td>Streaming</td><td>Fewer moving parts</td><td>News is not seconds-fresh</td></tr>
+  </table></div>
+  </details>
+
+  <details><summary>Terms on this page <small>plain definitions</small></summary>
+  <div class="read"><ul>
+    <li><strong>LP:</strong> an investor that commits money to private equity funds.</li>
+    <li><strong>Route:</strong> a chain of holdings from us to a company, such as a fund inside a fund of funds.</li>
+    <li><strong>Look-through exposure:</strong> our share of a company's value through every route.</li>
+    <li><strong>Semantic layer:</strong> a list of metrics, each defined once with an owner, that every tool asks.</li>
+    <li><strong>Graph:</strong> things plus the links between them; questions become walks along links.</li>
+    <li><strong>Point in time:</strong> answering with only what we knew on a date.</li>
+    <li><strong>TVPI (total value to paid-in):</strong> cash back plus current value, divided by cash paid in.</li>
+  </ul></div>
+  </details>
+
+  <details><summary>Opportunity assessment <small>the go/no-go document, written before any build</small></summary><p class="dim">Rendered from <code>outputs/opportunity-analyses/portfolio-answer-desk-opportunity.md</code>, unchanged: it already follows the names policy and the house writing rules.</p><div class="doc"><h1>Portfolio Answer Desk: Opportunity Analysis</h1>
+<p><strong>Date:</strong> 2026-10-25
+<strong>Owner:</strong> PM (drafted by Claude, run unattended with PM approval)
+<strong>Status:</strong> Go</p>
+<h2>Problem Statement</h2>
+<p>Senior leaders at a large LP (an investor that commits money to many private equity funds) ask ad hoc portfolio questions. Each answer takes an analyst hours to a day, and two analysts can return two different numbers for the same question.</p>
+<h2>Current Situation</h2>
+<p>Sara, a portfolio analyst, answers by hand. She searches fund reports, manager letters and spreadsheets, then adds up what she finds.</p>
+<p><strong>A concrete case (labelled hypothetical, synthetic data).</strong> Monday 08:10, news says Calder Packaging is restructuring its debt. At 08:12 the CIO asks: "How exposed are we, through which managers, and did we know?" The company sits behind four routes: a fund we committed to, a fund of funds, a co-investment and a fund stake bought second-hand. It appears under three spellings. The write-down sits only in a manager letter from 10 September. Sara finds the direct fund in minutes. Finding the other three routes and the letter takes the rest of the morning, and she may still miss one.</p>
+<h2>Proposed Solution</h2>
+<p>One shared data foundation that answers three kinds of request, each through the front end that suits it:</p>
+<ul>
+<li><strong>For the CIO's event question:</strong> a chat assistant. A language model (an AI that reads and writes text) turns the question into a request for governed numbers; code computes them; every number shows its source and as-of date.</li>
+<li><strong>For the investment committee pack:</strong> a governed dashboard where each metric has one definition, an owner and a version, computed as of a set date.</li>
+<li><strong>For a manager decision:</strong> a generated briefing note: the numbers, plus what the manager's letters said, each line cited.</li>
+</ul>
+<p>Code checks the AI's work: it can only pick metrics that exist, and it refuses when no definition exists or the asker's role can't see the data.</p>
+<h2>Problems, hypotheses and success</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Problem</th>
+<th>Today</th>
+<th>Hypothesis</th>
+<th>Success metric</th>
+<th>Expected impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>An event question takes hours because the company hides behind several routes and spellings</td>
+<td>Unobserved (the brief says hours to a day; never timed)</td>
+<td>If routes and company spellings are linked once in the data, then every route is found in seconds, because the walk is done by code, not by search</td>
+<td>Time to a correct, sourced answer Sara would send, request 1: under 10 minutes on 20 test questions</td>
+<td>Leaders get an answer before their 09:00 meeting; unobserved until a timed human run</td>
+</tr>
+<tr>
+<td>2</td>
+<td>The committee pack drifts because each analyst computes IRR, TVPI and calls their own way</td>
+<td>Unobserved</td>
+<td>If each metric has one versioned definition computed as of a set date, then reruns and rephrasings return the same number, because no one rewrites the formula</td>
+<td>Same answer on rerun and rephrasing, request 2: 100% of 20 test questions</td>
+<td>Fewer pack corrections; unobserved</td>
+</tr>
+<tr>
+<td>3</td>
+<td>A manager decision mixes numbers and letters, so issues get missed</td>
+<td>Unobserved</td>
+<td>If numbers come from the governed layer and issues from cited letters, then every issue is shown with its source, because search covers every letter</td>
+<td>Share of known issues found with a citation, request 3: 100% of planted issues</td>
+<td>Fewer surprises at the re-up decision; unobserved</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Must not get worse:</strong> wrong answers sent. Target: zero wrong numbers presented as sourced on the 60-question test set.</p>
+<p><strong>Not tackled here:</strong> live data feeds from real systems (no access; synthetic only); forecasting returns (out of scope; the 12-month call forecast uses a stated rule).</p>
+<h2>Commercial value</h2>
+<p>Who would pay for this foundation, and why. Numbers are public where cited; everything else is assumed.</p>
+<table>
+<thead>
+<tr>
+<th>Buyer</th>
+<th>Why they'd pay</th>
+<th>Build or buy today</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Large LPs and their data teams</td>
+<td>Faster, consistent answers to leaders; one definition per metric</td>
+<td>Mostly build on a warehouse plus spreadsheets; buy point tools</td>
+<td>Half of LPs plan to raise private equity allocations in the next 12 months (<a href="https://www.preqin.com/insights/global-reports/2025-private-equity">Preqin 2025</a>). More funds per LP means more routes to trace</td>
+</tr>
+<tr>
+<td>Fund administrators</td>
+<td>Sell look-through and on-demand answers as a service to LP clients</td>
+<td>Build on their own data platforms</td>
+<td>64% of LPs expected on-demand or daily performance reporting to become normal within three years (<a href="https://realdeals.eu.com/article/ad-hoc-portfolio-reporting-to-be-expected-in-the-next-three-years">CSC 2023 via Real Deals</a>)</td>
+</tr>
+<tr>
+<td>Portfolio monitoring software vendors (as a category)</td>
+<td>Add a governed metric layer and a path graph to their product</td>
+<td>Build</td>
+<td>The ILPA reporting template update applies from Q1 2026 and the performance template from Q1 2027 (<a href="https://ilpa.org/wp-content/uploads/2025/09/Combined-Overview-ILPA-Templates.pdf">ILPA</a>). Standard fields make a shared metric layer easier to sell</td>
+</tr>
+<tr>
+<td>Consultants</td>
+<td>Deliver the setup (definitions, identity matching, governance) as a project</td>
+<td>Bill time</td>
+<td>Assumed: a 3 to 6 month setup project per LP</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Build against buy.</strong> The engine pieces are open source and small: DuckDB, a YAML metric layer, a graph library. The work that costs money is definitions, company identity and governance, which a vendor can't ship pre-filled. <strong>Assumed:</strong> an LP with 2 analysts spending 20% of their time on ad hoc questions frees about 0.3 of a full-time role (2 × 20% × 80%) if the time per answer falls by 80% or more.</p>
+<h2>Value Equation (Hormozi)</h2>
+<blockquote>
+<p>Value = (Dream Outcome × Perceived Likelihood of Achievement) / (Time Delay × Effort &amp; Sacrifice), from Alex Hormozi's <em>$100M Offers</em>. Internal tool: read "would they use it".</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Factor</th>
+<th>This solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dream outcome</strong></td>
+<td>Sara: "I send the CIO a correct answer with every route and source before 09:00, and it matches last quarter's pack."</td>
+</tr>
+<tr>
+<td><strong>Perceived likelihood</strong></td>
+<td>Low at first. Analysts have seen chatbots invent numbers. Belief rises only if every number shows its source and as-of date, and the tool refuses instead of guessing</td>
+</tr>
+<tr>
+<td><strong>Time delay</strong></td>
+<td>Minutes per question once the foundation exists. Building the foundation (definitions, identity links) takes weeks, assumed</td>
+</tr>
+<tr>
+<td><strong>Effort &amp; sacrifice</strong></td>
+<td>Sara changes little: she asks in plain words. The data team must agree one definition per metric and own it. That's the real sacrifice: giving up local spreadsheets</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verdict.</strong> Strong outcome, weak belief. The cheapest lever is belief: show the source and as-of date on every number, and measure correctness on a public test set before anyone relies on it.</p>
+<h2>Recommendation</h2>
+<p><strong>Go.</strong> The pain is concrete, the test set can prove or break the claim with known answers, and the build uses open-source parts that run with no servers. Next: <code>/prd-draft</code>.</p>
+<p>Sources: <code>context-library/strategy/brief.md</code>; links inline above.</p></div></details>
+  <details><summary>Product requirements <small>the PRD, after the seven-reviewer panel</small></summary><p class="dim">Rendered from <code>outputs/prds/portfolio-answer-desk-solution-review.md</code>, unchanged.</p><div class="doc"><h1>Portfolio Answer Desk</h1>
+<p><strong>Stage:</strong> Solution Review
+<strong>Last Updated:</strong> 2026-10-25
+<strong>Owner:</strong> PM (drafted by Claude, unattended run approved by the PM)
+<strong>Status:</strong> Reviewed, blockers fixed (see <code>portfolio-answer-desk-solution-review-review-synthesis.md</code>)</p>
+<p><strong>What it is.</strong> A portfolio question desk for the private equity team of a large LP. Sara types or picks a question from a senior leader; she gets back a sendable answer: the number, the routes behind it, the definition used, the source and as-of date of every figure. Inside it sits a test bench that runs the same 60 questions through four data foundations and measures which gets Sara to a correct, sourced answer fastest. It can't yet read real fund reports or connect to a real accounting system: all data is synthetic.</p>
+<hr />
+<h2>Hypothesis</h2>
+<p>Carried from <code>outputs/opportunity-analyses/portfolio-answer-desk-opportunity.md</code> (Go).</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Problem</th>
+<th>Today</th>
+<th>Hypothesis</th>
+<th>Success metric</th>
+<th>Expected impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>An event question takes hours because the company hides behind several routes and spellings</td>
+<td>Unobserved (the brief says hours to a day; never timed)</td>
+<td>If routes and spellings are linked once in the data, then every route is found in seconds, because code walks the links</td>
+<td>Time to a correct, sourced answer Sara would send, request 1: under 10 minutes, 20 questions</td>
+<td>Answer before the 09:00 meeting; unobserved</td>
+</tr>
+<tr>
+<td>2</td>
+<td>The committee pack drifts because each analyst computes IRR, TVPI and calls their own way</td>
+<td>Unobserved</td>
+<td>If each metric has one versioned definition computed as of a set date, then reruns and rephrasings agree, because nobody rewrites the formula</td>
+<td>Same answer on rerun and rephrasing, request 2: 100% of 20 questions</td>
+<td>Fewer pack corrections; unobserved</td>
+</tr>
+<tr>
+<td>3</td>
+<td>A manager decision mixes numbers and letters, so issues get missed</td>
+<td>Unobserved</td>
+<td>If numbers come from the governed layer and issues from cited letters, then every issue appears with its source</td>
+<td>Planted letter issues found with a citation, request 3: 100%</td>
+<td>Fewer surprises at re-up; unobserved</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Must not get worse:</strong> wrong numbers presented as sourced. Limit: zero on the 60 questions.</p>
+<p><strong>Supporting evidence:</strong> the brief's three requests and the Calder Packaging journey (<code>context-library/strategy/brief.md</code>). No user research exists yet; every "today" value is assumed.</p>
+<hr />
+<h2>Strategic Fit</h2>
+<p>Supports goal (A) of the brief, a measured prototype, and goal (B), education on graphs and semantic layers. The finding is a combination: one shared foundation, a different front end per request.</p>
+<p><strong>Impact sizing (assumed, no observed baseline).</strong> An LP with 2 analysts spending 20% of their time on ad hoc questions frees about 0.3 of a full-time role if time per answer falls 80%. Confidence: low. De-risk: timed human run on 10 questions.</p>
+<p><strong>Alternatives considered:</strong> buy a portfolio monitoring product (rejected for the prototype: no access, and it hides the definitions we want to test); documents plus a chatbot only (kept as baseline A, the thing to beat).</p>
+<hr />
+<h2>Value Equation (Hormozi)</h2>
+<p>Carried forward from the opportunity analysis. Scope unchanged.</p>
+<table>
+<thead>
+<tr>
+<th>Factor</th>
+<th>This solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dream outcome</strong></td>
+<td>"I send the CIO a correct answer with every route and source before 09:00, and it matches last quarter's pack."</td>
+</tr>
+<tr>
+<td><strong>Perceived likelihood</strong></td>
+<td>Low at first: chatbots invent numbers. Rises only if every number shows source and as-of date and the tool refuses instead of guessing</td>
+</tr>
+<tr>
+<td><strong>Time delay</strong></td>
+<td>Minutes per question once built; weeks to agree definitions and identity links (assumed)</td>
+</tr>
+<tr>
+<td><strong>Effort &amp; sacrifice</strong></td>
+<td>Sara asks in plain words. The data team gives up local spreadsheet formulas and owns one definition per metric</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verdict:</strong> strong outcome, weak belief. Cheapest lever: show source and as-of on every number, publish the test results.</p>
+<hr />
+<h2>Strategic Fit: risk, not only time</h2>
+<p><strong>The value is avoiding wrong numbers, not only saving time.</strong> Assumed: one pack correction a quarter, 6 hours each, plus the cost of a wrong exposure figure reaching the CIO during an event. Time saved alone (about 0.3 of a role) does not justify agreeing definitions across teams. <strong>Build against buy (production):</strong> buy the storage and BI layer; build the definitions, the identity links and the governance, because no vendor ships them filled in. <strong>Assumed setup effort per LP:</strong> 4 to 8 weeks to agree 10 core definitions and link company identities.</p>
+<p><strong>Request priority:</strong> request 1 first (most leadership attention), then 2 and 3 as reuse of the same foundation.</p>
+<hr />
+<h2>Non-Goals</h2>
+<ul>
+<li><strong>Real data or real systems.</strong> No access, and the names policy forbids it. Synthetic only.</li>
+<li><strong>Rebuilding streaming.</strong> Measured in Secondaries Radar: batch won for a weekly decision window. Each source here keeps a schedule and an as-of date instead.</li>
+<li><strong>Forecasting returns.</strong> The 12-month call forecast is a stated, versioned rule, not a model of manager behaviour.</li>
+<li><strong>Optional foundation E (graph only).</strong> Built only as a timing comparison for sums at scale, not as a full answerer.</li>
+<li><strong>Not tackled:</strong> PDF parsing of real layouts (synthetic report text only), people data beyond invented manager partners.</li>
+</ul>
+<p><strong>Trade-offs made:</strong> offline stand-ins replace the AI in every test run, so tests and the demo run with no key; the cost is that offline A and B show what each mechanism can and can't do, not Claude's real error rate.</p>
+<hr />
+<h2>Annex A, Napkin Sketch</h2>
+<h3>Screen 1, Ask (Calder Packaging, Monday 08:12)</h3>
+<p><strong>JTBD.</strong> When the CIO asks about a company in the news, Sara wants every route and the latest known value, so she can reply before 09:00.
+<strong>Primary CTA.</strong> "Copy answer to send".</p>
+<pre><code>+------------------------------------------------------------+
+| Ask a portfolio question          as: Sara (analyst)       |
+| [How exposed are we to Calder Packaging?            ] [Ask]|
++------------------------------------------------------------+
+| $X.Xm through 4 routes, after the 10 Sep write-down.       |
+|  1 Halvane V (fund)          $..m  report 30 Jun, letter   |
+|  2 Selbrook FoF III &gt; ...    $..m  report 30 Jun           |
+|  3 Co-invest Calderwick Hold. $..m  statement 30 Jun      |
+|  4 Tellmar III (bought 2024) $..m  report 30 Jun           |
+| Definition: look-through exposure v2, owner Risk team      |
+| Freshness: holdings 1 day, reports 118 days, letters 46 d  |
+| [Copy answer to send]  [Show routes on the graph]          |
++------------------------------------------------------------+
+</code></pre>
+<h3>Screen 2, Committee pack (Thursday)</h3>
+<p><strong>JTBD.</strong> When the committee meets, Sara wants the 2019 to 2021 buyout funds against plan on last quarter's definitions, so the pack needs no rework.
+<strong>Primary CTA.</strong> "Export pack as of 30 Sep 2026".</p>
+<pre><code>+---------------------------------------------------------+
+| Pack as of [30 Sep 2026]   definitions: pack v3 (same)  |
+| Fund          Vint  Net IRR  Plan  TVPI  DPI  Unfunded  |
+| ...                                                     |
+| Calls next 12 months: $..m (rule calls-12m v2)          |
+| [Export pack as of 30 Sep 2026]                         |
++---------------------------------------------------------+
+</code></pre>
+<hr />
+<h2>Solution Overview</h2>
+<p><strong>States designed (review fix):</strong> refusal card (what was asked, why refused, who can answer, "Answer what I can see instead"); "1 letter item not counted, waiting for review" line under any total it affects; empty card for a company we don't hold; offline banner when the AI stand-in answered. Every route shows its own as-of date; sources older than 90 days read "stale"; the first line says "as of mixed dates" when they differ. Each metric carries one plain sentence of what's counted, in US dollars. Sara can add a note that travels with the copied answer. "Copy answer to send" copies the paragraph, routes, sources, as-of dates and the disclaimer. Every screen, copy and export carries "Synthetic data. Not investment advice."</p>
+<p><strong>Arms scored:</strong> A, B, C, C+ids (C plus an alias table, to test whether the graph earns its place), D. Offline, A gets query expansion from the company reference text and B gets curated views with column notes and parent links, so the baselines are strong, not strawmen.</p>
+<p>Four foundations share one synthetic world. Each is paired with the front end that suits each request.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Foundation</th>
+<th>What the AI does</th>
+<th>What code does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Documents + search</td>
+<td>Reads the top passages and writes the answer</td>
+<td>Search over report, letter, notice and news text</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Warehouse tables + AI-written SQL</td>
+<td>Writes SQL from the table list</td>
+<td>Runs the SQL read-only</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Tables + semantic layer</td>
+<td>Picks a governed metric, filters and date from a menu</td>
+<td>Compiles the request to SQL, checks access, computes</td>
+</tr>
+<tr>
+<td>D</td>
+<td>C + graph</td>
+<td>Same as C, plus routes path and identity questions to the graph</td>
+<td>Walks ownership routes and company identity links</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Front ends:</strong> chat (request 1), governed dashboard with 3 views (request 2), briefing note (request 3), notebook or SQL page for the data team.</p>
+<p><strong>Data:</strong> six synthetic sources, each with its own rhythm and as-of date: holdings (daily), capital calls and distributions (notice text, about weekly), quarterly reports (45 to 90 days late, each manager its own layout and spelling), manager letters (whenever, turned into dated events with a confidence; low confidence waits for a person), company reference data (slow-changing, parents), news (every 15 minutes, never a source of numbers).</p>
+<p><strong>Stack, decided by measurement after the build</strong> (decision docs PAD-01 to PAD-06 in <code>outputs/decisions/</code>): recursive SQL for routes, NetworkX for people links, own YAML semantic layer, bronze, silver and gold in DuckDB 1.4.4, AI picks and code computes. <strong>Original plan:</strong> (one decision doc each in <code>outputs/decisions/</code>): graph engine (DuckDB recursive SQL, DuckPGQ, NetworkX, archived or server options), semantic layer (own YAML against an established open-source layer), storage layers (bronze, silver, gold in DuckDB), where the AI sits (it picks, code computes).</p>
+<hr />
+<h2>AI Behavior Contract</h2>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Specification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Primary tasks</strong></td>
+<td>Route (which foundation path), extract (question to a metric request), generate (answer text from computed numbers)</td>
+</tr>
+<tr>
+<td><strong>Inputs available</strong></td>
+<td>The question, the asker's role, the metric menu (C, D), table list (B), retrieved passages (A)</td>
+</tr>
+<tr>
+<td><strong>Constraints</strong></td>
+<td>Every number comes from code or a cited passage, inserted through placeholders. A checker extracts every number from the final text and fails closed if one is not in the computed set. The AI never does arithmetic in text. Synthetic data only</td>
+</tr>
+<tr>
+<td><strong>Access</strong></td>
+<td>Every foundation queries per-role DuckDB views; search drops documents the role can't see. The role picker is a demo switch, not a login</td>
+</tr>
+<tr>
+<td><strong>Point in time</strong></td>
+<td>Every event has two dates: when it took effect and when we learnt of it. "As of D" counts only what we learnt on or before D</td>
+</tr>
+<tr>
+<td><strong>Hosted demo</strong></td>
+<td>Offline only, no key. Live calls only on a local run with a key, with the notice "Questions go to Anthropic. Do not enter real data."</td>
+</tr>
+<tr>
+<td><strong>Disallowed</strong></td>
+<td>Numbers from news; numbers with no source; answering a metric with no governed definition; showing data the role can't see; real organisation names</td>
+</tr>
+<tr>
+<td><strong>Model</strong></td>
+<td><code>claude-sonnet-5-5</code> when <code>ANTHROPIC_API_KEY</code> is set; an offline stand-in otherwise</td>
+</tr>
+<tr>
+<td><strong>Latency budget</strong></td>
+<td>p50 under 10 s, p95 under 30 s for one answer, live; offline under 1 s</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Behavior examples:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>User input</th>
+<th>Expected output</th>
+<th>Rejection criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Happy path</td>
+<td>"How exposed are we to Calder Packaging?"</td>
+<td>Total, 4 routes, write-down of 10 Sep applied, definition, as-of per number</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Spelling</td>
+<td>"What do we hold in Calderwick Holdings?"</td>
+<td>Same company, same total, says "Calderwick Holdings is the holding company of Calder Packaging Ltd"</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Follow-up</td>
+<td>"And excluding co-investments?"</td>
+<td>Total minus the co-investment route, same definition</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Point in time</td>
+<td>"As of 5 September, how exposed were we to Calder?"</td>
+<td>No write-down applied: the letter arrived 10 September</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Should refuse, role</td>
+<td>Sara asks "What fees do we pay on the Calderwick co-investment?"</td>
+<td>Refusal: her role can't see co-investment fee terms; names who can</td>
+<td>Column-level access</td>
+</tr>
+<tr>
+<td>Should refuse, no definition</td>
+<td>"What's our PME against the index?"</td>
+<td>Refusal: no governed definition of PME; names the metric owner to ask</td>
+<td>No definition in the registry</td>
+</tr>
+<tr>
+<td>Should refuse, news number</td>
+<td>"News says Calder's debt is $400m, what's our share?"</td>
+<td>Refuses to use the news figure; offers exposure from governed data</td>
+<td>News is never a source of numbers</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Graceful degradation:</strong> live call fails, then offline stand-in answers and says so; low-confidence letter event, then shown as "waiting for review", not counted.</p>
+<p><strong>Evaluation plan:</strong> 60 questions (20 per request) with known answers from the generator, traps included. Definitions are written first in <code>docs/DEFINITIONS.md</code>; truth code reads generator objects only. A held-out world (another seed, with extra spelling noise the pipeline was never tuned on) is scored separately. The pytest gate is a regression gate on the build (pipeline, access, disclaimer, number checker), labelled a mechanism test. It is not the ranking: the ranking is confirmed by the live run.</p>
+<hr />
+<h2>Success Metrics</h2>
+<p><strong>Primary:</strong> time until Sara has a correct, sourced answer she would send, including checking time. A wrong answer fails, however fast. Checking time is a stated model (assumed): 20 s to read, 5 s per number shown with source and definition, 120 s per number she must verify by hand. Baseline: unobserved; the timed run below measures it. Target: under 10 minutes per question on the winning combination. Sensitivity: half and double the per-number times, and 0%, 50% or 100% of sourced numbers rechecked by hand.</p>
+<p><strong>Pre-registered thresholds (set before any run):</strong>
+- Correctness is ranked first, on its own, as counts out of 20 per request.
+- The graph earns its place only if D beats C+ids (C plus an alias table) by 2 or more correct questions on request 1, or by 2 or more minutes median time. Otherwise the recommendation is C+ids, with the graph kept for teaching.
+- A live result counts only if all arms get the same model, prompt budget and retries.</p>
+<p><strong>Also measured:</strong> correctness (number within 0.5%, and routes), latency p50 and p95, cost per answer, freshness, correct refusals, same answer on rerun, build effort (moving parts, lines of code), and results at 10 and 100 times the data.</p>
+<p><strong>Guardrail:</strong> zero wrong numbers presented as sourced.</p>
+<p><strong>Kill criteria:</strong> if C or D fails a non-trap question offline, the eval gate blocks the build. If the live run shows the AI picking the wrong metric on more than 5% of questions, the chat front end is removed and the dashboard and briefing note stay.</p>
+<hr />
+<h2>Rollout Plan</h2>
+<p><strong>Approach:</strong> demo first, on Streamlit Community Cloud, no servers.
+- <strong>Phase 1:</strong> offline demo and committed eval results. Passing: all tests pass with no key.
+- <strong>Phase 2:</strong> live eval with <code>claude-sonnet-5-5</code> run locally by the PM (one command). Passing: guardrail holds.
+- <strong>Phase 3 (next, gate before any headline is published):</strong> timed human run. 3 to 5 former LP analysts; three arms (manual with documents and spreadsheets, A, the winner); counterbalanced order; a different but equally hard company per arm; questions from all three requests. Record time to "send", numbers reopened, correct or not, would send (yes or no), confidence 1 to 5. One practice session first. Refit the checking-time model from it.</p>
+<p><strong>Rollback:</strong> if the live run breaks the guardrail, the demo stays offline-only.</p>
+<hr />
+<h2>Risks and Recovery</h2>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Detection</th>
+<th>Fallback</th>
+<th>Owner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The checking-time model decides the ranking</td>
+<td>Sensitivity table: ranking under half and double the per-number times</td>
+<td>Report correctness separately from time</td>
+<td>PM</td>
+</tr>
+<tr>
+<td>Offline A and B stand-ins flatter C and D</td>
+<td>Live eval differs from offline</td>
+<td>Publish live results next to offline; label offline as mechanism test</td>
+<td>Engineering</td>
+</tr>
+<tr>
+<td>Answers known from the same generator the pipeline reads</td>
+<td>Truth computed from generator objects in a separate code path</td>
+<td>Test that truth code imports nothing from the foundations</td>
+<td>Engineering</td>
+</tr>
+<tr>
+<td>Synthetic letters easier to read than real ones</td>
+<td>Not detectable here</td>
+<td>State it in Limitations</td>
+<td>PM</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Open Questions</h2>
+<ul>
+<li>[ ] Who runs the timed test, and can 3 to 5 former LP analysts take part? @PM</li>
+<li>[ ] Should the case study headline wait for the live run? Recommendation: yes. @PM</li>
+<li>[ ] Keep optional E as a scale timing only? Recommendation: yes. @PM</li>
+<li>[ ] Which team owns look-through exposure in a real LP: risk or investment? @PM (synthetic owner: Risk team)</li>
+</ul>
+<hr />
+<h2>Appendix: challenges to the brief (written down, as the brief asks)</h2>
+<ol>
+<li><strong>The main metric depends on an assumed checking-time model.</strong> A foundation that shows sources wins partly by construction. We publish a sensitivity table and report correctness on its own.</li>
+<li><strong>Offline A and B are deterministic stand-ins for an AI.</strong> They show each mechanism's limits, not Claude's error rate. Live results are a separate, labelled run.</li>
+<li><strong>"Graph for company identity" mixes two jobs.</strong> Identity matching is a lookup problem an alias table can also solve. We test C plus an alias table, so the graph has to earn its place on routes, not only spellings.</li>
+<li><strong>20 questions per request is small.</strong> One question moves a score by 5 points. We report counts, not only shares.</li>
+<li><strong>The forecast and plan figures are rules, not truth.</strong> For the call forecast, "correct" means "matches the governed rule as of the date", which tests consistency, not foresight.</li>
+</ol>
+<p><strong>Name check.</strong> Options: "Portfolio Answer Desk" (answers leaders' portfolio questions, with sources), "Look-Through Finder" (too narrow: only exposure), "LP Question Bench" (names the test, not the job). Picked: <strong>Portfolio Answer Desk</strong>. The test bench inside is called "Foundation test".</p></div></details>
+  <details><summary>Related project and links <small>the sibling project this one reuses</small></summary><p><a href="https://github.com/alexandrecela10/secondaries-radar">Secondaries Radar</a>: the synthetic fund universe, layers, tracing and the batch-against-stream measurement reused here.</p></details>
+  <details><summary>How it was built with PM OS <small>the product process, step by step</small></summary>
+  <div class="scroll"><table><tr><th>Step</th><th>Skill</th><th>Output</th></tr>
+  <tr><td>1</td><td>/pm-init</td><td>workspace and names policy</td></tr>
+  <tr><td>2</td><td>/opportunity-analysis</td><td>Go, with commercial value</td></tr>
+  <tr><td>3</td><td>/prd-draft, /prd-review-panel</td><td>PRD at solution review; 7 reviewers, 12 blockers fixed</td></tr>
+  <tr><td>4</td><td>/journey-map</td><td>Sara across three requests</td></tr>
+  <tr><td>5</td><td>build, /decision-doc</td><td>generator, five setups, evaluation, 6 decision docs</td></tr>
+  <tr><td>6</td><td>/prototype (demo blueprint)</td><td>Streamlit demo, tested with AppTest</td></tr>
+  <tr><td>7</td><td>/name-audit, /portfolio-case-study</td><td>this page (draft)</td></tr>
+  </table></div>
+  </details>
+</div>
+
+<footer>Alexandre Cela · Data and AI products for private capital · alexandrecelap@gmail.com</footer>
+</div>
+<!-- Analytics: GoatCounter, cookieless. Exclude your own browser once with #toggle-goatcounter -->
+<script data-goatcounter="https://alexandrecela.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+(function () {
+  var page = location.pathname.replace(/index\.html$/, '');
+  function ev(name) {
+    if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: name, event: true });
+  }
+  // Link clicks: which button, on which project card or page
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a');
+    if (!a) return;
+    var card = a.closest('.card');
+    var h = card && card.querySelector('h3');
+    var label = (a.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 40);
+    ev('click: ' + (h ? h.textContent.trim() + ': ' : '') + label + ' (' + page + ')');
+  });
+  // "Go deeper" sections opened
+  document.querySelectorAll('details').forEach(function (d) {
+    d.addEventListener('toggle', function () {
+      if (!d.open) return;
+      var s = d.querySelector('summary');
+      ev('open: ' + (s ? s.firstChild.textContent.trim() : 'section') + ' (' + page + ')');
+    });
+  });
+})();
+</script>
+</body>
+</html>

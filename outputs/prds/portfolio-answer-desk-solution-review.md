@@ -128,7 +128,7 @@ Four foundations share one synthetic world. Each is paired with the front end th
 
 **Data:** six synthetic sources, each with its own rhythm and as-of date: holdings (daily), capital calls and distributions (notice text, about weekly), quarterly reports (45 to 90 days late, each manager its own layout and spelling), manager letters (whenever, turned into dated events with a confidence; low confidence waits for a person), company reference data (slow-changing, parents), news (every 15 minutes, never a source of numbers).
 
-**Stack, to decide by measurement** (one decision doc each in `outputs/decisions/`): graph engine (DuckDB recursive SQL, DuckPGQ, NetworkX, archived or server options), semantic layer (own YAML against an established open-source layer), storage layers (bronze, silver, gold in DuckDB), where the AI sits (it picks, code computes).
+**Stack, decided by measurement after the build** (decision docs PAD-01 to PAD-06 in `outputs/decisions/`): recursive SQL for routes, NetworkX for people links, own YAML semantic layer, bronze, silver and gold in DuckDB 1.4.4, AI picks and code computes. **Original plan:** (one decision doc each in `outputs/decisions/`): graph engine (DuckDB recursive SQL, DuckPGQ, NetworkX, archived or server options), semantic layer (own YAML against an established open-source layer), storage layers (bronze, silver, gold in DuckDB), where the AI sits (it picks, code computes).
 
 ---
 

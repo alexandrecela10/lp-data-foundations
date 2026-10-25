@@ -62,7 +62,7 @@ S = store()
 
 # ------------------------------------------------------------------ header and sidebar
 st.title("Portfolio Answer Desk")
-md("**You get a correct, sourced answer to a senior leader's portfolio question in minutes, not a morning: "
+md("**You get a correct, sourced answer to a senior leader's portfolio question in minutes: "
    "every route, every definition and the date of every number, ready to send.** It runs on one shared data "
    "foundation (tables, a semantic layer of governed metrics, and a graph for routes and people) with a different "
    "front end per request. The Foundation test tab shows how we know.")
@@ -317,7 +317,9 @@ with tabs[4]:
                            ("route_graph_total_ms", "Routes: build graph + walk (NetworkX)"),
                            ("route_graph_walk_ms", "Routes: walk only, graph already built"),
                            ("route_pgq_ms", "Routes: DuckPGQ (SQL/PGQ)"),
-                           ("portfolio_sum_sql_ms", "Sector sum: semantic layer SQL")]:
+                           ("portfolio_sum_sql_ms", "Sector sum: semantic layer SQL"),
+                           ("portfolio_sum_graph_only_ms", "Sector sum: graph only (optional E)"),
+                           ("perf_metric_ms", "Pooled TVPI: governed metric, one fund at a time")]:
                 if r.get(k) is not None:
                     long.append(dict(scale=f"{r['scale']}x", ms=r[k], method=lab, funds=r["funds"]))
         ch = alt.Chart(pd.DataFrame(long)).mark_line(point=True).encode(
@@ -325,9 +327,14 @@ with tabs[4]:
                                                                                     title="Milliseconds (log)"),
             color=alt.Color("method:N", title=None), tooltip=["method", "scale", "ms", "funds"])
         st.altair_chart(ch, width="stretch")
-        md(f"**What changes:** at 100x ({sc[-1]['funds']:,} funds, {sc[-1]['documents']:,} documents) the full rebuild takes "
-           f"{sc[-1]['build_s']:.0f} s. Once the graph is built, walking one company's routes stays in milliseconds; building "
-           "the graph is what grows. Recursive SQL needs no second copy of the data. See `outputs/decisions/` for the trade-off.")
+        b = sc[-1]
+        md(f"**What changes at 100x** ({b['funds']:,} funds, {b['documents']:,} documents): the full rebuild takes "
+           f"{b['build_s']:.0f} s, most of it matching company names ({b['pipeline_s']['silver']:.0f} s). One company's routes take "
+           f"{b['route_sql_ms']:.0f} ms in recursive SQL, {b['graph_build_ms']:.0f} + {b['route_graph_walk_ms']:.0f} ms to build the "
+           f"graph and walk it, and {b['route_pgq_ms']:.0f} ms for the DuckPGQ query once its graph is set up. Routes stay under a "
+           f"second every way. What breaks first is a governed metric computed one fund at a time: pooled TVPI takes "
+           f"{b['perf_metric_ms'] / 1000:.1f} s. Peak memory {b['max_rss_mb']:,.0f} MB, "
+           "so 100x runs locally and the demo reads the committed results.")
     else:
         st.caption("Scale results not found (evals/results/scale.json).")
     st.subheader("Decide: which setup would you fund?")

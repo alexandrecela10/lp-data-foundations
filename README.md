@@ -18,6 +18,8 @@ Synthetic data. Not investment advice. All names are invented.
 
 **Decision.** One shared foundation (tables, a semantic layer, an identity table) with a different front end per request: chat for the CIO's event, a governed dashboard for the committee pack, a briefing note for a manager decision. The graph earns its place only for links between people and managers. On the CIO's request C+ids and D tie at 20/20, so by the rule set before the run the graph doesn't earn its place for routes at this size. The spelling problem, not the hops, was what broke C.
 
+**At 10x and 100x** (`evals/results/scale.json`): routes stay under a second every way (recursive SQL 538 ms, graph build plus walk 735 ms, DuckPGQ query 25 ms at 100x). What breaks first is our own code: a governed metric computed one fund at a time (9.3 s) and company-name matching (68 s of a 99 s rebuild).
+
 **What is assumed or not yet run.** The AI is replaced offline by fixed readers, so these numbers show what each setup can and can't do, not Claude's error rate. The live run with `claude-sonnet-5-5` is **not yet run** (no key in the build environment). The checking-time model is an assumption; if Sara rechecks half the sourced numbers by hand, the time advantage disappears while the correctness advantage stays.
 
 ## Run it
