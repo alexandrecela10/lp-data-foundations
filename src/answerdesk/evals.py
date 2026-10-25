@@ -240,19 +240,20 @@ def build_effort() -> dict:
     }
 
 
-def run(seed: int = 42, noisy: bool = False, reruns: int = 2) -> dict:
+def run(seed: int = 42, noisy: bool = False, reruns: int = 2, arms: list[str] | None = None) -> dict:
+    order = arms or ARM_ORDER
     t0 = time.perf_counter()
     store = pipeline.build(seed=seed, noisy=noisy)
     qs = questions.build(store.world)
     rows = []
-    for arm in ARM_ORDER:
+    for arm in order:
         rows += run_arm(store, arm, qs)
     same = {}
     passes = [rows]  # reruns = total passes over the 60 questions; the first pass is the one scored
     for _ in range(reruns - 1):
-        passes.append([r for arm in ARM_ORDER for r in run_arm(store, arm, qs)])
+        passes.append([r for arm in order for r in run_arm(store, arm, qs)])
     if len(passes) > 1:
-        for arm in ARM_ORDER:
+        for arm in order:
             rs = [r for r in rows if r["arm"] == arm]
             fps = [{r["qid"]: r["fingerprint"] for r in p if r["arm"] == arm} for p in passes[1:]]
             same[arm] = sum(all(fp[r["qid"]] == r["fingerprint"] for fp in fps) for r in rs) / len(rs)
@@ -263,7 +264,7 @@ def run(seed: int = 42, noisy: bool = False, reruns: int = 2) -> dict:
                   failure_examples=sorted({f for r in every for f in r["live_failures"]})[:5])
     rephrase_groups = [["R1-01", "R1-02"], ["R2-03", "R2-11", "R2-12"]]
     consistency = {}
-    for arm in ARM_ORDER:
+    for arm in order:
         fps = {r["qid"]: r["fingerprint"] for r in rows if r["arm"] == arm}
         consistency[arm] = sum(len({fps[q] for q in g}) == 1 for g in rephrase_groups) / len(rephrase_groups)
     try:
@@ -278,6 +279,27 @@ def run(seed: int = 42, noisy: bool = False, reruns: int = 2) -> dict:
                   assumed_seconds_per_ai_call=3.0, wall_seconds=time.perf_counter() - t0, all_passes=billed),
         summary=summarise(rows), same_answer_on_rerun=same, same_answer_on_rephrase=consistency,
         sensitivity=sensitivity(rows), identity=identity_quality(store), build_effort=build_effort(), rows=rows)
+
+
+def merge(old: dict, new: dict) -> dict:
+    """Replace the rows of the arms in `new` inside `old` and recompute every cross-arm summary.
+
+    Used to rerun one setup live after a change, without paying for the others again. The meta keeps
+    the original run and lists each partial rerun with its own cost.
+    """
+    arms = sorted({r["arm"] for r in new["rows"]})
+    rows = [r for r in old["rows"] if r["arm"] not in arms] + new["rows"]
+    rows.sort(key=lambda r: (ARM_ORDER.index(r["arm"]), r["qid"]))
+    out = dict(old, rows=rows, summary=summarise(rows), sensitivity=sensitivity(rows))
+    for k in ("same_answer_on_rerun", "same_answer_on_rephrase"):
+        out[k] = {**old.get(k, {}), **new.get(k, {})}
+    meta = dict(old["meta"])
+    meta["reruns_by_arm"] = meta.get("reruns_by_arm", []) + [dict(
+        arms=arms, run_at=new["meta"]["run_at"], commit=new["meta"]["commit"], all_passes=new["meta"].get("all_passes"),
+        valid=new["meta"].get("valid", True))]
+    meta["valid"] = old["meta"].get("valid", True) and new["meta"].get("valid", True)
+    out["meta"] = meta
+    return out
 
 
 def save(res: dict, name: str) -> Path:
