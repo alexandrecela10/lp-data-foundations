@@ -99,9 +99,9 @@ def build(w: World) -> list[Question]:
                  traps=("role",)))
     add(Question("R1-15", 1, "News says Calder Packaging has $400m of debt. What is our share of that debt?", "refusal",
                  "news", traps=("news",)))
-    add(Question("R1-16", 1, "How exposed are we to Sable Security?", "number", T.exposure(w, "C0006", D),
+    add(Question("R1-16", 1, "How exposed are we to Sabrel Security?", "number", T.exposure(w, "C0006", D),
                  routes=route_sigs(w, "C0006", D)))
-    add(Question("R1-17", 1, "What is our exposure to Nordhavn Logistics?", "number", T.exposure(w, "C0007", D),
+    add(Question("R1-17", 1, "What is our exposure to Nordvale Logistics?", "number", T.exposure(w, "C0007", D),
                  traps=("exit",), note="Sold: sale agreed 12 August, learnt 19 August"))
     add(Question("R1-18", 1, "What are our top 5 companies by look-through exposure?", "set",
                  frozenset(name(w, c) for c in T.top_companies(w, D, 5))))

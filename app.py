@@ -446,7 +446,7 @@ with tabs[6]:
                  why="Shows if rules only fit the test", gave_up="Fewer questions to tune on"),
         ]), hide_index=True, width="stretch")
         pics = {
-            "Code computes, the AI picks. Example: the AI picks lookthrough_exposure for Calder; code returns \\$7.90m. Counterfactual: an AI adding numbers in text could write \\$7.9m or \\$79m, and nothing would catch it; here the number check blocks any number we didn't compute.":
+            f"Code computes, the AI picks. Example: the AI picks lookthrough_exposure for Calder; code returns \\${a_cal.value:,.2f}m. Counterfactual: an AI adding numbers in text could write \\${a_cal.value:,.1f}m or \\${a_cal.value * 10:,.0f}m, and nothing would catch it; here the number check blocks any number we didn't compute.":
                 'digraph{rankdir=LR;node[shape=box,style=rounded];q[label="question"];ai[label="AI picks metric"];c[label="code computes"];chk[label="number check"];q->ai->c->chk;}',
             "Graph or recursive SQL. Example: both find Calder's 5 routes. Counterfactual: with plain joins and no recursion, a fund of funds inside a fund of funds needs new code.":
                 'digraph{rankdir=LR;node[shape=box,style=rounded];LP->FoF->Fund->Company;LP->Fund2->Company;}',

@@ -52,7 +52,7 @@ def pgq_routes(con, company_id: str, d: dt.date) -> tuple[float | None, int | No
 
     def q():
         total = 0
-        for k in range(2, 6):
+        for k in range(3, 5):          # Calder routes are 3 or 4 edges long
             hops = "-[e:pg_edges]->(x:pg_nodes)" * (k - 1)
             sql = (f"FROM GRAPH_TABLE (hg MATCH (a:pg_nodes WHERE a.id = 'LP'){hops}-[f:pg_edges]->"
                    f"(c:pg_nodes WHERE c.id = '{company_id}') COLUMNS (a.id AS a))")

@@ -21,6 +21,8 @@ def xirr(cfs: list[tuple[dt.date, float]]) -> float | None:
     if flo * fhi > 0:
         return None
     for _ in range(200):
+        if hi - lo < 1e-9:
+            break
         mid = (lo + hi) / 2
         fm = npv(mid)
         if flo * fm <= 0:

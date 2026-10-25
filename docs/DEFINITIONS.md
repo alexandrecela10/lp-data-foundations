@@ -47,3 +47,5 @@ Both `src/answerdesk/truth.py` (known answers, from generator objects) and `src/
 | analyst (Sara) | Everything below except the two exclusions | Co-investment fee terms (columns); planned commitments not yet approved (rows) |
 | head_of_pe | Everything | |
 | cio | Everything except planned commitments not yet approved | Planned commitments (rows) |
+
+**Default dates.** Exposure, letters and people default to today (26 October 2026). Performance metrics default to the last quarter end (30 September 2026), unless the question gives a date or says "today".

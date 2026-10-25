@@ -37,10 +37,6 @@ COUNTRY = {"europe": ["United Kingdom", "Germany", "France", "Spain", "Netherlan
            "north_america": ["United States", "Canada"], "asia": ["Japan", "Singapore", "Australia"]}
 LEGAL = {"United Kingdom": "Ltd", "Germany": "GmbH", "France": "SA", "Spain": "SL", "Netherlands": "BV",
          "United States": "Inc.", "Canada": "Inc.", "Japan": "KK", "Singapore": "Pte Ltd", "Australia": "Pty Ltd"}
-WORDS = ["Arcwright", "Brisa", "Lumen", "Ostler", "Tamsin", "Verity", "Halden", "Quarry", "Wickham", "Ember",
-         "Fallow", "Grist", "Juno", "Marl", "Neve", "Pellucid", "Corran", "Delph", "Esk", "Fintry", "Garrow",
-         "Hesket", "Inver", "Kelso", "Lathe", "Morven", "Nairn", "Orrin", "Petra", "Rillo", "Sable", "Nordhavn",
-         "Kestrel", "Tolland", "Varne", "Wyre", "Yelland", "Zennor", "Alnwick", "Bude"]
 SECTORS = ["Software", "Health", "Foods", "Dental", "Analytics", "Labs", "Marine", "Fibre", "Tools", "Education",
            "Payments", "Chemicals", "Clinics", "Logistics", "Security", "Testing", "Packaging", "Pet Care"]
 FIRST = ["Mara", "Tomas", "Ilse", "Joel", "Ada", "Pieter", "Selma", "Rafe", "Odile", "Bram", "Ines", "Corin",
@@ -233,8 +229,8 @@ def spell(companies: dict, cid: str, style: int) -> str:
             return " ".join(words[:-1] + [words[-1][:4] + "."])
         return base
     if style == 3:
-        parents = [p for p in companies.values() if p.is_holdco and p.id == c.parent_id]
-        return parents[0].name if parents else base
+        par = companies.get(c.parent_id) if c.parent_id else None
+        return par.name if par is not None and par.is_holdco else base
     if style == 4:                      # upper case, long legal form
         return (base + " LIMITED").upper() if c.country == "United Kingdom" else base.upper()
     if style == 5:                      # dropped letter in the first word
@@ -339,21 +335,17 @@ def generate(seed: int = 42, scale: int = 1, noisy: bool = False) -> World:
 
     add_company("C0001", "Calder", "Packaging", "United Kingdom", parent="H0001")
     add_company("H0001", "", "Packaging", "United Kingdom", holdco=True, name="Calderwick Holdings")
-    add_company("C0002", "Brisa", "Packaging", "Spain")
-    add_company("C0003", "Marl", "Packaging", "Germany")
-    add_company("C0004", "Juno", "Software", "United States")
-    add_company("C0005", "Kelso", "Dental", "United States")
-    add_company("C0006", "Sable", "Security", "United Kingdom")
-    add_company("C0007", "Nordhavn", "Logistics", "Netherlands")
-    add_company("C0008", "Wyre", "Packaging", "United Kingdom")   # held by a fund we don't own
-    taken = {("Calder", "Packaging"), ("Brisa", "Packaging"), ("Marl", "Packaging"), ("Juno", "Software"),
-             ("Kelso", "Dental"), ("Sable", "Security"), ("Nordhavn", "Logistics"), ("Wyre", "Packaging")}
-    pool = [(w, s) for w in WORDS for s in SECTORS if (w, s) not in taken and w not in ("Calder",)]
-    rng.shuffle(pool)
+    add_company("C0002", "Brisolen", "Packaging", "Spain")
+    add_company("C0003", "Marlowen", "Packaging", "Germany")
+    add_company("C0004", "Junavel", "Software", "United States")
+    add_company("C0005", "Kelmara", "Dental", "United States")
+    add_company("C0006", "Sabrel", "Security", "United Kingdom")
+    add_company("C0007", "Nordvale", "Logistics", "Netherlands")
+    add_company("C0008", "Wyrecombe", "Packaging", "United Kingdom")   # held by a fund we don't own
+    # Generated company names use invented words (syllables), so no generated name is a real company's.
     n_generic = 260 * scale
-    wused = set(WORDS)
-    while len(pool) < n_generic:
-        pool.append((_syll_name(rng, wused), rng.choice(SECTORS)))
+    wused = {"Calder", "Brisolen", "Marlowen", "Junavel", "Kelmara", "Sabrel", "Nordvale", "Wyrecombe"}
+    pool = [(_syll_name(rng, wused), rng.choice(SECTORS)) for _ in range(n_generic)]
     hcount = 1
     for i, (w, s) in enumerate(pool[:n_generic]):
         region = rng.choices(list(COUNTRY), [0.45, 0.4, 0.15])[0]
@@ -370,8 +362,8 @@ def generate(seed: int = 42, scale: int = 1, noisy: bool = False) -> World:
             parent = hid
         add_company(cid, w, s, country, parent=parent)
     if noisy:  # near-duplicate names that are different companies (a precision trap)
-        add_company("C0009N", "Brisa", "Packing", "Spain")
-        add_company("C0010N", "Sable", "Securities", "United Kingdom")
+        add_company("C0009N", "Brisolen", "Packing", "Spain")
+        add_company("C0010N", "Sabrel", "Securities", "United Kingdom")
     operating = [c for c in companies.values() if not c.is_holdco and c.id not in
                  ("C0001", "C0002", "C0003", "C0004", "C0005", "C0006", "C0007", "C0008")]
 
@@ -435,13 +427,13 @@ def generate(seed: int = 42, scale: int = 1, noisy: bool = False) -> World:
         w.update(planted)
         funds[fid].weights = w
 
-    hold(fid_of[("M01", 5)], {"C0001": 0.15, "C0006": 0.07})          # Halvane V: Calder, Sable
+    hold(fid_of[("M01", 5)], {"C0001": 0.15, "C0006": 0.07})          # Halvane V: Calder, Sabrel
     hold(fid_of[("M04", 4)], {"C0001": 0.08})                         # Ostrova IV: "Calder Pack."
     hold(fid_of[("M03", 3)], {"C0001": 0.06, "C0003": 0.05})          # Tellmar III: "Calderwick Holdings"
-    hold(fid_of[("M06", 4)], {"C0002": 0.09, "C0007": 0.06})          # Quillon IV: Brisa Packaging
-    hold(fid_of[("M02", 4)], {"C0004": 0.10})                         # Brennick IV: Juno Software
-    hold(fid_of[("M02", 5)], {"C0005": 0.08})                         # Brennick V: Kelso Dental
-    hold(fid_of[("M13", 3)], {"C0008": 0.05})                         # Thornhale III (not held): Wyre
+    hold(fid_of[("M06", 4)], {"C0002": 0.09, "C0007": 0.06})          # Quillon IV: Brisolen Packaging
+    hold(fid_of[("M02", 4)], {"C0004": 0.10})                         # Brennick IV: Junavel Software
+    hold(fid_of[("M02", 5)], {"C0005": 0.08})                         # Brennick V: Kelmara Dental
+    hold(fid_of[("M13", 3)], {"C0008": 0.05})                         # Thornhale III (not held): Wyrecombe
     for fid, f in funds.items():
         if not f.weights:
             hold(fid, {})
@@ -497,8 +489,8 @@ def generate(seed: int = 42, scale: int = 1, noisy: bool = False) -> World:
     # --- co-investments (fee terms are restricted columns)
     co = [("CI01", "H0001", fid_of[("M01", 5)], "Calderwick Holdings (holding company of Calder Packaging Ltd)", 5.0,
            dt.date(2021, 3, 15), 0.0, 10.0, 0.045),
-          ("CI02", "C0004", fid_of[("M02", 4)], "Juno Software Inc.", 8.0, dt.date(2019, 9, 2), 1.0, 15.0, 0.12),
-          ("CI03", "C0005", fid_of[("M02", 5)], "Kelso Dental Inc.", 6.0, dt.date(2022, 5, 20), 0.0, 10.0, -0.12)]
+          ("CI02", "C0004", fid_of[("M02", 4)], "Junavel Software Inc.", 8.0, dt.date(2019, 9, 2), 1.0, 15.0, 0.12),
+          ("CI03", "C0005", fid_of[("M02", 5)], "Kelmara Dental Inc.", 6.0, dt.date(2022, 5, 20), 0.0, 10.0, -0.12)]
     for cid, comp, along, nm, inv, d, fee, carry, g in co:
         coinvests[cid] = Coinvest(cid, comp, along, nm, inv, d, fee, carry, g)
         positions[f"P{cid}"] = Position(f"P{cid}", cid, "coinvest", "primary", inv, 1.0, d)
@@ -559,10 +551,10 @@ def generate(seed: int = 42, scale: int = 1, noisy: bool = False) -> World:
     letter("L0002", "M01", dt.date(2026, 9, 10), [e2.sentence], [e2])
     q7 = fid_of[("M06", 4)]
     e3 = Event("E0003", "L0003", "M06", "exit", dt.date(2026, 8, 12), dt.date(2026, 8, 19), "C0007", q7, (), 1.60,
-               sentence="The sale of Nordhavn Logistics BV was agreed on 12 August 2026, at 1.60 times its 30 June 2026 value.")
+               sentence="The sale of Nordvale Logistics BV was agreed on 12 August 2026, at 1.60 times its 30 June 2026 value.")
     letter("L0003", "M06", dt.date(2026, 8, 19), [e3.sentence], [e3])
     e4 = Event("E0004", "L0004", "M01", "write_down", dt.date(2026, 8, 20), dt.date(2026, 9, 1), "C0006", hv, (),
-               0.50, sentence="Sable Security Ltd was written down on 20 August 2026 to 0.50 times its 30 June 2026 value, after the loss of a major contract.")
+               0.50, sentence="Sabrel Security Ltd was written down on 20 August 2026 to 0.50 times its 30 June 2026 value, after the loss of a major contract.")
     letter("L0004", "M01", dt.date(2026, 9, 1), [e4.sentence], [e4])
 
     # Brennick (Manager X): five issues, one hard to parse, one low confidence
