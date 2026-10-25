@@ -1,0 +1,33 @@
+{
+  "_template_instructions": "Copy this file to outputs/[work-type]/[work-name]-state.json before running /prd-graph or any loop. Remove this field from your copy. Update after every run.",
+
+  "work_name": "",
+  "work_type": "prd-revision | strategy-sprint | metrics-design | stakeholder-brief",
+  "input_file": "outputs/prds/[filename].md",
+  "goal_file": "outputs/prds/[filename]-goals.md",
+
+  "last_run": "",
+  "loop_count": 0,
+  "loop_limit": 3,
+  "graph_result": "not-yet-run | advanced | looped | surfaced",
+
+  "criteria_passed": [],
+  "criteria_failed": [],
+  "criteria_failed_evidence": {
+    "_instructions": "Key = criterion text. Value = array of reviewer quotes. Remove this field from your copy.",
+    "Criterion text here": [
+      "Reviewer name: 'exact quote from the revised PRD'"
+    ]
+  },
+
+  "blockers_resolved_this_run": [],
+  "still_open": [],
+  "decisions_made": [],
+
+  "known_failure_modes": [
+    "_instructions: Record here when a criterion passes the gate but shouldn't have. Remove this field from your copy.",
+    "Example: Criterion 3 passed but the owner was listed as TBD. Tighten criterion to require a named person."
+  ],
+
+  "next_trigger": "Describe the condition that must be true before the next run. E.g. 'Re-run after Chris answers Q1 and the two SQL counts are observed.'"
+}
