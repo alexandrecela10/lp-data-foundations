@@ -1,0 +1,33 @@
+[project]
+name = "answerdesk"
+version = "0.1.0"
+description = "Portfolio Answer Desk: which data foundation gets an LP analyst a correct, sourced answer fastest. Synthetic data. Not investment advice."
+requires-python = ">=3.11"
+dependencies = [
+    "duckdb==1.4.4",
+    "pydantic>=2.8",
+    "pyyaml>=6",
+    "networkx>=3.3",
+    "pandas>=2.2",
+    "pyarrow>=16",
+]
+
+[project.optional-dependencies]
+app = ["streamlit>=1.50", "altair>=5.4"]
+live = ["anthropic>=0.70"]
+trace = ["langfuse>=3"]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+answerdesk = ["semantic/metrics.yaml"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

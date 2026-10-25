@@ -1,0 +1,8 @@
+{
+ "status": "not yet run",
+ "why": "ANTHROPIC_API_KEY was not set in the build environment on 2026-10-25.",
+ "model": "claude-sonnet-5-5",
+ "command": "ANTHROPIC_API_KEY=... PYTHONPATH=src python -m answerdesk.cli live",
+ "what_it_does": "Runs the same 60 questions through all five arms with Claude reading the question (all arms), reading passages (A) and writing SQL (B); 3 reruns to measure how much answers change. Overwrites this file with results.",
+ "cost_estimate_usd": "assumed under 5 dollars: about 60 x 5 arms x 3 reruns answers, 1 to 3 calls each, a few thousand input tokens per call at $2 per million"
+}
