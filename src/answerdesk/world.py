@@ -272,11 +272,13 @@ def _path(fund: Fund, rng: random.Random, until: dt.date) -> dict:
 def _syll_name(rng: random.Random, used: set) -> str:
     syl = ["ar", "bel", "cor", "dun", "el", "fen", "gar", "hal", "is", "jor", "kel", "lan", "mor", "nor",
            "os", "pen", "quil", "ros", "sel", "tor", "ul", "ven", "wex", "yar", "zel"]
-    while True:
-        w = "".join(rng.choice(syl) for _ in range(rng.choice([2, 3]))).capitalize()
+    for tries in range(10_000):
+        n = rng.choice([2, 3]) if tries < 50 else 4      # 2 or 3 syllables give 16,250 names; 4 more beyond that
+        w = "".join(rng.choice(syl) for _ in range(n)).capitalize()
         if w not in used:
             used.add(w)
             return w
+    raise RuntimeError("ran out of invented names")
 
 
 # ------------------------------------------------------------------ generator

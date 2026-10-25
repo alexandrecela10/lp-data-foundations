@@ -1,0 +1,21 @@
+{
+  "work_name": "portfolio-answer-desk-case-study",
+  "work_type": "portfolio-case-study",
+  "last_run": "2026-10-25",
+  "status": "draft, not published",
+  "built_from": ["evals/results/offline-seed42.json", "evals/results/offline-heldout-seed7-noisy.json", "evals/results/scale.json",
+                 "outputs/opportunity-analyses/portfolio-answer-desk-opportunity.md", "outputs/prds/portfolio-answer-desk-solution-review.md"],
+  "criteria_passed": [2, 3, 4, 5, 6, 7],
+  "criteria_partial": [1, 8],
+  "decisions_made": [
+    "Hero numbers prove value: expected time to a sendable answer, correct of 60, same answer on rerun and rephrase, wrong numbers shown as sourced. Technique metrics (identity matches, timings) sit in the resources.",
+    "Every hero number is labelled offline; the live run is named as not yet run.",
+    "Demo and code buttons read 'deploy pending' and 'private until published' instead of linking to pages a visitor can't open."
+  ],
+  "still_open": [
+    "PM: deploy app.py to Streamlit Community Cloud (Python 3.11, no secrets) and replace the demo button.",
+    "PM: should the headline wait for the live run? Recommendation: yes.",
+    "PM: confirm keeping 'Calder Packaging' (brief-defined; no exact real match found)."
+  ],
+  "next_trigger": "Rebuild the page after the live run or the demo deploy."
+}
