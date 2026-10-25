@@ -53,10 +53,18 @@ def main(argv=None):
         os.environ["ANSWERDESK_LIVE"] = "1"
         from . import llm
         print(llm.NOTICE)
-        res = evals.run(seed=42, reruns=3)
+        res = evals.run(seed=42, reruns=2)
         res["meta"]["mode"] = f"live ({llm.MODEL})"
+        billed = res["meta"]["all_passes"]
+        # a live call that failed fell back offline; one such answer makes the run unfair, so it doesn't count
+        res["meta"]["valid"] = billed["live_failures"] == 0
         print("saved", evals.save(res, "live-claude-sonnet-5-5.json"))
         _print_summary(res)
+        print(f"passes {billed['passes']}  calls {billed['llm_calls']}  cost ${billed['cost_usd']}  "
+              f"live failures {billed['live_failures']}")
+        if not res["meta"]["valid"]:
+            print("INVALID: some live calls failed and fell back offline. Examples:", *billed["failure_examples"], sep="\n  ")
+            sys.exit(1)
     if a.cmd == "ask":
         from .interfaces import chat
         st = pipeline.build()

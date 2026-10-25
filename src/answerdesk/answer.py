@@ -74,6 +74,7 @@ class Answer(BaseModel):
     live_tokens_in: int = 0
     live_tokens_out: int = 0
     live_seconds: float = 0.0
+    live_failures: list[str] = Field(default_factory=list)
     allowed_numbers: list[float] = Field(default_factory=list)
 
     # ---------------------------------------------------------- costs and time

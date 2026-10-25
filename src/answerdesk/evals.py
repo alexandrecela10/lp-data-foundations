@@ -106,7 +106,8 @@ def run_arm(store, arm: str, qs: list) -> list[dict]:
                            (a.as_of - min(x.as_of for x in a.shown if x.as_of)).days),
             answer=a.text[:600], fingerprint=fingerprint(a),
             shown=[dict(sourced=x.sourced, defined=x.defined) for x in a.shown],
-            items=len(a.items), item_sourced=sum(1 for i in a.items if a.item_sources.get(i))))
+            items=len(a.items), item_sourced=sum(1 for i in a.items if a.item_sources.get(i)),
+            live_failures=a.live_failures))
     return rows
 
 
@@ -247,14 +248,19 @@ def run(seed: int = 42, noisy: bool = False, reruns: int = 2) -> dict:
     for arm in ARM_ORDER:
         rows += run_arm(store, arm, qs)
     same = {}
-    if reruns > 1:
-        again = []
-        for arm in ARM_ORDER:
-            again += run_arm(store, arm, qs)
-        fp = {(r["arm"], r["qid"]): r["fingerprint"] for r in again}
+    passes = [rows]  # reruns = total passes over the 60 questions; the first pass is the one scored
+    for _ in range(reruns - 1):
+        passes.append([r for arm in ARM_ORDER for r in run_arm(store, arm, qs)])
+    if len(passes) > 1:
         for arm in ARM_ORDER:
             rs = [r for r in rows if r["arm"] == arm]
-            same[arm] = sum(fp[(arm, r["qid"])] == r["fingerprint"] for r in rs) / len(rs)
+            fps = [{r["qid"]: r["fingerprint"] for r in p if r["arm"] == arm} for p in passes[1:]]
+            same[arm] = sum(all(fp[r["qid"]] == r["fingerprint"] for fp in fps) for r in rs) / len(rs)
+    every = [r for p in passes for r in p]
+    billed = dict(passes=len(passes), llm_calls=sum(r["llm_calls"] for r in every),
+                  cost_usd=round(sum(r["cost_usd"] or 0 for r in every), 2),
+                  live_failures=sum(len(r["live_failures"]) for r in every),
+                  failure_examples=sorted({f for r in every for f in r["live_failures"]})[:5])
     rephrase_groups = [["R1-01", "R1-02"], ["R2-03", "R2-11", "R2-12"]]
     consistency = {}
     for arm in ARM_ORDER:
@@ -269,7 +275,7 @@ def run(seed: int = 42, noisy: bool = False, reruns: int = 2) -> dict:
                   run_at=dt.datetime.now().isoformat(timespec="seconds"), commit=commit, questions=len(qs),
                   pipeline_seconds=store.timings, documents=store.counts,
                   checking_time_model=CHECK, manual_fallback_s=MANUAL_FALLBACK_S,
-                  assumed_seconds_per_ai_call=3.0, wall_seconds=time.perf_counter() - t0),
+                  assumed_seconds_per_ai_call=3.0, wall_seconds=time.perf_counter() - t0, all_passes=billed),
         summary=summarise(rows), same_answer_on_rerun=same, same_answer_on_rephrase=consistency,
         sensitivity=sensitivity(rows), identity=identity_quality(store), build_effort=build_effort(), rows=rows)
 
