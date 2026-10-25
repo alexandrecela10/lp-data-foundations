@@ -1,0 +1,12 @@
+{
+  "work_name": "sara-three-requests-journey",
+  "work_type": "journey-map",
+  "last_run": "2026-10-25",
+  "criteria_passed": [1, 2, 3, 4, 5],
+  "decisions_made": [
+    "Mode 1 (user journey), one persona, three requests.",
+    "System-only steps (parsing, identity matching, route walk) folded into the phase where Sara checks their output."
+  ],
+  "still_open": ["Replace assumed times with the timed human run."],
+  "next_trigger": "Update after the timed human run or the first analyst interviews."
+}
