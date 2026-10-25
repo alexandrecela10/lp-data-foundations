@@ -1,0 +1,19 @@
+{
+  "work_name": "portfolio-answer-desk-decisions",
+  "work_type": "decision-docs",
+  "last_run": "2026-10-25",
+  "decisions": {
+    "PAD-01": "Recursive SQL in the semantic layer for routes and numbers; NetworkX graph for people links and teaching; DuckPGQ timed only.",
+    "PAD-02": "Own YAML metric registry over MetricFlow, Boring Semantic Layer, Cube.",
+    "PAD-03": "AI picks a governed metric; code computes; number check fails closed.",
+    "PAD-04": "Bronze, silver, gold in DuckDB 1.4.4; batch by source schedule (streaming result reused from Secondaries Radar).",
+    "PAD-05": "Checking-time model stated as an assumption, with a sensitivity table.",
+    "PAD-06": "C+ids foundation, graph only for people links, letter search for issues; chat, dashboard, briefing note per request."
+  },
+  "criteria_passed": [1, 2, 3, 4, 5, 6],
+  "still_open": [
+    "All six are offline evidence. The live run and a timed human run can change PAD-03, PAD-05 and PAD-06.",
+    "PM to ratify and move to context-library/decisions/."
+  ],
+  "next_trigger": "After the live run: revisit PAD-06 if any setup moves by 3 or more questions."
+}

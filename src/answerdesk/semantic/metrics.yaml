@@ -1,0 +1,140 @@
+# Metric registry: one governed definition per metric, with owner, version, history and tests.
+# Plain sentences match docs/DEFINITIONS.md. Tests live in tests/test_metrics.py and run in the eval gate.
+packs:
+  pack_2026_q2: {as_of: 2026-06-30, versions: {lookthrough_exposure: 2, unfunded: 1, calls_next_12m: 2}}
+  pack_2026_q3: {as_of: 2026-09-30, versions: {lookthrough_exposure: 2, unfunded: 2, calls_next_12m: 2}}
+
+metrics:
+  lookthrough_exposure:
+    owner: Risk team
+    unit: $m
+    kind: money
+    needs: [positions, reports, fof_stakes, holdings, coinvest_values, events]
+    dimensions: [company, sector, region, country, route_kind]
+    versions:
+      2: {from: 2025-01-01, plain: "Our share of a company's latest reported value, through every route we hold it, adjusted for write-downs and exits we learnt of since that report."}
+      1: {from: 2020-01-01, to: 2024-12-31, plain: "Our commitment to each fund that holds the company, times the company's share of that fund (Investment team's old definition, kept for comparison)."}
+    tests: [calder_today, calder_before_letter, eu_packaging_today]
+  adjusted_nav:
+    owner: Finance
+    unit: $m
+    kind: money
+    needs: [positions, reports, cashflows, coinvest_values]
+    dimensions: [fund, manager, strategy, vintage]
+    versions:
+      1: {from: 2020-01-01, plain: "Our latest reported value in a fund, plus calls we paid since that report, minus distributions we received since."}
+  paid_in:
+    owner: Finance
+    unit: $m
+    kind: money
+    needs: [positions, cashflows]
+    dimensions: [fund, manager, strategy, vintage]
+    versions:
+      1: {from: 2020-01-01, plain: "Capital calls we paid, plus the price we paid for stakes bought second-hand."}
+  distributions:
+    owner: Finance
+    unit: $m
+    kind: money
+    needs: [positions, cashflows]
+    dimensions: [fund, manager, strategy, vintage, period]
+    versions:
+      1: {from: 2020-01-01, plain: "Cash the fund paid us."}
+  calls:
+    owner: Finance
+    unit: $m
+    kind: money
+    needs: [positions, cashflows]
+    dimensions: [fund, manager, strategy, vintage, period]
+    versions:
+      1: {from: 2020-01-01, plain: "Capital calls we paid in the period."}
+  net_tvpi:
+    owner: Finance
+    unit: x
+    kind: ratio
+    needs: [positions, reports, cashflows]
+    dimensions: [fund, manager, strategy, vintage]
+    versions:
+      1: {from: 2020-01-01, plain: "Distributions plus adjusted NAV, divided by paid-in, from our own cash flows, after all fees. Pooled over funds by summing first."}
+    tests: [pooled_tvpi_2019_2021_buyout]
+  net_dpi:
+    owner: Finance
+    unit: x
+    kind: ratio
+    needs: [positions, reports, cashflows]
+    dimensions: [fund, manager, strategy, vintage]
+    versions:
+      1: {from: 2020-01-01, plain: "Distributions divided by paid-in."}
+  net_irr:
+    owner: Finance
+    unit: "%"
+    kind: rate
+    needs: [positions, reports, cashflows]
+    dimensions: [fund, manager, strategy, vintage]
+    versions:
+      1: {from: 2020-01-01, plain: "The annual return that makes our dated cash flows plus today's adjusted NAV net to zero. Not the manager's own figure."}
+  unfunded:
+    owner: Finance
+    unit: $m
+    kind: money
+    needs: [positions, cashflows]
+    dimensions: [fund, manager, strategy, vintage]
+    versions:
+      2: {from: 2026-08-01, plain: "Commitment, minus calls paid, plus distributions the fund may call back."}
+      1: {from: 2020-01-01, to: 2026-07-31, plain: "Commitment minus calls paid."}
+    tests: [unfunded_v1_v2_differ]
+  calls_next_12m:
+    owner: Treasury
+    unit: $m
+    kind: money
+    needs: [positions, cashflows]
+    dimensions: [fund, manager, strategy, vintage]
+    versions:
+      2: {from: 2025-01-01, plain: "Unfunded times a rate set by fund age: under 2 years 35%, 2 to 4 years 25%, 4 to 6 years 12%, 6 years or more 5%."}
+  tvpi_vs_plan:
+    owner: Investment team
+    unit: x
+    kind: ratio
+    needs: [positions, reports, cashflows]
+    dimensions: [fund, manager, strategy, vintage]
+    versions:
+      1: {from: 2020-01-01, plain: "Net TVPI minus the plan TVPI for the fund's age. Plan stays at 1.0x for 2 years, then rises in a straight line to the target at year 10."}
+  manager_issues:
+    owner: Investment team
+    unit: letters
+    kind: list
+    needs: [events, letters]
+    dimensions: [manager]
+    versions:
+      1: {from: 2020-01-01, plain: "Letters from the manager that raise an issue the reader recognises (extension, restatement, team change, write-down), learnt by the date. Items read with low confidence are listed as waiting for review."}
+  coinvest_positions:
+    owner: Finance
+    unit: names
+    kind: list
+    needs: [positions]
+    dimensions: [manager]
+    versions:
+      1: {from: 2020-01-01, plain: "Co-investments we hold, by the manager they were made alongside."}
+  coinvest_fees:
+    owner: Head of private equity
+    unit: "%"
+    kind: restricted
+    needs: [coinvest_fees]
+    dimensions: [manager, company]
+    versions:
+      1: {from: 2020-01-01, plain: "Management fee and carried interest on each co-investment."}
+  planned_commitment:
+    owner: Head of private equity
+    unit: $m
+    kind: restricted
+    needs: [planned]
+    dimensions: [manager]
+    versions:
+      1: {from: 2020-01-01, plain: "Commitments proposed but not yet approved."}
+  commitment:
+    owner: Finance
+    unit: $m
+    kind: money
+    needs: [positions]
+    dimensions: [fund, manager, strategy, vintage]
+    versions:
+      1: {from: 2020-01-01, plain: "What we agreed to invest in each fund (for a stake bought second-hand, the share of commitment we bought)."}
