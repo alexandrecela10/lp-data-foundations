@@ -395,6 +395,7 @@ LEFT JOIN silver.companies c ON c.name_key = i.name_key AND NOT c.is_holdco;
 -- events: link to the fund of the writing manager that holds the company, and to a named co-investment
 CREATE OR REPLACE TABLE gold.events AS
 SELECT e.*, i.name_key AS company_key, CASE WHEN i.status = 'accepted' THEN i.company_id END AS company_id,
+       (SELECT min(c.company_id) FROM silver.companies c WHERE c.name_key = i.name_key AND NOT c.is_holdco) AS company_id_exact,
        (SELECT min(h.fund_id) FROM silver.report_holdings h JOIN silver.funds f ON f.fund_id = h.fund_id
          JOIN silver.identity ih ON ih.name_reported = h.name_reported
          WHERE f.manager_id = e.manager_id AND h.via = 'own'
