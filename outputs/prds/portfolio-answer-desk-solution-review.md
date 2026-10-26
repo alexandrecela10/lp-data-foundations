@@ -5,7 +5,7 @@
 **Owner:** PM (drafted by Claude, unattended run approved by the PM)
 **Status:** Reviewed, blockers fixed (see `portfolio-answer-desk-solution-review-review-synthesis.md`)
 
-**What it is.** A question desk for the private equity team of a large investor. Sara, an analyst, types a senior leader's question. She gets back an answer she can send: the number, the routes behind it, the definition used, and the source and date of every figure. Inside sits a test that runs the same 60 questions through five ways of organising the data, and measures which gets Sara to a correct, sourced answer fastest. It can't read real fund reports or connect to a real accounting system yet: all data is synthetic.
+**What it is.** A question desk for the private equity team of a large investor. Sara, an analyst, types a senior leader's question. She gets back an answer she can send: the number, each way we own the company, the definition used, and the source and date of every figure. Inside sits a test that runs the same 60 questions through five ways of organising the data, and measures which gets Sara to a correct, sourced answer fastest. It can't read real fund reports or connect to a real accounting system yet: all data is synthetic.
 
 **Terms in this document**
 - **LP:** an investor, such as a pension fund, that commits money to many private equity funds.
@@ -24,7 +24,7 @@ Carried from `outputs/opportunity-analyses/portfolio-answer-desk-opportunity.md`
 
 | # | Problem | Today | Hypothesis | Success metric (target) | Expected impact |
 |---|---|---|---|---|---|
-| 1 | A question about a company takes hours, because the company hides behind several routes and spellings | Unobserved (the brief says hours to a day; never timed) | If routes and spellings are linked once in the data, then every route is found in seconds, because code follows the links | Time to a correct, sourced answer Sara would send: under 10 minutes, 20 questions | Answer before the 09:00 meeting; unobserved |
+| 1 | A question about a company takes hours, because we own the company several ways, under several spellings | Unobserved (the brief says hours to a day; never timed) | If every spelling and holding is linked once in the data, then every way we own it is found in seconds, because code follows the links | Time to a correct, sourced answer Sara would send: under 10 minutes, 20 questions | Answer before the 09:00 meeting; unobserved |
 | 2 | The committee pack changes from quarter to quarter, because each analyst computes returns and cash calls their own way | Unobserved | If each measure has one versioned definition computed as of a set date, then reruns and rewordings agree, because nobody rewrites the formula | Same answer on a rerun and a rewording: 100% of 20 questions | Fewer pack corrections; unobserved |
 | 3 | A decision on a manager mixes numbers and letters, so problems get missed | Unobserved | If numbers come from the agreed definitions and problems from cited letters, then every known problem appears with its source | Known letter problems found with a citation: 100% | Fewer surprises at the decision; unobserved |
 
@@ -37,7 +37,7 @@ Carried from `outputs/opportunity-analyses/portfolio-answer-desk-opportunity.md`
 ## Strategic Fit
 
 - **Goal served:** the brief's goal (A), a measured prototype, and goal (B), plain-English teaching on graphs and semantic layers.
-- **The value is fewer wrong numbers, more than time saved.** Time saved is about $43,000 a year for one LP, a quarter of one analyst (assumed; sizing in the opportunity analysis). That alone wouldn't justify agreeing definitions across teams. A leader deciding on 1 of 4 routes instead of all 4 is the larger cost, and it isn't priced.
+- **The value is fewer wrong numbers, more than time saved.** Time saved is about $43,000 a year for one LP, a quarter of one analyst (assumed; sizing in the opportunity analysis). That alone wouldn't justify agreeing definitions across teams. A leader deciding on 1 of 5 holdings instead of all 5 is the larger cost, and it isn't priced.
 - **Build against buy, for a real LP:** buy the storage and dashboard software. Build the definitions, the company matching and the access rules, because no vendor ships them filled in. Assumed effort: 4 to 8 weeks to agree 10 core definitions and match company names.
 - **Alternatives considered:** buy a portfolio monitoring product (rejected for the prototype: no access, and it hides the definitions we want to test); documents plus a chatbot only (kept as setup A, the thing to beat).
 - **Request order:** request 1 first (most leadership attention), then 2 and 3 on the same data.
@@ -51,7 +51,7 @@ Carried forward from the opportunity analysis. Scope unchanged.
 
 | Factor | This solution |
 |---|---|
-| **Dream outcome** | "I send the CIO a correct answer with every route and source before 09:00, and it matches last quarter's pack." |
+| **Dream outcome** | "I send the CIO a correct answer with every holding and source before 09:00, and it matches last quarter's pack." |
 | **Perceived likelihood** | Low at first: chatbots invent numbers. Rises only if every number shows its source and date and the tool refuses instead of guessing |
 | **Time delay** | Minutes per question once built; weeks to agree definitions and company links (assumed) |
 | **Effort & sacrifice** | Sara asks in plain words. The data team gives up local spreadsheet formulas and owns one definition per measure |
@@ -75,7 +75,7 @@ Carried forward from the opportunity analysis. Scope unchanged.
 ## Annex A, Napkin Sketch
 
 ### Screen 1, Ask (Calder Packaging, Monday 08:12)
-**Job.** When the CIO asks about a company in the news, Sara wants every route and the latest known value, so she can reply before 09:00.
+**Job.** When the CIO asks about a company in the news, Sara wants every way we own it and the latest known value, so she can reply before 09:00.
 **Main button.** "Copy answer to send".
 
 ```
@@ -83,14 +83,14 @@ Carried forward from the opportunity analysis. Scope unchanged.
 | Ask a portfolio question          as: Sara (analyst)       |
 | [How exposed are we to Calder Packaging?            ] [Ask]|
 +------------------------------------------------------------+
-| $X.Xm through 4 routes, after the 10 Sep write-down.       |
+| $X.Xm held 5 ways, after the 10 Sep write-down.           |
 |  1 Halvane V (fund)          $..m  report 30 Jun, letter   |
 |  2 Selbrook FoF III > ...    $..m  report 30 Jun           |
 |  3 Co-invest Calderwick Hold. $..m  statement 30 Jun      |
 |  4 Tellmar III (bought 2024) $..m  report 30 Jun           |
 | Definition: look-through exposure v2, owner Risk team      |
 | Freshness: holdings 1 day, reports 118 days, letters 46 d  |
-| [Copy answer to send]  [Show routes on the graph]          |
+| [Copy answer to send]  [Show holdings on the graph]        |
 +------------------------------------------------------------+
 ```
 
@@ -120,9 +120,9 @@ Carried forward from the opportunity analysis. Scope unchanged.
 | B | Tables, AI writes the database query | Writes a database query (SQL) from the list of tables | Runs the query, read-only |
 | C | Tables plus a semantic layer | Picks an agreed calculation, filters and a date from a menu | Turns the pick into a query, checks access, computes |
 | C+ids | C plus an identity table | Same as C | Same as C, and treats all spellings of a company as one |
-| D | C+ids plus a graph and letter search | Same as C, and sends route and people questions to the graph | Follows ownership routes and people links; searches letters |
+| D | C+ids plus a graph and letter search | Same as C, and sends ownership and people questions to the graph | Follows ownership links and people links; searches letters |
 
-C+ids exists to test whether the graph earns its place on routes, not just on spellings. Offline, A and B get help so they aren't easy to beat: A's search also tries each company's other names; B gets prepared tables with column notes and parent links.
+C+ids exists to test whether the graph earns its place on ownership, not just on spellings. Offline, A and B get help so they aren't easy to beat: A's search also tries each company's other names; B gets prepared tables with column notes and parent links.
 
 **Screens:** chat (request 1), a dashboard with 3 views (request 2), a briefing note (request 3), and a read-only SQL page for the data team.
 
@@ -130,8 +130,8 @@ C+ids exists to test whether the graph earns its place on routes, not just on sp
 - **Refusal card:** what was asked, why it was refused, who can answer, and "Answer what I can see instead".
 - **Waiting item:** "1 letter item not counted, waiting for review" under any total it affects.
 - **Empty card** for a company we don't hold, and a banner when the offline stand-in answered.
-- **Dates:** every route shows its own date. A source older than 90 days reads "stale". The first line says "as of mixed dates" when dates differ.
-- **Copy answer to send** copies the paragraph, routes, sources, dates, Sara's note and the disclaimer.
+- **Dates:** every holding shows its own date. A source older than 90 days reads "stale". The first line says "as of mixed dates" when dates differ.
+- **Copy answer to send** copies the paragraph, holdings, sources, dates, Sara's note and the disclaimer.
 - Every screen, copy and export carries "Synthetic data. Not investment advice."
 
 **Data: six synthetic sources, each with its own rhythm and date.**
@@ -145,7 +145,7 @@ C+ids exists to test whether the graph earns its place on routes, not just on sp
 | Company reference data | Rarely changes | Includes parent companies |
 | News | Every 15 minutes | Never a source of numbers |
 
-**Technology, chosen by measurement after the build** (decision docs in `outputs/decisions/`): recursive SQL for routes, NetworkX for people links, our own YAML semantic layer, raw, cleaned and final tables in DuckDB 1.4.4 (bronze, silver, gold), and the AI picks while code computes.
+**Technology, chosen by measurement after the build** (decision docs in `outputs/decisions/`): recursive SQL for ownership chains, NetworkX for people links, our own YAML semantic layer, raw, cleaned and final tables in DuckDB 1.4.4 (bronze, silver, gold), and the AI picks while code computes.
 
 ---
 
@@ -167,9 +167,9 @@ C+ids exists to test whether the graph earns its place on routes, not just on sp
 
 | Case | Sara asks | Expected answer | Why it refuses |
 |---|---|---|---|
-| Normal | "How exposed are we to Calder Packaging?" | Total, 4 routes, the 10 Sep write-down applied, definition, date per number | |
+| Normal | "How exposed are we to Calder Packaging?" | Total, 5 holdings, the 10 Sep write-down applied, definition, date per number | |
 | Other spelling | "What do we hold in Calderwick Holdings?" | Same company, same total; says "Calderwick Holdings is the holding company of Calder Packaging Ltd" | |
-| Follow-up | "And excluding co-investments?" | Total minus the co-investment route, same definition | |
+| Follow-up | "And excluding co-investments?" | Total minus the co-investment, same definition | |
 | Earlier date | "As of 5 September, how exposed were we to Calder?" | No write-down applied: the letter arrived 10 September | |
 | Refuse: role | "What fees do we pay on the Calderwick co-investment?" | Refusal; names who can see fee terms | Her role can't see fee columns |
 | Refuse: no definition | "What's our PME against the index?" | Refusal; names the owner to ask | No agreed definition of PME (a return compared with a stock index) |
@@ -190,7 +190,7 @@ C+ids exists to test whether the graph earns its place on routes, not just on sp
 | Metric | What it measures | Target | How measured |
 |---|---|---|---|
 | **Time to a sendable answer (primary)** | From question to an answer Sara would send, including her checking time. A wrong answer fails, however fast | Under 10 minutes per question, winning setup | 60 test questions. Checking time is an assumed model: 20 s to read, 5 s per sourced number, 120 s per number checked by hand. Tested at half and double those times, and with 0%, 50% or 100% of sourced numbers rechecked. The timed test replaces it |
-| **Correct answers** | Number within 0.5%, and every route found | Ranked first, as counts out of 20 per request | Known answers from the generator |
+| **Correct answers** | Number within 0.5%, and every holding found | Ranked first, as counts out of 20 per request | Known answers from the generator |
 | **Wrong numbers shown with a source (guardrail)** | A wrong number that looks trustworthy | 0 of 60 | Every answer checked against the known answer |
 | **Same answer on a rerun and a rewording** | Whether the pack is stable | 100% on request 2 | 3 reruns live; reworded versions of each question |
 | **Correct refusals** | Refuses traps, answers the rest | All 7 traps refused | Trap questions in the 60 |
@@ -241,7 +241,7 @@ C+ids exists to test whether the graph earns its place on routes, not just on sp
 - [ ] Who runs the timed test, and can 3 to 5 former LP analysts take part? @PM
 - [ ] Should the case study headline wait for the live run? Recommendation: yes. @PM
 - [ ] Keep setup E for scale timing only? Recommendation: yes. @PM
-- [ ] Which team owns look-through exposure (our share of a company across every route) in a real LP: risk or investment? @PM (synthetic owner: Risk team)
+- [ ] Which team owns look-through exposure (our share of a company across every fund and deal) in a real LP: risk or investment? @PM (synthetic owner: Risk team)
 
 ---
 
@@ -249,7 +249,7 @@ C+ids exists to test whether the graph earns its place on routes, not just on sp
 
 1. **The main metric depends on an assumed checking time.** A setup that shows sources wins partly by design. We publish a sensitivity table and report correctness on its own.
 2. **Offline A and B use fixed rules in place of an AI.** They show each setup's limits, not Claude's error rate. Live results are a separate, labelled run.
-3. **"A graph for company identity" mixes two jobs.** Matching spellings is a lookup an identity table can also do. We test C+ids, so the graph has to earn its place on routes, not only spellings.
+3. **"A graph for company identity" mixes two jobs.** Matching spellings is a lookup an identity table can also do. We test C+ids, so the graph has to earn its place on ownership, not only spellings.
 4. **20 questions per request is small.** One question moves a score by 5 points. We report counts, not only percentages.
 5. **The forecast and plan figures are rules, not truth.** For the cash call forecast, "correct" means "matches the agreed rule as of the date". That tests consistency, not foresight.
 

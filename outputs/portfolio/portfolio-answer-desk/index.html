@@ -139,7 +139,7 @@
 <header class="hero">
   <div class="eyebrow">Case study · Private equity, LP portfolio · Semantic layer and graph</div>
   <h1>When the CIO asks about the portfolio, you send the right number, with its sources, in minutes.</h1>
-  <p class="lede">You're a portfolio analyst at a large LP (an investor in many private equity funds). The CIO asks about a company in the news, the committee wants its pack, the head of private equity wants a view on a manager. Today each request takes hours to a day of searching reports and spreadsheets, and two analysts can send two different numbers. Portfolio Answer Desk gives you one answer, with every route, definition and date, ready to send.</p>
+  <p class="lede">You're a portfolio analyst at a large LP (an investor in many private equity funds). The CIO asks about a company in the news, the committee wants its pack, the head of private equity wants a view on a manager. Today each request takes hours to a day of searching reports and spreadsheets, and two analysts can send two different numbers. Portfolio Answer Desk gives you one answer, with every way you own the company and the source, definition and date of each figure, ready to send.</p>
   <div class="cta">
     <a class="btn" href="https://portfolio-answer-desk.streamlit.app">Try the demo</a>
     <a class="btn off" href="https://github.com/alexandrecela10/lp-data-foundations">Code on GitHub</a>
@@ -373,10 +373,10 @@
 <h2>Current Situation</h2>
 <p>Sara, a portfolio analyst, answers by hand. She searches fund reports, manager letters and spreadsheets, then adds up what she finds.</p>
 <p><strong>A concrete case (hypothetical, synthetic data).</strong> Monday 08:10, the news says Calder Packaging is restructuring its debt. At 08:12 the CIO asks: "How exposed are we, through which managers, and did we know?"
-- We hold the company through four routes: a fund we invested in, a fund that invests in other funds, a direct investment alongside a manager (a co-investment), and a fund stake we bought from another investor.
+- We hold the company 5 ways: through a fund we invested in, twice through a fund that invests in other funds, through a direct investment alongside a manager (a co-investment), and through a fund stake we bought from another investor.
 - The company appears under three spellings across those reports.
 - A drop in its value appears only in a manager letter dated 10 September.</p>
-<p>Sara finds the first route in minutes. The other three routes and the letter take the rest of the morning, and she may still miss one. Had the company sat in one fund under one name, she'd have answered in five minutes.</p>
+<p>Sara finds the first holding in minutes. The other four and the letter take the rest of the morning, and she may still miss one. Had the company sat in one fund under one name, she'd have answered in five minutes.</p>
 <h2>Proposed Solution</h2>
 <p><strong>One shared, organised set of portfolio data, with a different screen for each of the three kinds of request:</strong></p>
 <ul>
@@ -400,9 +400,9 @@
 <tbody>
 <tr>
 <td>1</td>
-<td>A question about a company takes hours, because the company hides behind several routes and spellings</td>
+<td>A question about a company takes hours, because we own the company several ways, under several spellings</td>
 <td>Unobserved (the brief says hours to a day; never timed)</td>
-<td>If routes and spellings are linked once in the data, then every route is found in seconds, because code follows the links instead of a person searching</td>
+<td>If every spelling and holding is linked once in the data, then every way we own it is found in seconds, because code follows the links instead of a person searching</td>
 <td>Time to a correct, sourced answer Sara would send: under 10 minutes, on 20 test questions</td>
 <td>Leaders get the answer before their 09:00 meeting; unobserved until a timed test with analysts</td>
 </tr>
@@ -440,7 +440,7 @@
 <tr>
 <td>Large LPs and their data teams</td>
 <td>Faster answers to leaders, one number per question</td>
-<td>Half of LPs plan to put more money into private equity in the next 12 months (<a href="https://www.preqin.com/insights/global-reports/2025-private-equity">Preqin 2025</a>). More funds means more routes to trace</td>
+<td>Half of LPs plan to put more money into private equity in the next 12 months (<a href="https://www.preqin.com/insights/global-reports/2025-private-equity">Preqin 2025</a>). More funds means more ways to own the same company</td>
 </tr>
 <tr>
 <td>Fund administrators (firms that keep a fund's books)</td>
@@ -449,7 +449,7 @@
 </tr>
 <tr>
 <td>Portfolio monitoring software vendors (as a category)</td>
-<td>Add agreed definitions and route-following to their product</td>
+<td>Add agreed definitions and holding-tracing to their product</td>
 <td>A standard reporting template applies from Q1 2026 (<a href="https://ilpa.org/wp-content/uploads/2025/09/Combined-Overview-ILPA-Templates.pdf">ILPA</a>); standard fields make shared definitions easier to sell</td>
 </tr>
 <tr>
@@ -509,7 +509,7 @@
 </table></div>
 <ul>
 <li><strong>Across the market:</strong> about $13m a year if 300 LPs worldwide have a team answering these questions (assumed; counting them is a discovery task).</li>
-<li><strong>The larger value isn't priced:</strong> a leader decides on the full exposure, not 1 of 4 routes. Time saved alone wouldn't justify agreeing definitions across teams.</li>
+<li><strong>The larger value isn't priced:</strong> a leader decides on the full exposure, not 1 of 5 holdings. Time saved alone wouldn't justify agreeing definitions across teams.</li>
 <li><strong>What would change the estimate most:</strong> hours per case today. The timed test with former LP analysts measures it.</li>
 </ul>
 <h2>Value Equation (Hormozi)</h2>
@@ -526,7 +526,7 @@
 <tbody>
 <tr>
 <td><strong>Dream outcome</strong></td>
-<td>Sara: "I send the CIO a correct answer with every route and source before 09:00, and it matches last quarter's pack."</td>
+<td>Sara: "I send the CIO a correct answer with every holding and source before 09:00, and it matches last quarter's pack."</td>
 </tr>
 <tr>
 <td><strong>Perceived likelihood</strong></td>
@@ -551,7 +551,7 @@
 <strong>Last Updated:</strong> 2026-10-25 (revised the same day: one Strategic fit section, metrics as tables, plainer words)
 <strong>Owner:</strong> PM (drafted by Claude, unattended run approved by the PM)
 <strong>Status:</strong> Reviewed, blockers fixed (see <code>portfolio-answer-desk-solution-review-review-synthesis.md</code>)</p>
-<p><strong>What it is.</strong> A question desk for the private equity team of a large investor. Sara, an analyst, types a senior leader's question. She gets back an answer she can send: the number, the routes behind it, the definition used, and the source and date of every figure. Inside sits a test that runs the same 60 questions through five ways of organising the data, and measures which gets Sara to a correct, sourced answer fastest. It can't read real fund reports or connect to a real accounting system yet: all data is synthetic.</p>
+<p><strong>What it is.</strong> A question desk for the private equity team of a large investor. Sara, an analyst, types a senior leader's question. She gets back an answer she can send: the number, each way we own the company, the definition used, and the source and date of every figure. Inside sits a test that runs the same 60 questions through five ways of organising the data, and measures which gets Sara to a correct, sourced answer fastest. It can't read real fund reports or connect to a real accounting system yet: all data is synthetic.</p>
 <p><strong>Terms in this document</strong>
 - <strong>LP:</strong> an investor, such as a pension fund, that commits money to many private equity funds.
 - <strong>Setup:</strong> one way of organising the data plus the AI's job in it. We test five, A to D (table below).
@@ -577,9 +577,9 @@
 <tbody>
 <tr>
 <td>1</td>
-<td>A question about a company takes hours, because the company hides behind several routes and spellings</td>
+<td>A question about a company takes hours, because we own the company several ways, under several spellings</td>
 <td>Unobserved (the brief says hours to a day; never timed)</td>
-<td>If routes and spellings are linked once in the data, then every route is found in seconds, because code follows the links</td>
+<td>If every spelling and holding is linked once in the data, then every way we own it is found in seconds, because code follows the links</td>
 <td>Time to a correct, sourced answer Sara would send: under 10 minutes, 20 questions</td>
 <td>Answer before the 09:00 meeting; unobserved</td>
 </tr>
@@ -607,7 +607,7 @@
 <h2>Strategic Fit</h2>
 <ul>
 <li><strong>Goal served:</strong> the brief's goal (A), a measured prototype, and goal (B), plain-English teaching on graphs and semantic layers.</li>
-<li><strong>The value is fewer wrong numbers, more than time saved.</strong> Time saved is about $43,000 a year for one LP, a quarter of one analyst (assumed; sizing in the opportunity analysis). That alone wouldn't justify agreeing definitions across teams. A leader deciding on 1 of 4 routes instead of all 4 is the larger cost, and it isn't priced.</li>
+<li><strong>The value is fewer wrong numbers, more than time saved.</strong> Time saved is about $43,000 a year for one LP, a quarter of one analyst (assumed; sizing in the opportunity analysis). That alone wouldn't justify agreeing definitions across teams. A leader deciding on 1 of 5 holdings instead of all 5 is the larger cost, and it isn't priced.</li>
 <li><strong>Build against buy, for a real LP:</strong> buy the storage and dashboard software. Build the definitions, the company matching and the access rules, because no vendor ships them filled in. Assumed effort: 4 to 8 weeks to agree 10 core definitions and match company names.</li>
 <li><strong>Alternatives considered:</strong> buy a portfolio monitoring product (rejected for the prototype: no access, and it hides the definitions we want to test); documents plus a chatbot only (kept as setup A, the thing to beat).</li>
 <li><strong>Request order:</strong> request 1 first (most leadership attention), then 2 and 3 on the same data.</li>
@@ -626,7 +626,7 @@
 <tbody>
 <tr>
 <td><strong>Dream outcome</strong></td>
-<td>"I send the CIO a correct answer with every route and source before 09:00, and it matches last quarter's pack."</td>
+<td>"I send the CIO a correct answer with every holding and source before 09:00, and it matches last quarter's pack."</td>
 </tr>
 <tr>
 <td><strong>Perceived likelihood</strong></td>
@@ -656,20 +656,20 @@
 <hr />
 <h2>Annex A, Napkin Sketch</h2>
 <h3>Screen 1, Ask (Calder Packaging, Monday 08:12)</h3>
-<p><strong>Job.</strong> When the CIO asks about a company in the news, Sara wants every route and the latest known value, so she can reply before 09:00.
+<p><strong>Job.</strong> When the CIO asks about a company in the news, Sara wants every way we own it and the latest known value, so she can reply before 09:00.
 <strong>Main button.</strong> "Copy answer to send".</p>
 <pre><code>+------------------------------------------------------------+
 | Ask a portfolio question          as: Sara (analyst)       |
 | [How exposed are we to Calder Packaging?            ] [Ask]|
 +------------------------------------------------------------+
-| $X.Xm through 4 routes, after the 10 Sep write-down.       |
+| $X.Xm held 5 ways, after the 10 Sep write-down.           |
 |  1 Halvane V (fund)          $..m  report 30 Jun, letter   |
 |  2 Selbrook FoF III &gt; ...    $..m  report 30 Jun           |
 |  3 Co-invest Calderwick Hold. $..m  statement 30 Jun      |
 |  4 Tellmar III (bought 2024) $..m  report 30 Jun           |
 | Definition: look-through exposure v2, owner Risk team      |
 | Freshness: holdings 1 day, reports 118 days, letters 46 d  |
-| [Copy answer to send]  [Show routes on the graph]          |
+| [Copy answer to send]  [Show holdings on the graph]        |
 +------------------------------------------------------------+
 </code></pre>
 <h3>Screen 2, Committee pack (Thursday)</h3>
@@ -723,19 +723,19 @@
 <tr>
 <td>D</td>
 <td>C+ids plus a graph and letter search</td>
-<td>Same as C, and sends route and people questions to the graph</td>
-<td>Follows ownership routes and people links; searches letters</td>
+<td>Same as C, and sends ownership and people questions to the graph</td>
+<td>Follows ownership links and people links; searches letters</td>
 </tr>
 </tbody>
 </table></div>
-<p>C+ids exists to test whether the graph earns its place on routes, not just on spellings. Offline, A and B get help so they aren't easy to beat: A's search also tries each company's other names; B gets prepared tables with column notes and parent links.</p>
+<p>C+ids exists to test whether the graph earns its place on ownership, not just on spellings. Offline, A and B get help so they aren't easy to beat: A's search also tries each company's other names; B gets prepared tables with column notes and parent links.</p>
 <p><strong>Screens:</strong> chat (request 1), a dashboard with 3 views (request 2), a briefing note (request 3), and a read-only SQL page for the data team.</p>
 <p><strong>States designed:</strong>
 - <strong>Refusal card:</strong> what was asked, why it was refused, who can answer, and "Answer what I can see instead".
 - <strong>Waiting item:</strong> "1 letter item not counted, waiting for review" under any total it affects.
 - <strong>Empty card</strong> for a company we don't hold, and a banner when the offline stand-in answered.
-- <strong>Dates:</strong> every route shows its own date. A source older than 90 days reads "stale". The first line says "as of mixed dates" when dates differ.
-- <strong>Copy answer to send</strong> copies the paragraph, routes, sources, dates, Sara's note and the disclaimer.
+- <strong>Dates:</strong> every holding shows its own date. A source older than 90 days reads "stale". The first line says "as of mixed dates" when dates differ.
+- <strong>Copy answer to send</strong> copies the paragraph, holdings, sources, dates, Sara's note and the disclaimer.
 - Every screen, copy and export carries "Synthetic data. Not investment advice."</p>
 <p><strong>Data: six synthetic sources, each with its own rhythm and date.</strong></p>
 <div class="scroll"><table>
@@ -779,7 +779,7 @@
 </tr>
 </tbody>
 </table></div>
-<p><strong>Technology, chosen by measurement after the build</strong> (decision docs in <code>outputs/decisions/</code>): recursive SQL for routes, NetworkX for people links, our own YAML semantic layer, raw, cleaned and final tables in DuckDB 1.4.4 (bronze, silver, gold), and the AI picks while code computes.</p>
+<p><strong>Technology, chosen by measurement after the build</strong> (decision docs in <code>outputs/decisions/</code>): recursive SQL for ownership chains, NetworkX for people links, our own YAML semantic layer, raw, cleaned and final tables in DuckDB 1.4.4 (bronze, silver, gold), and the AI picks while code computes.</p>
 <hr />
 <h2>AI Behavior Contract</h2>
 <div class="scroll"><table>
@@ -842,7 +842,7 @@
 <tr>
 <td>Normal</td>
 <td>"How exposed are we to Calder Packaging?"</td>
-<td>Total, 4 routes, the 10 Sep write-down applied, definition, date per number</td>
+<td>Total, 5 holdings, the 10 Sep write-down applied, definition, date per number</td>
 <td></td>
 </tr>
 <tr>
@@ -854,7 +854,7 @@
 <tr>
 <td>Follow-up</td>
 <td>"And excluding co-investments?"</td>
-<td>Total minus the co-investment route, same definition</td>
+<td>Total minus the co-investment, same definition</td>
 <td></td>
 </tr>
 <tr>
@@ -909,7 +909,7 @@
 </tr>
 <tr>
 <td><strong>Correct answers</strong></td>
-<td>Number within 0.5%, and every route found</td>
+<td>Number within 0.5%, and every holding found</td>
 <td>Ranked first, as counts out of 20 per request</td>
 <td>Known answers from the generator</td>
 </tr>
@@ -1057,14 +1057,14 @@
 <li>[ ] Who runs the timed test, and can 3 to 5 former LP analysts take part? @PM</li>
 <li>[ ] Should the case study headline wait for the live run? Recommendation: yes. @PM</li>
 <li>[ ] Keep setup E for scale timing only? Recommendation: yes. @PM</li>
-<li>[ ] Which team owns look-through exposure (our share of a company across every route) in a real LP: risk or investment? @PM (synthetic owner: Risk team)</li>
+<li>[ ] Which team owns look-through exposure (our share of a company across every fund and deal) in a real LP: risk or investment? @PM (synthetic owner: Risk team)</li>
 </ul>
 <hr />
 <h2>Appendix: challenges to the brief (written down, as the brief asks)</h2>
 <ol>
 <li><strong>The main metric depends on an assumed checking time.</strong> A setup that shows sources wins partly by design. We publish a sensitivity table and report correctness on its own.</li>
 <li><strong>Offline A and B use fixed rules in place of an AI.</strong> They show each setup's limits, not Claude's error rate. Live results are a separate, labelled run.</li>
-<li><strong>"A graph for company identity" mixes two jobs.</strong> Matching spellings is a lookup an identity table can also do. We test C+ids, so the graph has to earn its place on routes, not only spellings.</li>
+<li><strong>"A graph for company identity" mixes two jobs.</strong> Matching spellings is a lookup an identity table can also do. We test C+ids, so the graph has to earn its place on ownership, not only spellings.</li>
 <li><strong>20 questions per request is small.</strong> One question moves a score by 5 points. We report counts, not only percentages.</li>
 <li><strong>The forecast and plan figures are rules, not truth.</strong> For the cash call forecast, "correct" means "matches the agreed rule as of the date". That tests consistency, not foresight.</li>
 </ol>

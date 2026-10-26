@@ -10,7 +10,7 @@ From `.claude/pm-os/portfolio/portfolio-goals.md`, applied to this project.
 | 4 | No client, employer or prospect name; no real organisation next to a synthetic fact | `name-audit.md` | Pass, PM to confirm "Calder Packaging" |
 | 5 | Every number traces to `evals/results/*.json` or is marked assumed or unobserved | The page is built from the result files | Pass: offline and live labelled; time saved marked assumed |
 | 6 | Zero em dashes, zero banned words | grep | Pass |
-| 7 | LinkedIn description 2,000 characters or fewer | `wc -m` | Pass (1,619) |
+| 7 | LinkedIn description 2,000 characters or fewer | `wc -m` | Pass (1,706) |
 | 8 | Every link returns 200 | curl | Pass for external links; repo private until published |
 
 **Passing bar:** all 8 pass before publishing. Blocked on the PM: deploy the demo, make the repo public or link a public mirror.
