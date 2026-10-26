@@ -26,6 +26,15 @@ def strip_legal(n: str) -> str:
     return re.sub(r" (Pty Ltd|Pte Ltd|Inc\.|Ltd|BV|SA|SL|GmbH|KK)$", "", n)
 
 
+def plain_route(route: str) -> str:
+    """Readable route: drop a name repeated right after itself (a reported name that is also the company's name)."""
+    out = []
+    for part in route.split(" > "):
+        if not out or out[-1] != part:
+            out.append(part)
+    return " > ".join(out)
+
+
 class SemanticArm(Foundation):
     key, name = "C", "Semantic layer"
     identity = "exact"
@@ -129,29 +138,30 @@ class SemanticArm(Foundation):
         ans.value = n.value
         ans.shown = [Shown(label=n.label, value=n.value, unit="$m", sourced=bool(n.sources), defined=True,
                            sources=n.sources, as_of=n.as_of)]
-        lines = [f"{money(n.value)} {self._what(it)}, as of {it.as_of:%d %b %Y}, through {len(ans.routes)} route(s)."]
+        k = len(ans.routes)
+        lines = [f"{money(n.value)}: {self._what(it)}, as of {it.as_of:%d %b %Y}. We own it {k} way{'s' if k != 1 else ''}:"]
         ans.allowed_numbers += [len(ans.routes), len(res.pending)]
         for r in ans.routes[:8]:
-            lines.append(f"- {r['route']}: {money(r['value'])} (report {r['as_of']})")
+            lines.append(f"- {plain_route(r['route'])}: {money(r['value'])} (fund report of {r['as_of']})")
             ans.shown.append(Shown(label=r["route"], value=r["value"], unit="$m", sourced=True, defined=True,
                                    sources=r["sources"], as_of=r["as_of"]))
         dates = {r["as_of"] for r in ans.routes}
         if len(dates) > 1:
             lines.append("Values are as of mixed report dates.")
         if any(r["factor"] != 1.0 for r in ans.routes):
-            lines.append("Adjusted for write-downs or exits we learnt of after those reports.")
+            lines.append("Adjusted for write-downs or sales that managers told us about after those reports.")
         if res.pending:
-            lines.append(f"{len(res.pending)} letter item(s) not counted, waiting for review: \"{res.pending[0]['quote']}\"")
+            lines.append(f"Not counted until a person reviews it ({len(res.pending)} from a letter): \"{res.pending[0]['quote']}\"")
         lines.append(f"Definition: {n.plain}")
         ans.text = "\n".join(lines)
         return ans
 
     def _what(self, it):
         if it.company:
-            return f"look-through exposure to {it.company}"
+            return f"our exposure to {it.company}"
         bits = " ".join(x for x in [it.region and it.region.replace("_", " ").title(), it.country, it.sector] if x)
         ex = f", excluding {', '.join(it.exclude_companies)}" if it.exclude_companies else ""
-        return f"look-through exposure to {bits} companies{ex}"
+        return f"our exposure to {bits} companies{ex}"
 
     def t_exposure_share(self, it):
         ans = Answer(foundation=self.key, question="")

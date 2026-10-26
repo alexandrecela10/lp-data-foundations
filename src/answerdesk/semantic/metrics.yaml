@@ -12,7 +12,7 @@ metrics:
     needs: [positions, reports, fof_stakes, holdings, coinvest_values, events]
     dimensions: [company, sector, region, country, route_kind]
     versions:
-      2: {from: 2025-01-01, plain: "Our share of a company's latest reported value, through every route we hold it, adjusted for write-downs and exits we learnt of since that report."}
+      2: {from: 2025-01-01, plain: "Our share of a company's latest reported value, added up over every fund and deal through which we own it, adjusted for write-downs and sales that managers told us about since that report."}
       1: {from: 2020-01-01, to: 2024-12-31, plain: "Our commitment to each fund that holds the company, times the company's share of that fund (Investment team's old definition, kept for comparison)."}
     tests: [calder_today, calder_before_letter, eu_packaging_today]
   adjusted_nav:
