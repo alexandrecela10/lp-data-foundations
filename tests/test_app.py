@@ -21,7 +21,7 @@ def test_runs_without_errors(at):
 
 def test_value_statement_first_and_tabs_name_the_tool(at):
     assert at.title[0].value == "Portfolio Answer Desk"
-    assert "correct, sourced answer" in at.markdown[0].value
+    assert "the right number, with its sources" in at.markdown[0].value
     labels = [t.label for t in at.tabs]
     for name in ["Portfolio chat", "Committee pack", "Manager briefing", "How the foundations work", "Under the hood"]:
         assert name in labels
@@ -33,7 +33,7 @@ def test_disclaimer_shown(at):
 
 
 def test_calder_answer_and_routes(at):
-    assert any("For the CIO" in m.value and "5 routes" in m.value for m in at.markdown)
+    assert any("For the CIO" in m.value and "held 5 ways" in m.value for m in at.markdown)
 
 
 def test_refusal_card_for_fee_question():

@@ -141,23 +141,23 @@
   <h1>When the CIO asks about the portfolio, you send the right number, with its sources, in minutes.</h1>
   <p class="lede">You're a portfolio analyst at a large LP (an investor in many private equity funds). The CIO asks about a company in the news, the committee wants its pack, the head of private equity wants a view on a manager. Today each request takes hours to a day of searching reports and spreadsheets, and two analysts can send two different numbers. Portfolio Answer Desk gives you one answer, with every route, definition and date, ready to send.</p>
   <div class="cta">
-    <span class="btn off">Demo: deploy pending (runs on Streamlit Community Cloud)</span>
+    <a class="btn" href="https://portfolio-answer-desk.streamlit.app">Try the demo</a>
     <a class="btn off" href="https://github.com/alexandrecela10/lp-data-foundations">Code on GitHub</a>
     <span class="dim" style="font-size:14px">Synthetic data, invented names. Tested live with Claude Sonnet 5.5, at $0.007 per answer; the demo runs offline, with fixed readers in place of the AI.</span>
   </div>
   <div class="stats">
-    <div class="stat"><b>60 of 60</b><span>leaders' questions answered correctly with Claude reading them, against 7 with documents and a chatbot (live test)</span></div>
-    <div class="stat"><b>0</b><span>wrong numbers shown with a source, against 7 with documents and a chatbot (live test)</span></div>
-    <div class="stat"><b>100%</b><span>same answer when the 60 questions were asked again, against 80% when the AI writes the SQL (live test)</span></div>
-    <div class="stat"><b>0.6 min</b><span>expected time per request, checking included, against 106 min with documents and a chatbot (live test; checking times assumed)</span></div>
+    <div class="stat"><b>60 of 60</b><span>questions answered right with Claude reading them, against 7 when an AI chatbot answered from the documents</span></div>
+    <div class="stat"><b>0</b><span>wrong numbers shown next to a source, against 7 for the chatbot</span></div>
+    <div class="stat"><b>100%</b><span>same answer when the 60 questions were asked again, against 80% when the AI writes the database query</span></div>
+    <div class="stat"><b>0.6 min</b><span>expected time per question, checking included, against 106 min for the chatbot (checking times assumed)</span></div>
   </div>
   <dl class="glance">
     <div><dt>For</dt><dd>Large LPs and their data teams</dd></div>
-    <div><dt>Users</dt><dd>You, the analyst, and the CIO, the committee and the head of PE, who decide on your answer</dd></div>
-    <div><dt>Data</dt><dd>Synthetic: 25 funds, 291 companies, 2,300 documents from 6 sources; rerun at 10x and 100x</dd></div>
+    <div><dt>Users</dt><dd>You, the analyst, and the CIO, the committee and the head of private equity, who decide on your answer</dd></div>
+    <div><dt>Data</dt><dd>Made up: 25 funds, 291 companies, 2,300 documents from 6 sources; also run at 10 and 100 times that size</dd></div>
     <div><dt>Built with</dt><dd>Python, DuckDB, a YAML semantic layer, NetworkX, Streamlit; Claude Sonnet 5.5 optional</dd></div>
   </dl>
-  <div class="craft"><span class="lbl">Techniques</span><span class="pill ai"><b>AI</b>Picks a metric, never writes numbers</span><span class="pill ai"><b>AI</b>Checks every number in the answer</span><span class="pill de"><b>Data eng</b>Matches company names across managers</span><span class="pill de"><b>Data eng</b>Walks every ownership route</span><span class="pill de"><b>Data eng</b>Knows what we knew, and when</span><span class="pill de"><b>Data eng</b>Defines each metric once</span></div>
+  <div class="craft"><span class="lbl">Techniques</span><span class="pill ai"><b>AI</b>Reads the question, never writes a number</span><span class="pill ai"><b>AI</b>Checks every number in the answer</span><span class="pill de"><b>Data eng</b>Matches company names across managers</span><span class="pill de"><b>Data eng</b>Finds every way you own a company</span><span class="pill de"><b>Data eng</b>Answers as of any past date</span><span class="pill de"><b>Data eng</b>Defines each measure once</span></div>
 </header>
 
 <section class="read">
@@ -168,83 +168,99 @@
 
 <section>
   <div class="num">02 · THE PROBLEM</div>
-  <h2 class="read">Three things go wrong today.</h2>
+  <h2 class="read">Simple questions take hours, and the answer can still be wrong.</h2>
+  <p class="read">An LP rarely owns a company directly. It puts money into funds, and the funds buy companies. So one company can sit inside several funds, each reporting it in its own document, under its own name, on its own date. Three kinds of request show what goes wrong.</p>
   <div class="cards">
-    <div class="card"><div class="k">1 · You miss routes to a company</div><p>Calder Packaging sits behind a fund, a fund of funds, a co-investment and a stake bought second-hand, under three spellings. The write-down is only in a manager letter.</p></div>
-    <div class="card"><div class="k">2 · Your pack drifts from last quarter's</div><p>Each analyst computes IRR, TVPI, unfunded and the call forecast their own way, as of whatever date the data has.</p></div>
-    <div class="card"><div class="k">3 · You miss issues in manager letters</div><p>Numbers live in one place, letters in another, and who moved where in someone's head.</p></div>
+    <div class="card"><div class="k">1 · "How much do we have in Calder?"</div><p>The CIO, 08:12, after a news story. We own part of Calder Packaging in 5 ways: through one of our funds, through a fund that invests in other funds (twice), through a fund stake we bought from another investor, and through a deal where we invested next to a fund. The managers call it "Calder Packaging Ltd", "Calder Pack." or "Calderwick Holdings", its parent. And the latest value isn't in any report: a manager's letter of 10 September cut it to 40%. Search one name in the reports and you send the wrong number.</p></div>
+    <div class="card"><div class="k">2 · The quarterly committee pack</div><p>The investment committee wants the same table every quarter: returns, money still owed to funds, expected cash calls. Each analyst calculates them their own way, on whatever date their data reaches. This quarter's numbers don't match last quarter's, and nobody can say why.</p></div>
+    <div class="card"><div class="k">3 · "Should we back this manager again?"</div><p>The head of private equity decides whether to put money into a manager's next fund. The numbers are in one place. The problems (a fee change, a partner leaving) are spread across years of letters. Where former partners went is in someone's head.</p></div>
   </div>
 </section>
 
 <section>
   <div class="num">03 · THE SOLUTION</div>
-  <h2 class="read">The AI picks a governed metric. Code computes and checks every number. You decide what to send.</h2>
+  <h2 class="read">The AI only works out what you're asking. Code calculates every number and shows where it came from.</h2>
   <div class="cards">
-    <div class="card"><div class="k">What it is</div><p>A portfolio question desk for an LP's private equity team: chat, a governed dashboard and a briefing-note writer on one data foundation.</p></div>
-    <div class="card"><div class="k">What it does</div><p>You type a question in plain words. It returns the number, every route, the definition, the date and source of every figure, or a refusal that names who can answer.</p></div>
-    <div class="card"><div class="k">What you get</div><p>A faster, correct reply to the CIO, a committee pack on last quarter's definitions, and a manager briefing with every issue quoted.</p></div>
+    <div class="card"><div class="k">What it is</div><p>A question desk for an LP's private equity team. One shared set of data and definitions sits behind three tools: a chat for one-off questions, a dashboard for the committee pack, and a note writer for manager decisions.</p></div>
+    <div class="card"><div class="k">What it does</div><p>You type a question in plain English. The AI turns it into a fixed request, such as "exposure, Calder Packaging, today". Code calculates the answer. If your role can't see the data, or the data can't answer, it says no and names who can help.</p></div>
+    <div class="card"><div class="k">What you get</div><p>The number, each way we own the company, how the number is defined, and the document and date behind every figure. A committee pack calculated exactly like last quarter's. A manager note that quotes every problem from the letters.</p></div>
   </div>
 </section>
 
 <section>
-  <div class="num">04 · HYPOTHESES AND IMPACT</div>
-  <h2 class="read">One job, one bet, one number each.</h2>
+  <div class="num">04 · THE TEST</div>
+  <h2 class="read">Five ways to organise the same data, 60 questions with known answers.</h2>
+  <p class="read">I built a made-up LP portfolio and wrote 60 questions whose right answers I knew: 20 about companies in the news, 20 for the committee pack, 20 about managers. Each of five setups answered all 60.</p>
   <div class="scroll"><table>
-    <tr><th>Your job</th><th>Hypothesis</th><th>Metric and target, then result</th><th>Expected impact</th></tr>
-    <tr><td>When a company is in the news, I want every route and the latest value, so I can reply before 09:00.</td><td>If routes and spellings are linked once in the data, every route is found in seconds, because code walks the links.</td><td>Time to a correct, sourced answer on 20 event questions: under 10 minutes. Baseline unobserved: <b class="res">20/20 correct offline and live; median 52 s live (assumed checking model)</b></td><td>Reply before the meeting; unobserved until a timed run</td></tr>
-    <tr><td>When I build the committee pack, I want last quarter's definitions as of a set date, so the numbers need no rework.</td><td>If each metric has one versioned definition, reruns and rephrasings agree, because nobody rewrites the formula.</td><td>Same answer on rerun and rephrasing: 100%. <b class="res">100% on rerun and on rephrasing, offline and live; 20/20 correct</b></td><td>Fewer pack corrections; unobserved</td></tr>
-    <tr><td>When the head of PE weighs a re-up, I want the numbers plus every issue the manager raised, so nothing is missed.</td><td>If numbers come from governed metrics and issues from cited letters, every issue appears with its source.</td><td>Planted letter issues found with a citation: 100%. <b class="res">5 of 5; 20/20 correct offline and live</b></td><td>Fewer surprises at the re-up; unobserved</td></tr>
+    <tr><th>Setup</th><th>What it is</th><th>Right answers of 60, live</th></tr>
+    <tr><td>A</td><td>Documents and an AI chatbot. The AI searches the reports and letters, then writes the answer.</td><td>7</td></tr>
+    <tr><td>B</td><td>Tables, and the AI writes the database query (SQL) that calculates the answer.</td><td>11</td></tr>
+    <tr><td>C</td><td>Agreed definitions (a semantic layer). Each measure, such as "exposure" or "return", is written down once with its formula. The AI only picks the measure, the company and the date; code calculates.</td><td>41</td></tr>
+    <tr><td>C+ids</td><td>C, plus a list that links every spelling of a company to one record (an identity table), plus search over managers' letters.</td><td>58</td></tr>
+    <tr><td>D</td><td>C+ids, plus a graph: a map of who owns what and who worked where, that code follows link by link.</td><td>60</td></tr>
   </table></div>
-  <p class="dim" style="margin-top:12px">Must not get worse: wrong numbers shown with a source. Result: 0 for C+ids and D, offline and live. Sources: <code>evals/results/offline-seed42.json</code> (fixed readers stand in for the AI) and <code>evals/results/live-claude-sonnet-5-5.json</code> (Claude Sonnet 5.5 reads every question; 1,080 calls, $7.08 including a rerun of C+ids).</p>
+  <p class="read dim" style="margin-top:12px"><strong>Offline</strong> means fixed rules read the questions: free and repeatable. <strong>Live</strong> means Claude Sonnet 5.5 read every question. Expected time adds the time you'd spend checking the answer; those checking times are my assumptions, not yet measured with people.</p>
 </section>
 
 <section>
-  <div class="num">05 · THE VALUE</div>
+  <div class="num">05 · BETS AND RESULTS</div>
+  <h2 class="read">One bet per request, each with a number to hit.</h2>
+  <div class="scroll"><table>
+    <tr><th>What you need</th><th>The bet</th><th>Target, then result</th><th>What it changes</th></tr>
+    <tr><td>When a company is in the news, find every way we own it, with today's value, and reply before the 09:00 meeting.</td><td>If every spelling of a company links to one record, code finds every way we own it in seconds.</td><td>A right answer with sources in under 10 minutes, on 20 questions. <b class="res">20 of 20 right, offline and live; about 50 seconds each, checking included (assumed)</b></td><td>You reply before the meeting. Not yet measured with analysts.</td></tr>
+    <tr><td>Build the committee pack with each number calculated exactly as last quarter, so nothing needs redoing.</td><td>If each measure is written down once, with a version number, the same question always gets the same number.</td><td>Same answer when asked twice or in other words: 100%. <b class="res">100%, offline and live; 20 of 20 right</b></td><td>Fewer corrections to the pack. Not yet measured.</td></tr>
+    <tr><td>Before backing a manager again, see the numbers and every problem the manager mentioned.</td><td>If numbers come from the agreed definitions and problems are quoted from the letters, no problem is missed.</td><td>Problems hidden in letters, found and quoted: 100%. <b class="res">5 of 5; 20 of 20 right, offline and live</b></td><td>Fewer surprises after committing. Not yet measured.</td></tr>
+  </table></div>
+  <p class="dim" style="margin-top:12px">Must never happen: a wrong number shown next to a source, because the source makes people trust it. Result: 0 for C+ids and D, offline and live. Live cost: 1,080 calls to Claude, $7.08, including a second run of C+ids. Results: <code>evals/results/offline-seed42.json</code> and <code>evals/results/live-claude-sonnet-5-5.json</code>.</p>
+</section>
+
+<section>
+  <div class="num">06 · THE VALUE</div>
   <h2 class="read">What it's worth, and what it asks of you.</h2>
-  <p class="pull">The value is the wrong number that never reaches the CIO. With documents and a chatbot, 27 of 60 answers showed a wrong number with a real citation offline, and 7 live.</p>
-  <p class="dim">Time saved is smaller: about $43,000 a year for one LP, a quarter of one analyst (assumed: 100 company questions, 4 packs and 12 manager decisions a year, at $100 an hour).</p>
+  <p class="pull">The main value is the wrong number that never reaches the CIO. When the AI answered from documents, 7 of 60 answers showed a wrong number next to a real source live, and 27 offline.</p>
+  <p class="dim">Time saved is smaller: about $43,000 a year for one LP, a quarter of one analyst's time (assumed: 100 company questions, 4 committee packs and 12 manager decisions a year, at $100 an hour).</p>
   <div class="cards two" style="margin-top:22px">
     <div class="card"><div class="k">You, the analyst</div><dl>
-      <dt>You get</dt><dd>"I send a correct answer with every route and source before 09:00, and it matches last quarter's pack."</dd>
-      <dt>Will you believe it?</dt><dd><span class="rate">Medium.</span> Every number shows its source and date, and it refuses instead of guessing. With Claude reading the questions, it answered 60 of 60 and repeated every answer on a rerun.</dd>
-      <dt>How fast</dt><dd><span class="rate">High.</span> Answers compute in milliseconds; checking is the time you spend.</dd>
-      <dt>What it takes</dt><dd><span class="rate">Low.</span> You ask in plain words and read a route table.</dd>
+      <dt>You get</dt><dd>"I send the CIO a right answer, with every source, before 09:00, and it matches last quarter's pack."</dd>
+      <dt>Will you believe it?</dt><dd><span class="rate">Medium.</span> Every number shows its document and date, and it says no rather than guess. Live, it got 60 of 60 right and gave the same answers when asked again.</dd>
+      <dt>How fast</dt><dd><span class="rate">High.</span> The number comes back in under a second. Your time goes on checking it.</dd>
+      <dt>Effort</dt><dd><span class="rate">Low.</span> You ask in plain English and read a short table.</dd>
       <dt>What you give up</dt><dd><span class="rate">Low.</span> Your own spreadsheet formulas.</dd>
     </dl></div>
     <div class="card"><div class="k">Your data leader</div><dl>
-      <dt>They get</dt><dd>"One definition per metric, with an owner, a version and tests; an audit log of every answer."</dd>
-      <dt>Will they believe it?</dt><dd><span class="rate">Medium.</span> The test set and results are public; the data is synthetic.</dd>
-      <dt>How fast</dt><dd><span class="rate">Medium.</span> Weeks to agree definitions and link company names (assumed).</dd>
-      <dt>What it takes</dt><dd><span class="rate">High.</span> Owners for each metric and a person to confirm uncertain name matches.</dd>
-      <dt>What they give up</dt><dd><span class="rate">Medium.</span> Teams' local definitions.</dd>
+      <dt>They get</dt><dd>"Each measure defined once, with an owner, a version and tests, and a log of every answer given."</dd>
+      <dt>Will they believe it?</dt><dd><span class="rate">Medium.</span> The questions and results are public, but the data is made up.</dd>
+      <dt>How fast</dt><dd><span class="rate">Medium.</span> Weeks to agree the definitions and link company names (assumed).</dd>
+      <dt>Effort</dt><dd><span class="rate">High.</span> An owner for each measure, and a person to confirm the name matches the code is unsure about.</dd>
+      <dt>What they give up</dt><dd><span class="rate">Medium.</span> Each team's own version of the formulas.</dd>
     </dl></div>
   </div>
-  <p style="margin-top:18px"><strong>The weak link is belief.</strong> The live results are published here. Next: a timed test with 3 to 5 former LP analysts, to replace the assumed checking times.</p>
+  <p style="margin-top:18px"><strong>Belief is the weak point.</strong> Next: time 3 to 5 former LP analysts on the same questions, to replace the assumed checking times.</p>
 </section>
 
 <section class="read">
-  <div class="num">06 · LIMITATIONS</div>
+  <div class="num">07 · LIMITATIONS</div>
   <h2>What this doesn't prove yet.</h2>
   <ul>
-    <li><strong>Data:</strong> synthetic, generated with known answers; real reports are messier than these four layouts.</li>
-    <li><strong>AI:</strong> one live run with one model (Claude Sonnet 5.5): the 60 questions twice, 960 calls. Where Claude wrote the answer from documents or wrote the SQL, about half the correct answers were lost against offline; where it only read the question, nothing changed.</li>
-    <li><strong>Users:</strong> no analyst has used it. The checking times are assumptions; if you recheck half the sourced numbers by hand, the time advantage disappears, the correctness one doesn't.</li>
-    <li><strong>Test set:</strong> 60 questions written by the same author as the setups. A held-out world with new spellings scored the same, but no question touched the 11 names left unmatched there.</li>
+    <li><strong>Data:</strong> made up, with known answers. Real fund reports are messier than the four layouts used here.</li>
+    <li><strong>AI:</strong> one live run with one model (Claude Sonnet 5.5): the 60 questions asked twice, 960 calls. When Claude wrote the answer from documents (A) or wrote the query (B), it got about half as many right as the fixed rules. When it only read the question (C, C+ids, D), the scores didn't change.</li>
+    <li><strong>People:</strong> no analyst has used it. The checking times are assumptions. If you recheck half the sourced numbers by hand, the time saving disappears; the accuracy gain stays.</li>
+    <li><strong>Questions:</strong> I wrote the 60 questions and built the setups. A second made-up portfolio with new spellings gave the same scores, but none of its questions touched the 11 names the code couldn't match.</li>
   </ul>
 </section>
 
 <section>
-  <div class="num">07 · SCOPE AND NEXT STEPS</div>
+  <div class="num">08 · SCOPE AND NEXT STEPS</div>
   <h2 class="read">What it won't do, and what comes next.</h2>
   <div class="cards two">
-    <div class="card"><div class="k">Non-goals</div><ul>
-      <li><strong>Real systems.</strong> No access, and the names policy keeps everything synthetic.</li>
-      <li><strong>Forecasting returns.</strong> The call forecast is a stated rule, not a model of managers.</li>
-      <li><strong>Streaming.</strong> Measured in a sibling project: batch gave the same answers with fewer moving parts.</li>
+    <div class="card"><div class="k">Not in scope</div><ul>
+      <li><strong>Real data.</strong> No access, and everything here stays made up.</li>
+      <li><strong>Predicting returns.</strong> The cash-call forecast follows a stated rule; it doesn't model how managers behave.</li>
+      <li><strong>Second-by-second updates.</strong> Measured in a sibling project: daily batches gave the same answers with fewer parts to break.</li>
     </ul></div>
     <div class="card"><div class="k">Next</div><ol>
-      <li><strong>Timed run with 3 to 5 former LP analysts.</strong> Replaces the assumed checking times.</li>
-            <li><strong>Fuzzy name matching with a review queue.</strong> Closes the 11 names the held-out world left unmatched.</li>
+      <li><strong>Time 3 to 5 former LP analysts.</strong> Replaces the assumed checking times.</li>
+      <li><strong>Approximate name matching, with a person confirming unsure matches.</strong> Closes the 11 names the second portfolio left unmatched.</li>
     </ol></div>
   </div>
 </section>
@@ -254,86 +270,92 @@
   <h2>Go deeper.</h2>
 
   <details><summary>Try the demo, step by step <small>three steps, in order</small></summary>
-<div class="read"><ol class="steps"><li><strong>In Portfolio chat, ask how exposed you are to Calder Packaging.</strong> Read the five routes, then press "Next hop" to watch the graph walk them.</li><li><strong>Ask what fees you pay on the Calderwick co-investment.</strong> You get a refusal that names who can see fee terms; switch role to the head of PE and ask again.</li><li><strong>Open Committee pack, then How the foundations work.</strong> Export the pack, then watch the Calder question go through each of the five setups, and where each one breaks.</li></ol></div>
+<div class="read"><ol class="steps"><li><strong>In Portfolio chat, ask how exposed we are to Calder Packaging.</strong> Read the five ways we own it, each with its document and date.</li><li><strong>Ask what fees we pay on the Calderwick co-investment.</strong> It says no and names who may see fee terms. Switch your role to head of private equity and ask again.</li><li><strong>Open Committee pack, then How the foundations work.</strong> Export the pack, then watch the Calder question go through each of the five setups, and where each one breaks.</li></ol></div>
   </details>
 
   <details><summary>Main learnings <small>what this test showed, offline and live</small></summary>
   <div class="read"><ul>
-    <li><strong>With Claude reading the questions, the three setups built on agreed definitions scored the same as offline.</strong> C 41, C+ids 58, D 60 of 60, and every answer repeated on a rerun. In these setups Claude fills in the question's fields; code computes the number.</li>
-    <li><strong>Where Claude wrote the answer from documents (A) or wrote the SQL (B), about half the correct answers were lost.</strong> A went from 18 to 7, B from 22 to 11. On reworded questions, both gave the same answer half the time.</li>
-    <li><strong>Spelling, not hops, broke the semantic layer on Calder.</strong> Three of its five routes sat under "Calder Pack." and "Calderwick Holdings". The recursive query walked the fund of funds hop fine. An identity table fixed all 15 misses on the CIO's request (hypothesis 1).</li>
-    <li><strong>The graph tied the identity-table setup on routes,</strong> 20 to 20, offline and live. By a rule set before the run it had to win by 2 questions. Its 2 extra correct answers ask where Brennick's former partners went; AI-written SQL on the people table answered both too.</li>
-    <li><strong>The identity-table setup changed once, after the first live run.</strong> It had no letter search, so the graph comparison mixed two differences, and it missed one letter issue in 2 answers. With letter search added it differs from D only by the graph: 58 of 60, no wrong number with a source.</li>
-    <li><strong>One definition per metric settled the pack.</strong> C, C+ids and D scored 20 of 20 on the committee pack offline and live; AI-written SQL scored 6 offline and 3 live (hypothesis 2).</li>
-    <li><strong>A first live attempt was invalid and looked fine.</strong> Every live read failed on an API schema limit and fell back to the offline reader without saying so, so the "live" scores copied offline. Failed calls now mark the run invalid.</li>
-    <li><strong>The time result rests on trust in sources.</strong> Under the assumed model you check a sourced number in 5 s; if you recheck half by hand, the setups converge.</li>
+    <li><strong>When Claude only read the question, the scores didn't move.</strong> C 41, C+ids 58, D 60 of 60, the same as offline, and every answer repeated when asked again. In these setups Claude fills in a form (which measure, which company, which date); code calculates the number.</li>
+    <li><strong>When Claude wrote the answer from documents (A) or wrote the query (B), it got about half as many right.</strong> A fell from 18 to 7, B from 22 to 11. Asked the same question in other words, each gave the same answer half the time.</li>
+    <li><strong>Spelling, not the chain of funds, is what broke C on Calder.</strong> Three of the five ways we own Calder are reported as "Calder Pack." or "Calderwick Holdings". The query followed the fund that invests in other funds without trouble. The list linking every spelling to one company fixed all 15 misses on the CIO's questions.</li>
+    <li><strong>The graph added nothing on finding Calder.</strong> C+ids and D both got 20 of 20, offline and live. A rule written before the test said the graph had to win by 2 questions to be worth keeping. D's 2 extra right answers were about where a manager's former partners went; B answered both with a query on the people table.</li>
+    <li><strong>C+ids changed once, after the first live run.</strong> It had no letter search, so it missed one problem written in a letter, in 2 answers. With letter search added, the graph is the only difference between C+ids and D: 58 of 60, and no wrong number shown with a source.</li>
+    <li><strong>Agreed definitions fixed the committee pack.</strong> C, C+ids and D got 20 of 20 on the pack. B, where the AI writes the query, got 6 offline and 3 live.</li>
+    <li><strong>A first live run was broken and looked fine.</strong> The API rejected every call to Claude (the answer format had too many optional fields), and the code quietly used the fixed rules instead, so the "live" scores copied offline. Now any failed call marks the run invalid.</li>
+    <li><strong>The time result depends on trusting the sources.</strong> The model assumes you check a sourced number in 5 seconds. If you recheck half of them by hand, the time advantage disappears.</li>
   </ul></div>
-  <p class="dim">Correct answers of 60, live (Claude Sonnet 5.5).</p>
+  <p class="dim">Right answers of 60, live (Claude Sonnet 5.5).</p>
   <div class="chart"><svg viewBox="0 0 620 160" role="img" aria-label="Correct answers out of 60 per setup, live"><text class="lab" x="0" y="22">A</text><rect class="bar" x="70" y="10" width="56" height="18"></rect><text class="val" x="134" y="24">7</text><text class="lab" x="0" y="52">B</text><rect class="bar" x="70" y="40" width="88" height="18"></rect><text class="val" x="166" y="54">11</text><text class="lab" x="0" y="82">C</text><rect class="bar" x="70" y="70" width="328" height="18"></rect><text class="val" x="406" y="84">41</text><text class="lab" x="0" y="112">C+ids</text><rect class="bar" x="70" y="100" width="464" height="18"></rect><text class="val" x="542" y="114">58</text><text class="lab" x="0" y="142">D</text><rect class="bar" x="70" y="130" width="480" height="18"></rect><text class="val" x="558" y="144">60</text></svg></div>
-  <div class="scroll"><table><tr><th>Setup</th><th></th><th>Correct of 60, offline / live</th><th>CIO event</th><th>Pack</th><th>Manager</th><th>Wrong but sourced</th><th>Same on rerun, live</th><th>Expected time</th></tr><tr><td>A</td><td>Documents + search</td><td>18 / 7</td><td>4 / 2</td><td>4 / 2</td><td>10 / 3</td><td>27 / 7</td><td>90%</td><td>84.2 min / 106.1 min</td></tr><tr><td>B</td><td>Tables + AI-written SQL</td><td>22 / 11</td><td>3 / 2</td><td>6 / 3</td><td>13 / 6</td><td>0 / 0</td><td>80%</td><td>76.6 min / 98.3 min</td></tr><tr><td>C</td><td>Semantic layer</td><td>41 / 41</td><td>5 / 5</td><td>20 / 20</td><td>16 / 16</td><td>15 / 15</td><td>100%</td><td>38.4 min / 38.4 min</td></tr><tr><td>C+ids</td><td>Semantic layer + identity table + letter search</td><td>58 / 58</td><td>20 / 20</td><td>20 / 20</td><td>18 / 18</td><td>0 / 0</td><td>100%</td><td>4.7 min / 4.6 min</td></tr><tr><td>D</td><td>C+ids + graph</td><td>60 / 60</td><td>20 / 20</td><td>20 / 20</td><td>20 / 20</td><td>0 / 0</td><td>100%</td><td>40 s / 39 s</td></tr></table></div>
-  <p class="dim">Explore it: <a href="foundations.html">How the foundations work</a>, an animated walk of the Calder question through each setup, built from these results.</p>
+  <div class="scroll"><table><tr><th>Setup</th><th></th><th>Right of 60, offline / live</th><th>Company in the news</th><th>Committee pack</th><th>Manager decision</th><th>Wrong number shown with a source</th><th>Same answer when asked again, live</th><th>Expected time per question, checking included</th></tr><tr><td>A</td><td>Documents and an AI chatbot</td><td>18 / 7</td><td>4 / 2</td><td>4 / 2</td><td>10 / 3</td><td>27 / 7</td><td>90%</td><td>84 min / 106 min</td></tr><tr><td>B</td><td>AI writes the database query</td><td>22 / 11</td><td>3 / 2</td><td>6 / 3</td><td>13 / 6</td><td>0 / 0</td><td>80%</td><td>77 min / 98 min</td></tr><tr><td>C</td><td>Agreed definitions</td><td>41 / 41</td><td>5 / 5</td><td>20 / 20</td><td>16 / 16</td><td>15 / 15</td><td>100%</td><td>38 min / 38 min</td></tr><tr><td>C+ids</td><td>C + company name list + letter search</td><td>58 / 58</td><td>20 / 20</td><td>20 / 20</td><td>18 / 18</td><td>0 / 0</td><td>100%</td><td>4.7 min / 4.6 min</td></tr><tr><td>D</td><td>C+ids + graph</td><td>60 / 60</td><td>20 / 20</td><td>20 / 20</td><td>20 / 20</td><td>0 / 0</td><td>100%</td><td>40 s / 39 s</td></tr></table></div>
+  <p class="dim">Expected time includes the cost of a wrong answer (2 hours to find and correct it, assumed), which is why A and B take so long.</p>
+  <p class="dim">See it move: <a href="foundations.html">How the foundations work</a> follows the Calder question through each setup, built from these results.</p>
   </details>
 
-  <details><summary>Hypotheses in full <small>before and after, and the test for each</small></summary>
+  <details><summary>The three bets in full <small>before and after, and how each was tested</small></summary>
   <div class="cards">
-    <div class="card"><h3>Event question</h3><p><strong>Before:</strong> search folders; routes under other spellings missed. <strong>After:</strong> identity links plus a route walk return all 5 routes. <strong>Test:</strong> 20 questions incl. three spellings, a date before the letter, a follow-up.</p></div>
-    <div class="card"><h3>Committee pack</h3><p><strong>Before:</strong> each analyst's formula. <strong>After:</strong> one versioned definition per metric, as of a set date. <strong>Test:</strong> 20 questions incl. rephrasings, a rerun, last quarter's definition, PME and gross IRR (must refuse).</p></div>
-    <div class="card"><h3>Manager decision</h3><p><strong>Before:</strong> numbers and letters apart. <strong>After:</strong> governed numbers plus cited letters plus people links. <strong>Test:</strong> 20 questions incl. fee terms the analyst can't see and an advice question (must refuse).</p></div>
+    <div class="card"><h3>Company in the news</h3><p><strong>Before:</strong> you search folders by company name and miss what's filed under other spellings. <strong>After:</strong> every spelling links to one company, and code follows every holding to it: all 5 ways found. <strong>Test:</strong> 20 questions, including three spellings, a date before the letter arrived, and a follow-up question.</p></div>
+    <div class="card"><h3>Committee pack</h3><p><strong>Before:</strong> each analyst's own formula. <strong>After:</strong> each measure written once, with a version, as of a set date. <strong>Test:</strong> 20 questions, including the same question in other words, asked twice, last quarter's definition, and two measures the data can't support (it must say no).</p></div>
+    <div class="card"><h3>Manager decision</h3><p><strong>Before:</strong> numbers in one place, letters in another. <strong>After:</strong> numbers from the agreed definitions, problems quoted from letters, and who worked where. <strong>Test:</strong> 20 questions, including fee terms the analyst may not see and a request for investment advice (it must say no).</p></div>
   </div>
   </details>
 
-  <details><summary>All sub-problems <small>tackled, partial, not tackled, with the code that proves it</small></summary>
-  <div class="scroll"><table><tr><th>Sub-problem</th><th>Status</th><th>Where</th></tr>
-  <tr><td>Find every ownership route</td><td>Tackled</td><td><code>semantic/layer.py</code> EXPOSURE_SQL, <code>graph.py</code> routes</td></tr>
-  <tr><td>Match company spellings</td><td>Tackled (171 of 171 names); partial on new spellings (11 of 184 left for a person)</td><td><code>pipeline.py</code> build_identity</td></tr>
-  <tr><td>Point in time</td><td>Tackled</td><td>two dates on every fact; <code>tests/test_data.py</code></td></tr>
-  <tr><td>One definition per metric</td><td>Tackled</td><td><code>semantic/metrics.yaml</code>, <code>tests/test_metrics.py</code></td></tr>
-  <tr><td>Access by role</td><td>Tackled (demo switch, not a login)</td><td><code>access.py</code>, <code>tests/test_governance.py</code></td></tr>
-  <tr><td>Read letters into events</td><td>Partial: fixed patterns miss loosely worded issues; search covers them</td><td><code>pipeline.py</code> PATTERNS, <code>foundations/search.py</code></td></tr>
-  <tr><td>Real report layouts and PDFs</td><td>Not tackled</td><td>synthetic text only</td></tr>
+  <details><summary>Every part of the problem <small>solved, partly solved, not solved, with the code that shows it</small></summary>
+  <div class="scroll"><table><tr><th>Part of the problem</th><th>Status</th><th>Where</th></tr>
+  <tr><td>Find every way we own a company</td><td>Solved</td><td><code>semantic/layer.py</code> EXPOSURE_SQL, <code>graph.py</code> routes</td></tr>
+  <tr><td>Match company spellings</td><td>Solved (171 of 171 names); partly on new spellings (11 of 184 left for a person)</td><td><code>pipeline.py</code> build_identity</td></tr>
+  <tr><td>Answer as of a past date, with only what we knew then</td><td>Solved</td><td>two dates on every fact; <code>tests/test_data.py</code></td></tr>
+  <tr><td>One definition per measure</td><td>Solved</td><td><code>semantic/metrics.yaml</code>, <code>tests/test_metrics.py</code></td></tr>
+  <tr><td>Show each person only what their role allows</td><td>Solved (a switch in the demo, not a login)</td><td><code>access.py</code>, <code>tests/test_governance.py</code></td></tr>
+  <tr><td>Turn letters into facts</td><td>Partly: fixed patterns miss loosely worded problems; search finds them</td><td><code>pipeline.py</code> PATTERNS, <code>foundations/search.py</code></td></tr>
+  <tr><td>Real report layouts and PDFs</td><td>Not solved</td><td>made-up text only</td></tr>
   </table></div>
   </details>
 
-  <details><summary>How it's built <small>input, process, output, and how it was evaluated</small></summary>
+  <details><summary>How it's built <small>input, steps, output, and how it was tested</small></summary>
   <div class="read">
-  <p><strong>Input:</strong> six synthetic sources with their own rhythm: holdings (daily), call and distribution notices (about weekly), fund reports (quarterly, 40 to 90 days late, four layouts), manager letters, reference data, news every 15 minutes.</p>
-  <p><strong>Process:</strong> documents land as received (bronze), are read into checked fields with bad rows blocked (silver: 26 malformed notices blocked), and become typed tables with the source of every row (gold). The AI reads the question into fixed fields; the semantic layer computes; the graph walks routes and people; a checker blocks any number not computed.</p>
-  <p><strong>Output:</strong> a chat answer, a 3-view committee dashboard with export, a manager briefing note, a read-only SQL notebook.</p>
-  <p><strong>Evaluation:</strong> 60 questions with answers known from the generator, five setups, scored on correctness first, then time to a sendable answer under a stated checking model. A held-out world (another seed, new spellings) scored separately.</p>
-  <div class="scroll"><table><tr><th>Checking model changed</th><th>Ranking, fastest first</th></tr><tr><td>base</td><td>C &lt; C+ids &lt; D &lt; A &lt; B</td></tr><tr><td>half the per-number times</td><td>C &lt; C+ids &lt; D &lt; A &lt; B</td></tr><tr><td>double</td><td>C &lt; C+ids &lt; D &lt; A &lt; B</td></tr><tr><td>50% of sourced numbers rechecked by hand</td><td>A &lt; C &lt; C+ids &lt; D &lt; B</td></tr><tr><td>all sourced numbers rechecked</td><td>A &lt; B &lt; C &lt; C+ids &lt; D</td></tr></table></div>
-  <h4>At 10x and 100x the data</h4>
-  <div class="scroll"><table><tr><th>Size</th><th>Funds</th><th>Documents</th><th>Rebuild</th><th>Routes, recursive SQL</th><th>Routes, graph build + walk</th><th>Routes, DuckPGQ</th></tr><tr><td>1x</td><td>25</td><td>2,300</td><td>1.0 s</td><td>37 ms</td><td>20 + 2 ms</td><td>13 ms</td></tr><tr><td>10x</td><td>563</td><td>33,835</td><td>4.2 s</td><td>80 ms</td><td>59 + 29 ms</td><td>16 ms</td></tr><tr><td>100x</td><td>5,902</td><td>333,578</td><td>99.0 s</td><td>538 ms</td><td>438 + 297 ms</td><td>25 ms</td></tr></table></div>
+  <p><strong>Input:</strong> six made-up sources, each arriving on its own schedule: holdings (daily), notices of cash called and paid out (about weekly), fund reports (quarterly, 40 to 90 days late, in four layouts), manager letters, reference data, and news every 15 minutes.</p>
+  <p><strong>Steps:</strong> documents are kept as received (bronze). They are read into checked fields, and bad rows are stopped (silver: 26 broken notices stopped). Then they become tables where every row names its source (gold). The AI turns the question into fixed fields; the semantic layer calculates the number; the graph follows ownership and people links; a checker blocks any number the code didn't calculate.</p>
+  <p><strong>Output:</strong> a chat answer, a committee dashboard with 3 views and export, a manager note, and a read-only query notebook for the data team.</p>
+  <p><strong>Test:</strong> 60 questions with known answers, five setups. Scored first on whether the answer is right, then on time to an answer you can send, using stated checking times. A second made-up portfolio, with new spellings, scored separately.</p>
+  <p>If the checking times are wrong, does the order change? Median time to send a right answer, fastest first:</p>
+  <div class="scroll"><table><tr><th>If checking takes</th><th>Fastest first</th></tr><tr><td>as assumed</td><td>C, D, C+ids, A, B</td></tr><tr><td>half as long</td><td>C, D, C+ids, A, B</td></tr><tr><td>twice as long</td><td>C, D, C+ids, A, B</td></tr><tr><td>as assumed, but you recheck half the sourced numbers by hand</td><td>A, C, D, C+ids, B</td></tr><tr><td>as assumed, but you recheck every sourced number by hand</td><td>A, B, C, D, C+ids</td></tr></table></div>
+  <p class="dim">C is fastest on the answers it gets right because they show fewer numbers to check, but it gets only 41 of 60 right.</p>
+  <h4>With 10 and 100 times more data</h4>
+  <div class="scroll"><table><tr><th>Size</th><th>Funds</th><th>Documents</th><th>Rebuild all tables</th><th>Find every way we own a company: database query</th><th>Same, graph (build + walk)</th><th>Same, graph inside the database (DuckPGQ)</th></tr><tr><td>1x</td><td>25</td><td>2,300</td><td>1.0 s</td><td>37 ms</td><td>20 + 2 ms</td><td>13 ms</td></tr><tr><td>10x</td><td>563</td><td>33,835</td><td>4.2 s</td><td>80 ms</td><td>59 + 29 ms</td><td>16 ms</td></tr><tr><td>100x</td><td>5,902</td><td>333,578</td><td>99.0 s</td><td>538 ms</td><td>438 + 297 ms</td><td>25 ms</td></tr></table></div>
   </div>
   </details>
 
-  <details><summary>How success is tracked <small>leading and lagging metrics</small></summary>
-  <div class="scroll"><table><tr><th>Metric</th><th>Type</th><th>Now</th></tr>
-  <tr><td>Correct answers on the 60 questions</td><td>Leading</td><td>60/60 offline and live (D)</td></tr>
-  <tr><td>Wrong numbers shown with a source</td><td>Guardrail</td><td>0 (C+ids and D)</td></tr>
-  <tr><td>Time to a sendable answer</td><td>Lagging</td><td>assumed model; timed run next</td></tr>
-  <tr><td>Refusal traps refused</td><td>Guardrail</td><td>7/7</td></tr>
-  <tr><td>Pack corrections per quarter</td><td>Lagging</td><td>unobserved</td></tr>
+  <details><summary>How success is tracked <small>early signals and end results</small></summary>
+  <div class="scroll"><table><tr><th>Measure</th><th>Type</th><th>Now</th></tr>
+  <tr><td>Right answers on the 60 questions</td><td>Early signal</td><td>60 of 60, offline and live (D)</td></tr>
+  <tr><td>Wrong numbers shown with a source</td><td>Must stay at 0</td><td>0 (C+ids and D)</td></tr>
+  <tr><td>Time to an answer you can send</td><td>End result</td><td>assumed; timed test next</td></tr>
+  <tr><td>Trick questions it should refuse</td><td>Must stay at 100%</td><td>7 of 7</td></tr>
+  <tr><td>Corrections to the pack per quarter</td><td>End result</td><td>not yet measured</td></tr>
   </table></div>
   </details>
 
   <details><summary>Trade-offs <small>what was chosen, over what, and the cost</small></summary>
   <div class="scroll"><table><tr><th>Chose</th><th>Over</th><th>Gain</th><th>Cost</th></tr>
-  <tr><td>AI picks, code computes</td><td>AI writes the answer</td><td>No number the code didn't compute</td><td>Questions outside the menu are refused</td></tr>
-  <tr><td>Own YAML semantic layer</td><td>MetricFlow (59 packages), Boring Semantic Layer (14)</td><td>1 dependency; point in time fits</td><td>No standard format for other tools</td></tr>
-  <tr><td>Recursive SQL for routes, graph for people</td><td>Graph everywhere</td><td>One copy of the data; same answers</td><td>No graph query language for analysts</td></tr>
-  <tr><td>Batch by source schedule</td><td>Streaming</td><td>Fewer moving parts</td><td>News is not seconds-fresh</td></tr>
+  <tr><td>The AI picks the measure; code calculates</td><td>The AI writes the answer</td><td>No number the code didn't calculate</td><td>Questions outside the list of measures get a no</td></tr>
+  <tr><td>A home-made semantic layer in one YAML file</td><td>MetricFlow (59 packages), Boring Semantic Layer (14)</td><td>1 dependency; answering as of a past date fits</td><td>Other tools can't read it</td></tr>
+  <tr><td>Database queries to find ownership, graph only for people</td><td>Graph for everything</td><td>One copy of the data; same answers</td><td>Analysts get no graph query language</td></tr>
+  <tr><td>Daily batches, on each source's schedule</td><td>Second-by-second updates</td><td>Fewer parts to break</td><td>News is minutes old, not seconds</td></tr>
   </table></div>
   </details>
 
   <details><summary>Terms on this page <small>plain definitions</small></summary>
   <div class="read"><ul>
-    <li><strong>LP:</strong> an investor that commits money to private equity funds.</li>
-    <li><strong>Route:</strong> a chain of holdings from us to a company, such as a fund inside a fund of funds.</li>
-    <li><strong>Look-through exposure:</strong> our share of a company's value through every route.</li>
-    <li><strong>Semantic layer:</strong> a list of metrics, each defined once with an owner, that every tool asks.</li>
-    <li><strong>Graph:</strong> things plus the links between them; questions become walks along links.</li>
-    <li><strong>Point in time:</strong> answering with only what we knew on a date.</li>
-    <li><strong>TVPI (total value to paid-in):</strong> cash back plus current value, divided by cash paid in.</li>
+    <li><strong>LP:</strong> an investor, such as a pension fund, that puts money into private equity funds.</li>
+    <li><strong>Fund of funds:</strong> a fund that invests in other funds.</li>
+    <li><strong>Co-investment:</strong> a deal where the LP invests in a company directly, next to a fund.</li>
+    <li><strong>Stake bought from another investor (secondary):</strong> a share of a fund bought second-hand.</li>
+    <li><strong>Exposure:</strong> our share of a company's value, added up over every way we own it.</li>
+    <li><strong>Semantic layer:</strong> a list of measures, each defined once with an owner, that every tool uses.</li>
+    <li><strong>Identity table:</strong> a list that links every spelling of a company to one record.</li>
+    <li><strong>Graph:</strong> things plus the links between them; a question becomes a walk along the links.</li>
+    <li><strong>As of a past date:</strong> answering with only what we knew on that date.</li>
+    <li><strong>IRR and TVPI:</strong> two return measures. TVPI is cash back plus current value, divided by cash paid in.</li>
   </ul></div>
   </details>
 
@@ -1050,6 +1072,7 @@
   <details><summary>Related project and links <small>the sibling project this one reuses, explainer and code</small></summary>
   <ul>
     <li><strong>Related project:</strong> <a href="../secondaries-radar/">Secondaries Radar</a> triages secondaries offers with a price view from your own fund data. This project reuses its synthetic fund universe, bronze, silver and gold layers, tracing and the batch-against-stream measurement.</li>
+    <li><strong>Demo:</strong> <a href="https://portfolio-answer-desk.streamlit.app">portfolio-answer-desk.streamlit.app</a></li>
     <li><strong>Explainer:</strong> <a href="foundations.html">How the foundations work</a>, the Calder question through each setup.</li>
     <li><strong>Code:</strong> <a href="https://github.com/alexandrecela10/lp-data-foundations">github.com/alexandrecela10/lp-data-foundations</a></li>
   </ul>
