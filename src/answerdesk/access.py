@@ -3,6 +3,8 @@ rows are absent, so no query (governed or AI-written) can reach them. Documents 
 that may see them; search drops the rest. The role picker in the demo is a switch, not a login."""
 from __future__ import annotations
 
+import threading
+
 import duckdb
 
 ROLES = {
@@ -15,13 +17,23 @@ ROLES = {
 WHO_CAN = {"coinvest_fees": "the head of private equity", "planned": "the head of private equity"}
 
 _cache: dict = {}
+_lock = threading.Lock()
 
 
 def role_db(store, role: str) -> duckdb.DuckDBPyConnection:
-    """A fresh in-memory database holding only what this role may see (schema `gold`)."""
+    """A cursor on an in-memory database holding only what this role may see (schema `gold`).
+
+    The database is built once per store and role, then shared. Each call returns its own cursor,
+    because one DuckDB connection is not safe to use from two threads at once.
+    """
     key = (id(store), role)
-    if key in _cache:
-        return _cache[key]
+    with _lock:
+        if key not in _cache:
+            _cache[key] = _build_role_db(store, role)
+        return _cache[key].cursor()
+
+
+def _build_role_db(store, role: str) -> duckdb.DuckDBPyConnection:
     rules = ROLES[role]
     con = duckdb.connect()
     con.execute("CREATE SCHEMA gold")
@@ -36,7 +48,6 @@ def role_db(store, role: str) -> duckdb.DuckDBPyConnection:
         con.register("_t", arrow)
         con.execute(f"CREATE TABLE gold.{t} AS SELECT * FROM _t")
         con.unregister("_t")
-    _cache[key] = con
     return con
 
 
