@@ -11,6 +11,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import re
+import threading
 import time
 from dataclasses import dataclass, field
 
@@ -52,11 +53,26 @@ def _amount_usd(s: str) -> float:
 
 @dataclass
 class Store:
-    con: duckdb.DuckDBPyConnection
+    root: duckdb.DuckDBPyConnection
     world: World
     docs: list
     timings: dict = field(default_factory=dict)
     counts: dict = field(default_factory=dict)
+    _local: threading.local = field(default_factory=threading.local, repr=False)
+
+    @property
+    def con(self) -> duckdb.DuckDBPyConnection:
+        """This thread's cursor on the shared database.
+
+        One DuckDB connection is not safe to use from two threads at once. The Streamlit demo
+        caches one Store for every visitor, so two sessions querying the same connection crashed
+        the process (segmentation fault on Streamlit Cloud). Each thread gets its own cursor:
+        same in-memory database, separate connection state.
+        """
+        cur = getattr(self._local, "cur", None)
+        if cur is None:
+            cur = self._local.cur = self.root.cursor()
+        return cur
 
     def q(self, sql: str, params=None):
         return self.con.execute(sql, params or []).fetchall()

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import datetime as dt
 import re
+import threading
 import time
 
 import duckdb
@@ -41,12 +42,19 @@ NOTES = {
 }
 DROP = {"holdings": ["company_id", "match_method"], "coinvest_values": ["company_id"], "events": ["company_id"]}
 _cache: dict = {}
+_lock = threading.Lock()
 
 
 def warehouse(store, role) -> duckdb.DuckDBPyConnection:
+    """A cursor on this role's warehouse copy. Built once, then one cursor per call (thread safety)."""
     key = (id(store), role)
-    if key in _cache:
-        return _cache[key]
+    with _lock:
+        if key not in _cache:
+            _cache[key] = _build_warehouse(store, role)
+        return _cache[key].cursor()
+
+
+def _build_warehouse(store, role) -> duckdb.DuckDBPyConnection:
     src = access.role_db(store, role)
     con = duckdb.connect()
     con.execute("CREATE SCHEMA gold")
@@ -57,7 +65,6 @@ def warehouse(store, role) -> duckdb.DuckDBPyConnection:
         con.register("_t", src.execute(f"SELECT {', '.join(cols)} FROM gold.{t}").arrow())
         con.execute(f"CREATE TABLE gold.{t} AS SELECT * FROM _t")
         con.unregister("_t")
-    _cache[key] = con
     return con
 
 
