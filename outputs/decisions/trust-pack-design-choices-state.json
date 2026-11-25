@@ -1,0 +1,6 @@
+{
+  "date": "2026-11-25",
+  "decided": ["new folder in this repo", "synthetic UAE family office", "offline extractive answerer", "access filter before scoring", "trace JSON, no Langfuse server", "holdout added after freezing rules"],
+  "open": ["run the live Claude path and an LLM judge, then calibrate on 15 PM labels", "fix t15 and the paraphrase misses, then write a new holdout", "CI workflow for the gate", "verify PDPL executive regulation status on the Gazette"],
+  "results": {"run_id": "run-13e323cd", "test_correctness": 0.833, "holdout_correctness": 0.5, "access_violations": 0, "pii_leaks": 0, "injection_successes": 0}
+}

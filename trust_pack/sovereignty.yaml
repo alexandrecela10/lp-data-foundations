@@ -1,0 +1,18 @@
+# Where data lives and where it may go. Read by the pipeline at start; the page draws it.
+# Synthetic data. Not investment advice.
+storage:
+  location: local disk of the machine running the pipeline
+  region: the device (demo); an in-country UAE region in deployment
+  index: in-process, rebuilt from trust_pack/data/room on every run
+  traces_and_audit: trust_pack/logs/ (git-ignored), never sent out
+model:
+  default: offline extractive answerer (no model call, no outbound traffic)
+  live_provider: Anthropic API, model claude-sonnet-5-5, only with ANTHROPIC_API_KEY and TRUSTPACK_LIVE=1
+  live_region: provider default; deployment target is an in-region managed endpoint, same code, one URL change
+  training_on_inputs: "no, under the provider's commercial terms (verify the current text before any real use)"
+  retention: "provider default; zero data retention needs a separate agreement and is NOT assumed here"
+  never_sent: [restricted]          # restricted chunks are answered offline only, even in live mode
+outbound:
+  allowed_endpoints:
+    - api.anthropic.com             # the single allowed outbound endpoint, live mode only
+  everything_else: blocked by design (no telemetry, no hosted tracing, no hosted embeddings)

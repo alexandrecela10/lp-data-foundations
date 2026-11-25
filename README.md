@@ -4,6 +4,18 @@
 
 Synthetic data. Not investment advice. All names are invented.
 
+## Trust Pack (new)
+
+A worked example of trusted AI answers over a single UAE family office's documents: 12 controls from document contracts to audit and replay, an eval gate, and an interactive page that teaches the UAE data rules. Synthetic data. Not investment advice.
+
+```
+make setup && make demo     # then open trust_pack/site/index.html
+make test                   # includes the Trust Pack acceptance tests
+make replay ID=rq-demo-0-priya
+```
+
+Read `trust_pack/TRUST.md` first, then `DEMO.md`, `DATA_BOUNDARY.md`, `RUNBOOK.md`. Intent: `intent/trust-pack-family-office.md`. Plan and audit: `TRUST_PACK_M0.md`.
+
 ## The five setups tested
 
 The same 60 questions, 20 for each of three requests, go through five ways of organising the data. Every right answer is known, because the data is generated.
