@@ -3,7 +3,8 @@
   python -m trustpack.cli ingest            contracts, rejects, PII redactions, chunks
   python -m trustpack.cli ask USER "QUESTION"
   python -m trustpack.cli eval              golden set, metrics, gate (exit 1 if it fails)
-  python -m trustpack.cli replay REQUEST_ID
+  python -m trustpack.cli replay REQUEST_ID      re-run and compare the trace fingerprint
+  python -m trustpack.cli verify-audit          recompute the audit hash chain
   python -m trustpack.cli page              build trust_pack/site/index.html from the latest run
 """
 from __future__ import annotations
@@ -32,7 +33,11 @@ def main(argv: list[str]) -> int:
     elif cmd == "replay":
         r = pipeline.replay(argv[1])
         print(json.dumps(r, indent=1))
-        return 0 if r["same"] and not r["problems"] else 1
+        return 0 if r["byte_identical"] and not r["problems"] else 1
+    elif cmd == "verify-audit":
+        r = pipeline.verify_audit()
+        print(json.dumps(r))
+        return 0 if r["ok"] else 1
     elif cmd == "page":
         from . import page
         print(page.build())

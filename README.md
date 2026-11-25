@@ -14,7 +14,7 @@ make test                   # includes the Trust Pack acceptance tests
 make replay ID=rq-demo-0-priya
 ```
 
-Read `trust_pack/TRUST.md` first, then `DEMO.md`, `DATA_BOUNDARY.md`, `RUNBOOK.md`. Intent: `intent/trust-pack-family-office.md`. Plan and audit: `TRUST_PACK_M0.md`.
+Read `trust_pack/TRUST.md` first, then `RED_TEAM.md`, `DEMO.md`, `DATA_BOUNDARY.md`, `RUNBOOK.md`. Intent: `intent/trust-pack-family-office.md`. Plan and audit: `TRUST_PACK_M0.md`.
 
 ## The five setups tested
 
