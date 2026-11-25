@@ -1,6 +1,8 @@
-# Trust Pack, M0: audit and plan
+# Trust Pack, M0: audit and plan (v2)
 
-**Decision asked of the PM:** approve a new repo for the Trust Pack, the stack below, and the M1 to M4 plan. Nothing is built yet. Audited 2026-11-25.
+**Decision asked of the PM:** approve the v2 plan. The Trust Pack becomes one interactive page plus a small offline pipeline behind it, set in a UAE family office. No Docker, no Postgres, no self-hosted Langfuse. Nothing is built yet. Audited 2026-11-25, revised the same day.
+
+**What changed in v2 (PM direction, 2026-11-25):** deliverables are visual and interactive; the setting is a single family office in the UAE; lightweight, not production grade.
 
 **Correction to the brief:** `lp-data-foundations` is not a data-room Q&A prototype. It is the Portfolio Answer Desk: 60 questions over synthetic LP data, five data setups compared. It has no document chunker and no vector store.
 
@@ -21,72 +23,80 @@
 | Docker, make, CI | None | `Dockerfile`, `compose.yaml`, `Makefile`, GitHub Actions CI with eval gate, approval-gated deploy and rollback scripts |
 | Tests | 8 files, offline | 12 files, offline |
 
-**Docker on this Mac:** works. Engine 25.0.2, Compose v2.24.3, 16 CPUs, 8 GB given to Docker, Intel x86_64.
+**Docker on this Mac:** works (Engine 25.0.2, Compose v2.24.3, 8 GB for Docker). v2 doesn't need it.
 
 ## 2. What we reuse
 
 | From | File | Use in the Trust Pack |
 |---|---|---|
-| Answer Desk | `foundations/search.py` | BM25 half of hybrid retrieval (M3 stretch) |
-| Answer Desk | `contracts.py`, `governance.py` | Pattern for doc contracts, reject log, JSONL audit |
-| Answer Desk | `access.py` `can_see_doc` | Pattern: filter before scoring, never after |
-| Answer Desk | `llm.py` | Structured Claude call with strict JSON schema; live only behind a flag |
+| Answer Desk | `foundations/search.py` | BM25 retrieval, with the access filter before scoring |
+| Answer Desk | `contracts.py`, `governance.py` | Doc contracts, reject log, JSONL audit |
+| Answer Desk | `llm.py` | Optional live Claude call; offline path by default |
+| Answer Desk | `explainer.py`, `static/foundations.html` | Pattern: build a static interactive page from run results |
 | Answer Desk | `tests/test_eval_gate.py` | Eval gate as tests |
-| Lender Watch | `connectors/bdc.py`, `holdings.parquet` | Choose filings and derive numeric ground truth for the golden set |
-| Lender Watch | `retrieve.py` (model2vec setup) | Local embeddings: no outbound call, works on Intel |
-| Lender Watch | `telemetry.py` | Allowlisted log keys, request ID |
-| Lender Watch | `Makefile`, `compose.yaml`, `ci.yml`, `evals/thresholds.yaml`, `scripts/rollback.sh` | Templates for `make`, Compose, CI gate, rollback |
-| Lender Watch | `textparse.core` | Canonical company key for entity enrichment |
+| Lender Watch | `telemetry.py` | Allowlisted log fields, request ID |
+| Lender Watch | `evals/thresholds.yaml`, `scripts/rollback.sh` | Shown on the page as the release-gate and rollback pattern, not rebuilt |
 
-## 3. Gaps against the 12 layers
+## 3. Gaps against the 12 layers (v2: each layer is a step on the page)
 
 | # | Layer | Exists? | Gap | Plan |
 |---|---|---|---|---|
-| 1 | Ingestion, contracts | Partly (row contracts) | No document contract, no SHA-256, no date sanity | M1: `DocRecord` Pydantic model, reject log |
-| 2 | Classification, PII | No | No labels | M1: label in the manifest; Presidio is stretch |
-| 3 | Lineage | Partly (row to doc) | No chunk, offsets or versions | M1: chunk record with hash, page, offsets, 3 versions |
-| 4 | Sovereignty | No | No boundary config | M1: `sovereignty.yaml`, `DATA_BOUNDARY.md` |
-| 5 | Access control | Yes, by role | No deal rooms, not in a vector query | M1: room filter inside the pgvector SQL `WHERE` |
-| 6 | Retrieval | BM25 and name search | No chunk-level vector search | M1: pgvector; hybrid with BM25 if time |
-| 7 | Guardrails | Number check, advice refusal | No cite-or-abstain, no span check, no injection test | M3 |
-| 8 | Offline eval | Yes, other tasks | No RAG metrics | M2: golden set, harness |
-| 9 | Release gate | Lender Watch CI only | No prompt/index registry | M5 stretch; registry YAML lands in M2 |
-| 10 | Tracing | No-op Langfuse | Not self-hosted, not per request | M4 |
-| 11 | Audit, replay | JSONL audit | No replay | M4: `make replay ID=...` |
-| 12 | Runbook | No | | M4: `RUNBOOK.md` |
+| 1 | Ingestion, contracts | Partly | No document contract, no SHA-256 | M1: `DocRecord` model, reject log, 2 planted bad docs |
+| 2 | Classification, PII | No | No labels, no PII handling | M1: label per doc; regex PII finder with a redaction log (passport, Emirates ID, IBAN formats, all fake) |
+| 3 | Lineage | Partly | No chunk, offsets or versions | M1: chunk record with hash, offsets, 3 versions |
+| 4 | Sovereignty | No | No boundary config | M1: `sovereignty.yaml`; the page draws every data flow |
+| 5 | Access control | Yes, by role | No family roles or rooms | M1: room filter before retrieval scoring |
+| 6 | Retrieval | BM25 | | Reuse BM25 |
+| 7 | Guardrails | Advice refusal | No cite-or-abstain, span check, injection test | M2 |
+| 8 | Offline eval | Other tasks | No RAG metrics | M2 |
+| 9 | Release gate | Lender Watch only | | Shown on the page, thresholds as tests; CI is stretch |
+| 10 | Tracing | No-op Langfuse | | M3: trace JSON in Langfuse's shape, drawn on the page |
+| 11 | Audit, replay | JSONL audit | No replay | M3: `make replay ID=...` |
+| 12 | Runbook | No | | M3: drawn as a flow on the page |
 
 ## 4. Repo decision
 
-- **Option A, inside lp-data-foundations.** Reuses code directly. But its `CLAUDE.md` makes all data synthetic, and its published case study numbers must stay stable.
-- **Option B, new repo `trust-pack`.** Clean clone runs `make demo` alone. Reused files are copied with the source commit noted, not installed from the other repos.
+- **Option A, a `trust_pack/` folder in this repo.** The data is now synthetic, so it fits this repo's rules. No new repo to set up.
+- **Option B, a new `trust-pack` repo.** Cleaner story, more setup.
 
-**Recommendation: B.** Public SEC data breaks A's synthetic-only rule, and a CTO reads one focused repo faster than a fourth folder in a finished one.
+**Recommendation: A.** v2's synthetic data removes the reason for B, and a folder is faster for a Friday deadline. It can move to its own repo later in an hour.
 
-## 5. M1 to M4 plan and first design choices
+## 5. The UAE family office setting
 
-**M1 (contracts, lineage, ACL; about 4 h).** Ingest 6 to 9 filings, 3 deal rooms, 3 users. Done when bad docs are rejected with a logged reason, every chunk has full lineage, and user A gets 0 chunks from room B.
-**M2 (golden set, harness; about 3 h).** 40 questions, `make eval` prints all metrics, saves a versioned run.
-**M3 (guardrails; about 3 h).** Cite-or-abstain, span check, advice refusal, injection doc; all scored in the eval.
-**M4 (trace, audit, docs; about 4 h).** One request in self-hosted Langfuse, `make replay`, TRUST.md, DEMO.md, RUNBOOK.md, DATA_BOUNDARY.md.
+**The family office (invented):** one family, a principal, two next-generation members, a CIO, and an external lawyer. Three rooms: Family governance (foundation charter, succession memo, KYC files with fake PII), Investments (fund reports, capital calls, co-investment memos), Advisor share (two deals shared with the lawyer).
+
+| User | Sees | Example question that must fail |
+|---|---|---|
+| Principal | All rooms | none |
+| Next-gen member | Investments | "Who are the foundation's beneficiaries?" (0 governance chunks) |
+| CIO | Investments, Advisor share | "Show me the principal's passport number" (redacted) |
+| External lawyer | Advisor share | "What did we commit to Fund X?" (0 investment chunks) |
+
+**What the page teaches (the SME part), each claim checked against the official text in M4 and linked:**
+- **Which data law applies depends on where the office is set up:** onshore UAE (Federal Decree-Law 45 of 2021, the PDPL), DIFC (Data Protection Law No. 5 of 2020, with its regulation on AI and autonomous systems), or ADGM (Data Protection Regulations 2021).
+- **Where data and the model run:** in-country storage, an in-region model endpoint, and what "no training, limited retention" means in a contract.
+- **What a family office protects that a fund doesn't:** family members' identity documents, succession plans, who gets what. A leak is personal, not only financial.
+- **The classic ML to LLM mapping table,** from the original spec, as hover cards.
+
+## 6. M1 to M3 plan (about 10 h) and first design choices
+
+**M1 (about 3 h): data room, contracts, labels, lineage, access.** Done when 2 bad docs are rejected with a reason, every chunk has lineage, and the lawyer gets 0 chunks from other rooms.
+**M2 (about 3 h): golden set, harness, guardrails.** 30 questions, `make eval` prints recall@5, citation accuracy, abstention accuracy, access violations, injection and advice results, saved with versions.
+**M3 (about 4 h): the interactive page.** Built from the run's JSON. Tabs: one question end to end (switch user, watch chunks get filtered, see the cited answer, the scores and the trace); the scoreboard; the mapping table; the UAE data-flow map; the runbook. Also `make replay`, a short `TRUST.md`, a name audit.
+**Stretch:** live Claude answers and an LLM judge, CI gate.
 
 | Choice | Option 1 | Option 2 | Recommendation |
 |---|---|---|---|
-| Documents | Fetch filing HTML from EDGAR once, extract the schedule of investments to text, commit text plus a manifest (URL, original SHA-256) | Fetch at every `make demo` | 1: clean clone runs offline; the only runtime outbound flow stays the model API |
-| Numeric ground truth | Read from Lender Watch's tagged XBRL rows | Hand-label from the text | 1: exact, and each number traces to a filing URL |
-| Embeddings | model2vec `potion-base-8M`, local | Hosted embedding API | 1: no second outbound flow; runs on Intel |
-| ACL enforcement | `WHERE deal_room = ANY(:allowed)` in the same SQL as the vector search | Postgres row-level security keyed on a session user | 1 first, RLS as a stretch: one line to show, one test to prove |
-| Langfuse | Self-hosted v3 (web, worker, Postgres, ClickHouse, Redis, MinIO) | Self-hosted v2, one container | v3: v2 is no longer maintained and our SDKs are v3+. Risk: about 4 to 6 GB of the 8 GB Docker has |
-| Registry | One `registry.yaml` with prompt, model, chunker, index versions | MLflow | YAML: fewer containers, readable in a diff |
-| Judge | Claude, calibrated on 15 PM labels; offline stand-in without a key | Ragas metrics only | Own judge; Ragas as a cross-check only |
-| Model terms | State Anthropic API defaults (no training on API data) and mark zero retention as "needs an agreement" | Claim zero retention | 1: claim only what is true; verify the retention text in M1 |
+| Data | Invented family office documents, about 25, with fake PII | Public SEC filings (v1) | 1: a family office's risk is personal data, which SEC filings can't show |
+| Format | One static HTML page, published as a private Artifact and committed | Streamlit app | 1: opens on a phone, nothing to run, easy to share after the interview |
+| Answers | Offline extractive answerer: picks the cited sentence, abstains under a score floor | Claude on every answer | 1 by default, Claude behind a flag: the demo needs no key, and numbers stay reproducible |
+| Tracing | Trace JSON per request in Langfuse's shape | Self-hosted Langfuse | 1: same fields, no 6 containers; the page says where Langfuse would sit |
+| Retrieval | Reuse BM25 | Add embeddings | 1: 25 docs don't need vectors; the page names when they would |
 
-**Time risk:** about 14 h of build for 1.5 days. If short, cut hybrid retrieval and Presidio first, never the ACL test or the eval.
+## 7. Name risks
 
-## 6. Name risks
+- **Employer, clients, prospects:** none found. The PM's employer domain has 0 hits in either repo.
+- **Lender Watch public data:** BDC filers and borrowers (Blackstone, Goldman, KnowBe4) and 6 PE sponsors from their websites. v2 uses none of it.
+- **New risks in v2:** an invented family name that matches a real UAE family, and naming a cloud provider. Plan: search every invented name before use; say "an in-region model endpoint", no provider.
 
-- **Employer, clients, prospects:** none found. The PM's employer domain has 0 hits in either repo. Answer Desk passed its own name audit on 2026-10-25.
-- **Lender Watch, public data (fine as data):** BDC filers and borrowers in SEC data, such as Blackstone, Goldman, KnowBe4 (`docs/decisions.md`, `outputs/analyses/matching-comparison.md`, `data/eval/*.csv`).
-- **Lender Watch, to confirm by the PM:** 6 PE sponsors taken from their own websites (Thoma Bravo, Vista, Genstar, Alpine, Gryphon, Shore) in `data/sponsors/`, `app/review.py:120` and the opportunity analysis. Public, but if any is a client or prospect, it must not reach the Trust Pack. Plan: the Trust Pack uses no sponsor list.
-- **New risk to avoid:** naming a sovereign cloud or bank provider in TRUST.md. Plan: say "an in-region managed endpoint", no provider name.
-
-Synthetic labels and deal rooms, public filings. Not investment advice.
+Synthetic data. Not investment advice.
