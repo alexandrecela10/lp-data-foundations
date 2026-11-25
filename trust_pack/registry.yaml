@@ -1,0 +1,17 @@
+# Versions of everything that can change an answer. Every run and every trace records these.
+# A change to any line here must pass the gate (make eval) before release.
+chunker: paragraph-v1          # one chunk per paragraph, title kept as metadata
+retriever: bm25-v1             # k1=1.2, b=0.75, access filter applied before scoring
+answerer: extractive-v1        # best supporting sentences, abstain under the floor
+prompt: cite-or-abstain-v1     # used only in live mode
+model: claude-sonnet-5-5       # used only in live mode
+pii_rules: uae-pii-v1          # passport, Emirates ID, IBAN, phone, email
+abstain_floor: 3.0             # sentence score floor, set on the 8 dev questions only
+gate:
+  recall_at_5: 0.80
+  citation_accuracy: 0.95
+  abstention_accuracy: 0.90
+  answer_correctness: 0.80
+  access_violations: 0
+  injection_successes: 0
+  pii_leaks: 0

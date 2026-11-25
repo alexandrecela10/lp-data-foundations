@@ -10,3 +10,4 @@ data/generated/
 .streamlit/secrets.toml
 .DS_Store
 logs/
+*.egg-info/

@@ -1,0 +1,19 @@
+# UAE data rules for a single family office: sources
+
+Checked 2026-11-25 for learning, not legal advice. Official sources first; law-firm summaries marked. The federal legislation portal and adgm.com refused automated access, so some items rely on secondary sources.
+
+| Topic | Fact | Source |
+|---|---|---|
+| PDPL, onshore | Federal Decree-Law No. 45 of 2021, in force 2 January 2022. Excludes companies in free zones with their own data protection law. | [u.ae (official)](https://u.ae/en/about-the-uae/digital-uae/data/data-protection-laws) |
+| PDPL executive regulations | Appear still unissued as of 2026 (secondary sources). Penalties and the adequacy list depend on them. | Law-firm notes, not verified on the Gazette |
+| PDPL regulator | UAE Data Office (Decree-Law No. 44 of 2021). On 14 June 2026 its functions moved to a new federal Artificial Intelligence and Data Authority. | [WAM (official news)](https://www.wam.ae/en/article/c0pz7ku-mohammed-bin-rashid-approves-establishing) |
+| DIFC | Data Protection Law No. 5 of 2020, in force 1 July 2020. Amendment Law No. 1 of 2025 (in force 15 July 2025) adds a direct right to claim damages. | [Dubai Media Office (official)](https://www.mediaoffice.ae/en/news/2025/july/16-07/difc-announces-enactment-of-amendments-to-select-difc-legislation-through-difc-law-amendment-law) |
+| DIFC Regulation 10 | Effective 1 September 2023. Personal data processed by autonomous and semi-autonomous systems: notice at first use, human-defined purposes, show what triggers human review, certification for high-risk commercial use (criteria not yet published). 2026 consultation changes not confirmed as enacted. | [Law-firm summary](https://www.mayerbrown.com/en/insights/publications/2026/01/ai-regulation-in-the-difc-personal-data-processed-through-autonomous-and-semi-autonomous-systems) |
+| ADGM | Data Protection Regulations 2021, modelled on the GDPR, including automated-decision rights. No AI-specific guidance found. | [ADGM (official PDF)](https://assets.adgm.com/download/assets/ADGM+Data+Protection+Regulations+2021+Updated.pdf/146aa34858b011efb99a36e29b0f3a63) |
+| Family office set-up | DIFC: Family Arrangements Regulations (2023). ADGM: single family office licence conditions, replaced by 2026 rules (threshold not verified); foundations under ADGM Foundations Regulations 2017. | [DIFC regulations (PDF)](https://edge.sitecorecloud.io/dubaiintern0078-difcexperie96c5-production-3253/media/project/difcexperiences/difc/difcwebsite/documents/laws--regulations/family-arrangements-regulations_updated_august23.pdf), [ADGM](https://adgm.com/setting-up/family-business) |
+| Household exemption | Exempts individuals handling data for personal purposes only. A family office processing family members' data is a controller. My reading of the exemption wording, not a regulator statement. | As above |
+| Health data | Federal Law No. 2 of 2019 (Art. 13) generally keeps UAE health data in the UAE, free zones included. | [UAE MOJ](https://elaws.moj.gov.ae/UAE-MOJ_LC-En/00_Health/UAE-LC-En_2019-02-06_00002_Kait.html?val=EL1) |
+| AI Charter | UAE Charter for the Development and Use of AI, July 2024, 12 principles, guidance not law. | [u.ae](https://u.ae/en/about-the-uae/strategies-initiatives-and-awards/policies/Ai/The-UAE-Charter-for-the-Development-and-Use-of-Artificial-Intelligence) |
+| Cloud | National Cloud Security Policy covers government and critical infrastructure, not a private family office. | [u.ae](https://u.ae/en/about-the-uae/strategies-initiatives-and-awards/policies/cyber-activities/National-Cloud-Security-Policy) |
+
+**Not verified:** PDPL article numbers; whether PDPL executive regulations are issued; the decree creating the new Authority and whether it enforces the PDPL; the current DIFC and ADGM family office thresholds.
