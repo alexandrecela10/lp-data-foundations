@@ -35,7 +35,7 @@ Everything runs on one machine. A live model (Claude) is optional and never rece
 | Precision, recall, AUC | Recall at 5, MRR, correctness, citation accuracy, abstention accuracy | `src/trustpack/evaluate.py` |
 | Model registry | One registry of chunker, retriever, answerer, prompt and model versions | `trust_pack/registry.yaml` |
 | CI tests | Eval gate: `make eval` exits 1 on any missed threshold; pytest checks it | `tests/test_trustpack.py` |
-| Prediction logging | Append-only audit log; replay by request ID | `make replay ID=...` |
+| Prediction logging | Hash-chained audit log; replay compares the trace SHA-256 byte for byte | `make replay ID=...`, `make verify-audit` |
 | Drift monitoring | Online checks on every trace: citations valid, abstained, answer length | `pipeline.ask` |
 | Post-mortems | Runbook: classify, add to golden set, fix, gate, release | `RUNBOOK.md` |
 
@@ -58,6 +58,9 @@ Everything runs on one machine. A live model (Claude) is optional and never rece
 Latency p50 0.56 ms, p95 0.81 ms on the test split. Cost per question: $0 (offline). Test split by type: numeric 8 of 8, factual 5 of 7, multi-doc 1 of 2, should-abstain 5 of 5, access-denied 4 of 4, injection 3 of 3, advice 2 of 2, PII 2 of 2.
 
 ## Known limitations
+
+The full attack list and 9 open gaps are in `RED_TEAM.md`. In short:
+
 
 - **The test split is not a clean holdout.** I read its failures while writing the answer rules. The 10 holdout questions are the fair number, and they show 50% coverage.
 - **The offline answerer is brittle to rewording.** "Warehouse sold" doesn't match "sale of a warehouse". It fails safe (abstains), but a live model is needed for useful coverage.

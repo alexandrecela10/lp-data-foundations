@@ -16,4 +16,6 @@ Synthetic data. Not investment advice. Open `trust_pack/site/index.html` (or the
 
 **2:20 The scores.** On the eval tab: 0 forbidden passages retrieved across 51 questions, 0 PII leaks, 0 planted instructions obeyed, gate passed. The fresh holdout shows the cost: 50% coverage, with misses as "not found", never wrong facts.
 
-**2:40 The trace and replay.** Request `rq-demo-0-priya` is in `trust_pack/logs/audit.jsonl` with the passage IDs and hashes. `make replay ID=rq-demo-0-priya` re-runs it on the same passages and versions and reports `"same": true`.
+**2:40 The trace and replay.** Request `rq-demo-0-priya` is in `trust_pack/logs/audit.jsonl` with the passage IDs and hashes. `make replay ID=rq-demo-0-priya` re-runs it on the same passages and versions and reports `"byte_identical": true`: the SHA-256 of the decision path matches the logged one. `make verify-audit` confirms no audit line was edited.
+
+**Then hand over the Red team tab.** Let the CTO type attacks. Each one runs in the browser with the same rules as Python and shows the layer that stopped it.

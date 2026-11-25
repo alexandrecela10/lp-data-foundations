@@ -51,8 +51,8 @@
   "injection_successes": 0,
   "pii_leaks": 0,
   "faithfulness": "not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode",
-  "latency_ms_p50": 0.65,
-  "latency_ms_p95": 0.97,
+  "latency_ms_p50": 0.57,
+  "latency_ms_p95": 1.17,
   "cost_per_query_usd": 0.0,
   "by_type": {
    "numeric": {
@@ -102,8 +102,8 @@
   "injection_successes": 0,
   "pii_leaks": 0,
   "faithfulness": "not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode",
-  "latency_ms_p50": 0.79,
-  "latency_ms_p95": 0.92,
+  "latency_ms_p50": 0.66,
+  "latency_ms_p95": 0.71,
   "cost_per_query_usd": 0.0,
   "by_type": {
    "numeric": {
@@ -141,8 +141,8 @@
   "injection_successes": 0,
   "pii_leaks": 0,
   "faithfulness": "not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode",
-  "latency_ms_p50": 0.61,
-  "latency_ms_p95": 0.76,
+  "latency_ms_p50": 0.68,
+  "latency_ms_p95": 0.9,
   "cost_per_query_usd": 0.0,
   "by_type": {
    "numeric": {
@@ -232,7 +232,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.92,
+   "latency_ms": 0.71,
    "cost_usd": 0.0,
    "note": null
   },
@@ -255,7 +255,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.85,
+   "latency_ms": 0.7,
    "cost_usd": 0.0,
    "note": null
   },
@@ -278,7 +278,7 @@
    "would_leak_if_filtered_after": 3,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.61,
+   "latency_ms": 0.51,
    "cost_usd": 0.0,
    "note": null
   },
@@ -301,7 +301,7 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.5,
+   "latency_ms": 0.41,
    "cost_usd": 0.0,
    "note": null
   },
@@ -324,7 +324,7 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.71,
+   "latency_ms": 0.59,
    "cost_usd": 0.0,
    "note": null
   },
@@ -347,7 +347,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.04,
+   "latency_ms": 0.03,
    "cost_usd": 0.0,
    "note": null
   },
@@ -370,7 +370,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.81,
+   "latency_ms": 0.68,
    "cost_usd": 0.0,
    "note": null
   },
@@ -393,7 +393,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.79,
+   "latency_ms": 0.66,
    "cost_usd": 0.0,
    "note": null
   },
@@ -416,7 +416,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.97,
+   "latency_ms": 0.81,
    "cost_usd": 0.0,
    "note": null
   },
@@ -439,7 +439,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.67,
+   "latency_ms": 0.57,
    "cost_usd": 0.0,
    "note": null
   },
@@ -462,7 +462,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.68,
+   "latency_ms": 0.59,
    "cost_usd": 0.0,
    "note": null
   },
@@ -485,7 +485,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.67,
+   "latency_ms": 0.57,
    "cost_usd": 0.0,
    "note": null
   },
@@ -508,7 +508,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.67,
+   "latency_ms": 0.56,
    "cost_usd": 0.0,
    "note": null
   },
@@ -531,7 +531,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.82,
+   "latency_ms": 0.67,
    "cost_usd": 0.0,
    "note": null
   },
@@ -554,7 +554,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.81,
+   "latency_ms": 0.68,
    "cost_usd": 0.0,
    "note": null
   },
@@ -577,7 +577,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.63,
+   "latency_ms": 0.56,
    "cost_usd": 0.0,
    "note": null
   },
@@ -600,7 +600,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.74,
+   "latency_ms": 0.63,
    "cost_usd": 0.0,
    "note": null
   },
@@ -623,7 +623,7 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.5,
+   "latency_ms": 0.4,
    "cost_usd": 0.0,
    "note": null
   },
@@ -646,7 +646,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.36,
+   "latency_ms": 0.31,
    "cost_usd": 0.0,
    "note": null
   },
@@ -669,7 +669,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.67,
+   "latency_ms": 0.58,
    "cost_usd": 0.0,
    "note": null
   },
@@ -692,7 +692,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.65,
+   "latency_ms": 0.59,
    "cost_usd": 0.0,
    "note": null
   },
@@ -715,7 +715,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.89,
+   "latency_ms": 0.71,
    "cost_usd": 0.0,
    "note": null
   },
@@ -738,7 +738,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.65,
+   "latency_ms": 0.55,
    "cost_usd": 0.0,
    "note": null
   },
@@ -761,7 +761,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.95,
+   "latency_ms": 122.87,
    "cost_usd": 0.0,
    "note": null
   },
@@ -784,7 +784,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 1.25,
+   "latency_ms": 1.17,
    "cost_usd": 0.0,
    "note": null
   },
@@ -807,7 +807,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.75,
+   "latency_ms": 0.76,
    "cost_usd": 0.0,
    "note": null
   },
@@ -830,7 +830,7 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.76,
+   "latency_ms": 0.77,
    "cost_usd": 0.0,
    "note": null
   },
@@ -853,7 +853,7 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.18,
+   "latency_ms": 0.2,
    "cost_usd": 0.0,
    "note": "the only document on this (X01) was rejected at ingestion"
   },
@@ -876,7 +876,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.74,
+   "latency_ms": 0.79,
    "cost_usd": 0.0,
    "note": "the only document on this (X03) was rejected as future-dated"
   },
@@ -899,7 +899,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.78,
+   "latency_ms": 0.74,
    "cost_usd": 0.0,
    "note": null
   },
@@ -922,7 +922,7 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.52,
+   "latency_ms": 0.56,
    "cost_usd": 0.0,
    "note": null
   },
@@ -945,7 +945,7 @@
    "would_leak_if_filtered_after": 4,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.53,
+   "latency_ms": 0.59,
    "cost_usd": 0.0,
    "note": null
   },
@@ -968,7 +968,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.38,
+   "latency_ms": 0.45,
    "cost_usd": 0.0,
    "note": null
   },
@@ -991,7 +991,7 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.36,
+   "latency_ms": 0.39,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1014,7 +1014,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.58,
+   "latency_ms": 0.61,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1037,7 +1037,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.04,
+   "latency_ms": 0.07,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1060,7 +1060,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.05,
+   "latency_ms": 0.06,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1106,7 +1106,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.03,
+   "latency_ms": 0.04,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1129,7 +1129,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.34,
+   "latency_ms": 0.4,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1152,7 +1152,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.26,
+   "latency_ms": 0.27,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1175,7 +1175,7 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.62,
+   "latency_ms": 0.68,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1198,7 +1198,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.76,
+   "latency_ms": 0.9,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1221,7 +1221,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.65,
+   "latency_ms": 0.81,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1244,7 +1244,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.61,
+   "latency_ms": 0.68,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1267,7 +1267,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.52,
+   "latency_ms": 0.58,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1290,7 +1290,7 @@
    "would_leak_if_filtered_after": 3,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.47,
+   "latency_ms": 0.52,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1313,7 +1313,7 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.37,
+   "latency_ms": 0.42,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1336,7 +1336,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.03,
+   "latency_ms": 0.04,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1359,7 +1359,7 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.47,
+   "latency_ms": 0.51,
    "cost_usd": 0.0,
    "note": null
   },
@@ -1382,7 +1382,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.72,
+   "latency_ms": 0.83,
    "cost_usd": 0.0,
    "note": null
   }

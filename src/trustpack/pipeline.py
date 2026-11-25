@@ -149,7 +149,7 @@ def compose(question: str, hits: list, s: dict, live: bool = False) -> dict:
     claims = verify(gen["claims"], {c.chunk_id: c for _, c in hits})
     if claims and not all(c["verified"] for c in claims):
         gen["abstained"], claims = True, claims
-    answer = ABSTAIN if gen["abstained"] else " ".join(f'{c["text"]} [{c["chunk_id"]}]' for c in claims)
+    answer = ABSTAIN if gen["abstained"] else " ".join(f'{c["quote"]} [{c["chunk_id"]}]' for c in claims)  # the verified quote, never free text
     return dict(answer=answer, decision="abstained" if gen["abstained"] else "answered", claims=claims,
                 best_score=gen.get("best_score"), generator="claude" if use_live else "extractive",
                 live_blocked_by_restricted=live and restricted, usage=gen.get("usage"))
@@ -208,31 +208,83 @@ def ask(user: str, question: str, request_id: str | None = None, write_audit: bo
     trace |= dict(answer=out["answer"], decision=out["decision"], citations=[c["chunk_id"] for c in out["claims"]],
                   latency_ms=ms, tokens=dict(input=usage.get("input_tokens", 0), output=usage.get("output_tokens", 0)),
                   cost_usd=round(usage.get("input_tokens", 0) * 2e-6 + usage.get("output_tokens", 0) * 1e-5, 5))
+    trace["stopped_at"] = stopped_at(out["decision"], pre, leaked)
     trace["online_checks"] = dict(
         citations_valid=all(c["verified"] for c in out["claims"]) if out["claims"] else True,
         abstained=out["decision"] != "answered", answer_chars=len(out["answer"]),
         pii_in_answer=any(v in out["answer"] for v in s["pii_values"]))
     step("trace and audit", 10, latency_ms=ms, audit_file="trust_pack/logs/audit.jsonl")
+    trace["trace_sha256"] = fingerprint(trace)
     if write_audit:
-        audit(trace)
+        trace["audit_line"] = audit(trace)
     return trace
 
 
-def audit(trace: dict) -> None:
-    """Layer 11: append-only. Holds what replay needs: versions and the exact chunks with their hashes."""
+def fingerprint(trace: dict) -> str:
+    """SHA-256 over everything that decides the answer: who, what, versions, each retrieved passage with its
+    score and text, the claims and the answer. Timestamps and latency are left out. Replay must match it exactly."""
+    hits = next(st for st in trace["steps"] if st["name"] == "retrieval")["hits"]
+    claims = next(st for st in trace["steps"] if st["name"] == "citation check")["claims"]
+    core = dict(user=trace["user"]["id"], question=trace["question"], versions=trace["versions"],
+                hits=[[h["chunk_id"], h["score"], h["text"]] for h in hits], claims=claims,
+                decision=trace["decision"], answer=trace["answer"])
+    return hashlib.sha256(json.dumps(core, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+
+
+def _last_line_hash(log: Path) -> str:
+    if not log.exists() or not log.stat().st_size:
+        return "0" * 64
+    last = log.read_text().rstrip("\n").rsplit("\n", 1)[-1]
+    return json.loads(last)["line_sha256"]
+
+
+def stopped_at(decision: str, pre: str | None, leaked: list) -> str | None:
+    """Which layer ended the request. Same rule in engine.js."""
+    if decision == "refused":
+        return "input rule (layer 7)"
+    if pre == "pii":
+        return "personal data rule (layer 2)"
+    if decision == "abstained":
+        return ("access filter (layer 5), then nothing in scope supported an answer" if leaked
+                else "abstain rule (layer 7): nothing supported an answer")
+    return None
+
+
+def audit(trace: dict, log: Path = LOG) -> dict:
+    """Layer 11: append-only and hash-chained. Each line carries the hash of the line before it, so editing or
+    deleting a past line breaks every hash after it (make verify-audit). Tamper-evident, not tamper-proof:
+    whoever controls the disk can rewrite the whole chain."""
     hits = next(st for st in trace["steps"] if st["name"] == "retrieval")["hits"]
     rec = dict(request_id=trace["request_id"], ts=trace["ts"], user=trace["user"]["id"], question=trace["question"],
                versions=trace["versions"], decision=trace["decision"], answer=trace["answer"],
-               citations=trace["citations"],
+               citations=trace["citations"], stopped_at=trace.get("stopped_at"),
                chunks=[dict(chunk_id=h["chunk_id"], score=h["score"],
-                            text_sha256=hashlib.sha256(h["text"].encode()).hexdigest()[:16]) for h in hits])
-    LOG.parent.mkdir(exist_ok=True)
-    with LOG.open("a") as f:
+                            text_sha256=hashlib.sha256(h["text"].encode()).hexdigest()[:16]) for h in hits],
+               trace_sha256=fingerprint(trace))
+    log.parent.mkdir(exist_ok=True)
+    rec["prev_sha256"] = _last_line_hash(log)
+    rec["line_sha256"] = hashlib.sha256(json.dumps(rec, sort_keys=True).encode()).hexdigest()
+    with log.open("a") as f:
         f.write(json.dumps(rec) + "\n")
+    return rec
+
+
+def verify_audit(log: Path = LOG) -> dict:
+    """Recompute the chain. Returns the first broken line, if any."""
+    prev = "0" * 64
+    lines = log.read_text().splitlines() if log.exists() else []
+    for i, line in enumerate(lines, 1):
+        r = json.loads(line)
+        got = r.pop("line_sha256")
+        if r["prev_sha256"] != prev or hashlib.sha256(json.dumps(r, sort_keys=True).encode()).hexdigest() != got:
+            return dict(ok=False, lines=len(lines), broken_at=i)
+        prev = got
+    return dict(ok=True, lines=len(lines), broken_at=None)
 
 
 def replay(request_id: str, log: Path = LOG) -> dict:
-    """Re-run a logged request on the same chunks with the same versions. Says what differs, if anything."""
+    """Re-run a logged request from scratch (retrieval included) and compare the trace fingerprint byte for byte.
+    Also checks that every recorded passage still has the same text."""
     rec = None
     for line in log.read_text().splitlines():
         r = json.loads(line)
@@ -244,20 +296,13 @@ def replay(request_id: str, log: Path = LOG) -> dict:
     problems = []
     if rec["versions"]["index"] != s["index_version"]:
         problems.append(f"index changed: {rec['versions']['index']} then, {s['index_version']} now")
-    for k in ("chunker", "retriever", "answerer", "abstain_floor"):
-        if rec["versions"].get(k) != versions(s["index_version"], False)[k]:
-            problems.append(f"{k} changed")
-    hits = []
     for h in rec["chunks"]:
         ch = s["by_id"].get(h["chunk_id"])
         if ch is None or hashlib.sha256(ch.text.encode()).hexdigest()[:16] != h["text_sha256"]:
-            problems.append(f"chunk {h['chunk_id']} missing or changed")
-            continue
-        hits.append((h["score"], ch))
-    if rec["decision"] == "refused" or (not rec["chunks"] and rec["decision"] == "abstained"):
-        again = ask(rec["user"], rec["question"], request_id=rec["request_id"] + "-replay", write_audit=False)
-        answer = again["answer"]
-    else:
-        answer = compose(rec["question"], hits, s)["answer"]
+            problems.append(f"passage {h['chunk_id']} missing or changed")
+    again = ask(rec["user"], rec["question"], request_id=rec["request_id"], write_audit=False)
+    fp = fingerprint(again)
     return dict(request_id=request_id, user=rec["user"], question=rec["question"], original=rec["answer"],
-                replayed=answer, same=answer == rec["answer"], problems=problems)
+                replayed=again["answer"], same=again["answer"] == rec["answer"],
+                trace_sha256_then=rec["trace_sha256"], trace_sha256_now=fp,
+                byte_identical=fp == rec["trace_sha256"], problems=problems)

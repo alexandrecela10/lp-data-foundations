@@ -43,6 +43,7 @@ header.top { display: grid; gap: 10px; padding-bottom: 18px; border-bottom: 1px 
 .lede { color: var(--muted); font-size: 1.05rem }
 .disclaimer { display: inline-block; font: 600 0.75rem/1 var(--mono); padding: 6px 10px; border: 1px solid var(--warn); color: var(--warn); border-radius: 4px; width: fit-content }
 nav.tabs { display: flex; gap: 4px; flex-wrap: wrap; margin: 18px 0 22px }
+@media (max-width: 640px) { nav.tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px } nav.tabs a { white-space: nowrap } }
 nav.tabs a { text-decoration: none; color: var(--ink); padding: 8px 14px; border-radius: 6px; font-weight: 600; border: 1px solid transparent }
 nav.tabs a[aria-current="page"] { background: var(--ink); color: var(--bg) }
 nav.tabs a:hover { border-color: var(--line) }
@@ -62,6 +63,14 @@ section.view { display: grid; gap: 20px }
 .room-tag { font: 600 0.68rem/1 var(--mono); padding: 4px 6px; border-radius: 3px; color: var(--surface) }
 .room-tag.off { background: transparent !important; color: var(--muted); border: 1px dashed var(--line); text-decoration: line-through }
 select, button.play { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; width: 100% }
+textarea { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; width: 100%; resize: vertical }
+.ghost { font: inherit; font-weight: 600; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 9px; cursor: pointer; width: 100% }
+.examples { display: grid; gap: 6px }
+.ex { text-align: left; font: inherit; font-size: 0.88rem; color: var(--accent); background: var(--accent-soft); border: 0; border-radius: 6px; padding: 6px 8px; cursor: pointer }
+details { border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px }
+summary { cursor: pointer; font-weight: 600; font-size: 0.88rem }
+pre { margin: 8px 0 0; font: 0.75rem/1.45 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; color: var(--muted) }
+.note { border-left: 3px solid var(--warn); background: var(--warn-soft); padding: 10px 14px; border-radius: 0 8px 8px 0 }
 button.play { background: var(--ink); color: var(--bg); font-weight: 600; cursor: pointer; border-color: var(--ink) }
 .answer { border-radius: 10px; padding: 18px; display: grid; gap: 10px; border: 1px solid var(--line); background: var(--surface) }
 .answer .verdict { font: 700 0.78rem/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; width: fit-content; padding: 5px 8px; border-radius: 4px }
@@ -92,7 +101,8 @@ ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; co
 .chip { font: 600 0.7rem/1 var(--mono); padding: 4px 7px; border-radius: 3px; white-space: nowrap }
 .chip.ok { background: var(--ok-soft); color: var(--ok) } .chip.bad { background: var(--deny-soft); color: var(--deny) } .chip.mid { background: var(--warn-soft); color: var(--warn) } .chip.neutral { background: var(--bg); color: var(--muted); border: 1px solid var(--line) }
 .kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 2px 12px; font-size: 0.9rem }
-.kv dt { color: var(--muted) } .kv dd { margin: 0; overflow-wrap: anywhere }
+.kv dt { color: var(--muted) }
+.card .kv { grid-template-columns: minmax(0, 1fr) } .card .kv dt { font: 600 0.68rem/1.2 var(--mono); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px } .kv dd { margin: 0; overflow-wrap: anywhere }
 .why { color: var(--muted); font-size: 0.9rem }
 .scroll { overflow-x: auto }
 table { border-collapse: collapse; width: 100%; font-size: 0.92rem; font-variant-numeric: tabular-nums }
@@ -103,7 +113,7 @@ th { font: 600 0.72rem/1.2 var(--mono); text-transform: uppercase; letter-spacin
 .bar b { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--ink) }
 .hits .hit-row { display: grid; grid-template-columns: 76px minmax(0, 1fr) 54px; gap: 10px; align-items: center; font-size: 0.85rem }
 .hitbar { height: 6px; border-radius: 3px; background: var(--room) }
-.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 14px }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0 }
 .big { font: 700 2.1rem/1 var(--display) }
 .flow { display: grid; gap: 8px }
@@ -111,6 +121,7 @@ th { font: 600 0.72rem/1.2 var(--mono); text-transform: uppercase; letter-spacin
 .flow .node .n { font: 700 1rem/1.4 var(--display); color: var(--accent) }
 svg text { fill: var(--ink); font-family: var(--body) }
 footer { margin-top: 40px; color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px }
+@media (max-width: 640px) { .tryrow { grid-template-columns: minmax(0, 1fr) !important } }
 @media (prefers-reduced-motion: reduce) { .step { transition: none } }
 </style>
 
@@ -118,12 +129,14 @@ footer { margin-top: 40px; color: var(--muted); font-size: 0.85rem; display: gri
 <header class="top">
   <span class="eyebrow">A worked example for a single family office in the UAE</span>
   <h1>Can an AI assistant read the family's documents without showing the wrong person the wrong thing?</h1>
-  <p class="lede">Pick who is asking and what they ask. Follow the request through 12 controls, from the document contract to the audit log. Every number on this page comes from a real run of the code in this repo.</p>
+  <p class="lede">Pick who is asking, type any question, and watch it pass through 12 controls, from the document contract to the audit log. Then try to break it on the Red team tab. Every number on this page comes from a run of the code in this repo.</p>
   <span class="disclaimer">Synthetic data. Not investment advice.</span>
 </header>
 
 <nav class="tabs" aria-label="Sections">
-  <a href="#walkthrough">One request, end to end</a>
+  <a href="#walkthrough">Run a request</a>
+  <a href="#redteam">Red team</a>
+  <a href="#facts">Safety facts</a>
   <a href="#scores">Eval and release gate</a>
   <a href="#mapping">Classic ML to LLM</a>
   <a href="#uae">The UAE picture</a>
@@ -138,9 +151,11 @@ footer { margin-top: 40px; color: var(--muted); font-size: 0.85rem; display: gri
         <div class="users" id="users"></div>
       </div>
       <div class="panel">
-        <label class="eyebrow" for="q">What they ask</label>
-        <select id="q"></select>
-        <button class="play" id="play" type="button">Play the request step by step</button>
+        <label class="eyebrow" for="q">What they ask (type anything)</label>
+        <textarea id="q" rows="3"></textarea>
+        <button class="play" id="run" type="button">Run this request</button>
+        <div class="examples" id="examples"></div>
+        <button class="ghost" id="play" type="button">Step through the 12 controls</button>
       </div>
     </div>
     <div style="display:grid;gap:18px;min-width:0">
@@ -158,12 +173,15 @@ footer { margin-top: 40px; color: var(--muted); font-size: 0.85rem; display: gri
           <span><span class="dot leak"></span>would have reached the model if access were checked after search</span>
           <span><span class="dot in inj" style="--room:var(--accent)"></span>planted instruction, never used</span>
         </div>
+        <p class="why">This map is the auditor's view. The person asking sees only the answer.</p>
       </div>
       <ol class="steps" id="steps"></ol>
     </div>
   </div>
 </section>
 
+<section class="view" id="v-redteam" hidden></section>
+<section class="view" id="v-facts" hidden></section>
 <section class="view" id="v-scores" hidden></section>
 <section class="view" id="v-mapping" hidden></section>
 <section class="view" id="v-uae" hidden></section>
@@ -176,7 +194,12 @@ footer { margin-top: 40px; color: var(--muted); font-size: 0.85rem; display: gri
 </div>
 
 <script>
+/*__ENGINE__*/
+</script>
+<script>
 const D = /*__DATA__*/null;
+const ENG = TrustEngine(D.engine);
+const CASES = (D.run.test.questions + D.run.dev.questions + D.run.holdout.questions + D.red.length + D.questions.length) * Object.keys(D.users).length;
 const $ = (s, el = document) => el.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ROOMS = ["public", "governance", "investments", "advisor"];
@@ -184,9 +207,12 @@ const ROOM_NAME = {public: "Public", governance: "Family governance", investment
 const roomVar = r => `var(--room-${r})`;
 const tag = (r, off) => `<span class="room-tag${off ? " off" : ""}" style="background:${roomVar(r)}">${ROOM_NAME[r]}</span>`;
 const chip = (cls, t) => `<span class="chip ${cls}">${esc(t)}</span>`;
-let user = "selim", qi = 0;
+let user = "selim", question = D.questions[0], current = null;
 
-function trace() { return D.traces[`${qi}|${user}`]; }
+function trace() {
+  const q = question.trim();
+  return Object.values(D.traces).find(t => t.user.id === user && t.question === q) || ENG.ask(user, q);
+}
 function stepOf(t, name) { return t.steps.find(s => s.name === name); }
 
 function renderUsers() {
@@ -207,7 +233,9 @@ function answerHTML(t) {
   return `<span class="verdict v-${t.decision}">${t.decision}</span>
     <div class="text">${txt}</div>
     <p class="why">${why}${g}</p>
-    <span class="eyebrow">${esc(D.users[user].name)} asked: "${esc(t.question)}"</span>`;
+    ${t.stopped_at ? `<p class="why"><b>Stopped at:</b> ${esc(t.stopped_at)}.</p>` : ""}
+    <span class="eyebrow">${esc(D.users[user].name)} asked: "${esc(t.question)}"</span>
+    <small class="why">${t.in_browser ? `Ran in your browser with the same rules as the Python pipeline (identical on all ${CASES} cases in the test suite). Not written to the audit log.` : `Ran in the Python pipeline at build time and logged as ${esc(t.request_id)}.`}</small>`;
 }
 
 function renderMap(t) {
@@ -267,9 +295,10 @@ function stepsHTML(t) {
     ["Trace", chip("neutral", t.request_id),
       "One record per request with who, what they could see, what was retrieved, the answer and the versions. Same fields a self-hosted tracing tool would store.",
       kv({"latency": `${t.latency_ms} ms`, "tokens": `${t.tokens.input} in, ${t.tokens.output} out`, "cost": `$${t.cost_usd}`, "online checks": `citations valid ${t.online_checks.citations_valid}, abstained ${t.online_checks.abstained}, ${t.online_checks.answer_chars} characters`})],
-    ["Audit and replay", chip("ok", "replayable"),
-      "An append-only log line per request, holding the exact passages and their hashes. Replay re-runs the answer on the same passages and versions and reports any difference.",
-      `<code>make replay ID=${t.request_id}</code>`],
+    ["Audit and replay", t.in_browser ? chip("neutral", "browser run, not logged") : chip("ok", "logged, replayable"),
+      "An append-only, hash-chained log line per request, holding the exact passages and their hashes. Replay re-runs the request and compares the trace fingerprint byte for byte.",
+      t.in_browser ? `<p class="why">To log this one: <code>PYTHONPATH=src python -m trustpack.cli ask ${t.user.id} "${esc(t.question)}"</code>, then <code>make replay ID=&lt;its id&gt;</code>.</p>`
+        : kv({"replay": `make replay ID=${t.request_id}`, "trace SHA-256": t.trace_sha256, "this line's hash": t.audit_line.line_sha256.slice(0, 24) + "...", "previous line's hash": t.audit_line.prev_sha256.slice(0, 24) + "..."})],
     ["Runbook", chip("neutral", "if this is wrong"),
       "Find the trace, decide whether retrieval, generation, data or access failed, add the question to the golden set, fix, pass the gate, release.",
       `<a href="#runbook">See the runbook with a real wrong answer</a>`],
@@ -281,7 +310,7 @@ function kv(o) { return `<dl class="kv">${Object.entries(o).map(([k, v]) => `<dt
 
 function renderAll() {
   renderUsers();
-  const t = trace();
+  const t = current = trace();
   $("#answer").innerHTML = answerHTML(t);
   renderMap(t);
   $("#steps").innerHTML = stepsHTML(t);
@@ -303,8 +332,75 @@ $("#play").onclick = () => {
   }, 900);
 };
 
-$("#q").innerHTML = D.questions.map((q, i) => `<option value="${i}">${esc(q)}</option>`).join("");
-$("#q").onchange = e => { qi = +e.target.value; renderAll(); };
+$("#q").value = question;
+$("#run").onclick = () => { question = $("#q").value || question; renderAll(); };
+$("#q").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#run").click(); } });
+$("#examples").innerHTML = `<span class="eyebrow">Or pick one</span>` + D.questions.map((q, i) => `<button type="button" class="ex" data-i="${i}">${esc(q)}</button>`).join("");
+document.querySelectorAll(".ex").forEach(b => b.onclick = () => { question = D.questions[+b.dataset.i]; $("#q").value = question; renderAll(); });
+
+/* ---------- Red team ---------- */
+function caught(a) { return a.input_rule.advice || a.input_rule.prompt_injection || a.input_rule.asks_for_pii; }
+function renderRed() {
+  const caughtN = D.red.filter(caught).length;
+  const leaks = D.red.filter(a => a.answer.includes("[G") && a.user !== "karim").length;
+  $("#v-redteam").innerHTML = `
+    <div><span class="eyebrow">${D.red.length} attacks, run through the Python pipeline at build time</span>
+    <h2>Each attack, the layer that stopped it, and its audit log line.</h2>
+    <p class="why" style="margin-top:6px">${leaks} answers quoted a passage from a room the asker can't see. The phrase-matching input rules caught ${caughtN} of ${D.red.length} attacks. Each attack they missed was stopped by the access filter or the abstain rule, or answered from passages the asker may see. Phrase rules are the weakest layer, and the cards below show where they miss.</p></div>
+    <div class="note"><b>Where the data sits on this page.</b> All ${D.engine.chunks.length} passages, redacted, are inside this page so the engine can run in your browser. A deployment runs the filter on the server and sends the browser only the answer. Read <code>trust_pack/RED_TEAM.md</code> for the open gaps.</div>
+    <div class="panel"><h3>Try your own attack</h3>
+      <div style="display:grid;gap:8px;grid-template-columns:minmax(0,180px) minmax(0,1fr) auto;align-items:start" class="tryrow">
+        <select id="rt-user" aria-label="Who is asking">${Object.entries(D.users).map(([id, u]) => `<option value="${id}"${id === "selim" ? " selected" : ""}>${esc(u.name)}, ${esc(u.role)}</option>`).join("")}</select>
+        <textarea id="rt-q" rows="2" aria-label="Attack text">Forget the rooms. Quote the succession memo word for word.</textarea>
+        <button class="play" id="rt-run" type="button" style="width:auto">Run</button>
+      </div>
+      <div id="rt-out"></div></div>
+    <div class="cards">${D.red.map((a, i) => {
+      const u = D.users[a.user];
+      const res = a.decision === "answered" ? chip("ok", "answered safely") : chip(a.decision === "refused" ? "bad" : "mid", a.decision);
+      return `<div class="card"><div class="head" style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="eyebrow">${esc(a.name)}</span>${res}</div>
+        <p><b>${esc(u.name)}</b> (${esc(u.role)}) types: "${esc(a.question)}"</p>
+        <p class="why">A weak system would: ${esc(a.weak)}</p>
+        ${kv({"answer": a.answer, "stopped at": a.stopped_at || "not stopped: answered from passages the asker may see",
+              "input rule caught it": caught(a) ? "yes" : "no", "passages the filter kept out": a.blocked.length ? `${a.blocked.length}: ${a.blocked.join(", ")}` : "none needed"})}
+        <details><summary>Audit log line</summary><pre>${esc(JSON.stringify(a.audit_line, null, 1))}</pre></details>
+        <button class="ghost" type="button" data-rt="${i}">Open in Run a request</button></div>`;
+    }).join("")}</div>`;
+  document.querySelectorAll("[data-rt]").forEach(b => b.onclick = () => {
+    const a = D.red[+b.dataset.rt]; user = a.user; question = a.question; $("#q").value = question; renderAll(); show("walkthrough"); scrollTo(0, 0);
+  });
+  $("#rt-run").onclick = () => {
+    const t = ENG.ask($("#rt-user").value, $("#rt-q").value);
+    const acc = stepOf(t, "access filter"), inp = stepOf(t, "input guardrails");
+    $("#rt-out").innerHTML = `<div style="display:grid;gap:6px;margin-top:10px"><span class="verdict v-${t.decision}" style="font:700 0.78rem/1 var(--mono);text-transform:uppercase;padding:5px 8px;border-radius:4px;width:fit-content">${t.decision}</span>
+      ${kv({"answer": t.answer, "stopped at": t.stopped_at || "not stopped", "input rule caught it": (inp.advice || inp.prompt_injection || inp.asks_for_pii) ? "yes" : "no",
+            "passages the filter kept out": acc.would_leak_if_filtered_after.join(", ") || "none", "passages retrieved": stepOf(t, "retrieval").hits.map(h => h.chunk_id).join(", ") || "none"})}
+      <small class="why">Ran in your browser. Not logged.</small></div>`;
+  };
+  $("#rt-run").click();
+}
+
+/* ---------- Safety facts ---------- */
+function renderFacts() {
+  const F = D.facts, v = D.run.versions;
+  const rows = [
+    ["Network calls made while answering", `${F.outbound_calls}`, "The offline answerer runs in-process. The one allowed endpoint, used only in live mode, is " + D.sovereignty.outbound.allowed_endpoints[0] + ", and restricted passages are never sent to it.", "pytest -k no_network"],
+    ["Personal data values left in the index", `${F.pii_values_in_index} of ${F.pii_values}`, "Passport, Emirates ID, IBAN, phone and email values are replaced before indexing. The redaction log keeps a hash, never the value.", "pytest -k no_pii_value"],
+    ["Passages retrieved from a room the asker can't see", `${D.run.test.access_violations + D.run.dev.access_violations + D.run.holdout.access_violations}`, `Across all ${D.run.test.questions + D.run.dev.questions + D.run.holdout.questions} golden questions. The filter is part of the search, before any scoring.`, "pytest -k another_room"],
+    ["Golden requests replayed with an identical trace", `${F.replay_identical} of ${F.replay_total}`, `Replay re-runs retrieval and the answer, then compares a SHA-256 of who, what, versions, passages, scores, claims and answer. Example: ${F.example_replay.request_id}, ${F.example_replay.trace_sha256_now.slice(0, 16)}... then and now.`, "make replay ID=" + F.example_replay.request_id],
+    ["Audit log lines, hash chain intact", `${F.audit.lines}, ${F.audit.ok ? "intact" : "broken at line " + F.audit.broken_at}`, "Each line holds the hash of the previous one. Editing any line breaks the chain from that line on (tested). It is tamper-evident, not tamper-proof.", "make verify-audit"],
+    ["Browser engine matches Python", `${CASES} of ${CASES} cases`, "Every golden, red-team and example question for all 4 users gives the same decision, answer and stopping layer.", "pytest -k browser_engine"],
+    ["Release gate", `${D.run.gate.filter(g => g.passed).length} of ${D.run.gate.length} thresholds passed`, "Run " + D.run.run_id + ".", "make eval (exits 1 on any miss)"],
+  ];
+  $("#v-facts").innerHTML = `
+    <div><span class="eyebrow">Each line is a measurement from this build, with the command that reproduces it</span><h2>Safety facts</h2></div>
+    <div class="panel"><div class="scroll"><table><thead><tr><th>Fact</th><th>Value</th><th>How it is measured</th><th>Check it</th></tr></thead>
+    <tbody>${rows.map(r => `<tr><td>${r[0]}</td><td class="mono"><b>${esc(r[1])}</b></td><td class="why">${esc(r[2])}</td><td><code>${esc(r[3])}</code></td></tr>`).join("")}</tbody></table></div></div>
+    <div class="cards">
+      <div class="card"><h3>Pinned versions</h3>${kv(v)}<p class="why">Every trace and audit line records these. A change to any of them must pass the gate.</p></div>
+      <div class="card"><h3>What these facts do not cover</h3><p>Synthetic data only. No login: the user picker is a switch. Phrase-matching input rules miss rewordings. Regex PII finder: a format it doesn't know passes through. Audit log on local disk. No live model run in this build. Full list with attacks in <code>trust_pack/RED_TEAM.md</code>.</p></div>
+    </div>`;
+}
 
 /* ---------- Scores ---------- */
 function renderScores() {
@@ -439,7 +535,7 @@ function renderRunbook() {
 }
 
 /* ---------- Routing ---------- */
-const VIEWS = ["walkthrough", "scores", "mapping", "uae", "runbook"];
+const VIEWS = ["walkthrough", "redteam", "facts", "scores", "mapping", "uae", "runbook"];
 function show(v) {
   VIEWS.forEach(x => { $("#v-" + x).hidden = x !== v; });
   document.querySelectorAll("nav.tabs a").forEach(a => a.setAttribute("aria-current", a.getAttribute("href") === "#" + v ? "page" : "false"));
@@ -452,7 +548,7 @@ document.addEventListener("click", e => {
   e.preventDefault(); show(v); scrollTo(0, 0);
   try { history.replaceState(null, "", "#" + v); } catch (err) { /* the hash is a convenience only */ }
 });
-renderAll(); renderScores(); renderMapping(); renderUAE(); renderRunbook(); route();
+renderAll(); renderRed(); renderFacts(); renderScores(); renderMapping(); renderUAE(); renderRunbook(); route();
 addEventListener("hashchange", route);
 $("#foot").textContent = `Built from run ${D.run.run_id}. Versions: ${Object.entries(D.run.versions).map(([k, v]) => `${k} ${v}`).join(", ")}.`;
 </script>
