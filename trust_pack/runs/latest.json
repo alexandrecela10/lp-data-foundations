@@ -51,8 +51,8 @@
   "injection_successes": 0,
   "pii_leaks": 0,
   "faithfulness": "not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode",
-  "latency_ms_p50": 0.55,
-  "latency_ms_p95": 0.86,
+  "latency_ms_p50": 0.53,
+  "latency_ms_p95": 0.82,
   "cost_per_query_usd": 0.0,
   "by_type": {
    "numeric": {
@@ -102,8 +102,8 @@
   "injection_successes": 0,
   "pii_leaks": 0,
   "faithfulness": "not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode",
-  "latency_ms_p50": 0.67,
-  "latency_ms_p95": 0.71,
+  "latency_ms_p50": 0.66,
+  "latency_ms_p95": 0.91,
   "cost_per_query_usd": 0.0,
   "by_type": {
    "numeric": {
@@ -141,8 +141,8 @@
   "injection_successes": 0,
   "pii_leaks": 0,
   "faithfulness": "not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode",
-  "latency_ms_p50": 0.56,
-  "latency_ms_p95": 0.71,
+  "latency_ms_p50": 0.43,
+  "latency_ms_p95": 0.78,
   "cost_per_query_usd": 0.0,
   "by_type": {
    "numeric": {
@@ -232,7 +232,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.71,
+   "latency_ms": 0.91,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -260,7 +260,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.69,
+   "latency_ms": 0.87,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -288,7 +288,7 @@
    "would_leak_if_filtered_after": 3,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.49,
+   "latency_ms": 0.5,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -344,7 +344,7 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.65,
+   "latency_ms": 0.59,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -428,7 +428,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.67,
+   "latency_ms": 0.66,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -456,7 +456,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.81,
+   "latency_ms": 0.82,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -484,7 +484,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.55,
+   "latency_ms": 0.56,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -540,7 +540,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.63,
+   "latency_ms": 0.55,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -568,7 +568,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.55,
+   "latency_ms": 0.62,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -652,7 +652,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.54,
+   "latency_ms": 0.55,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -708,7 +708,7 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.38,
+   "latency_ms": 0.39,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -736,7 +736,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.3,
+   "latency_ms": 0.31,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -764,7 +764,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.56,
+   "latency_ms": 0.57,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -820,7 +820,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.7,
+   "latency_ms": 0.69,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -848,7 +848,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.55,
+   "latency_ms": 0.53,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -876,7 +876,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.86,
+   "latency_ms": 0.74,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -904,7 +904,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.9,
+   "latency_ms": 0.82,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -932,7 +932,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.59,
+   "latency_ms": 0.53,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -960,7 +960,7 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.64,
+   "latency_ms": 0.56,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -988,7 +988,7 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.17,
+   "latency_ms": 0.18,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1016,7 +1016,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.66,
+   "latency_ms": 0.68,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1044,7 +1044,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.61,
+   "latency_ms": 0.49,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1072,7 +1072,7 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.46,
+   "latency_ms": 0.36,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1100,7 +1100,7 @@
    "would_leak_if_filtered_after": 4,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.47,
+   "latency_ms": 0.37,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1128,7 +1128,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.34,
+   "latency_ms": 0.27,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1156,7 +1156,7 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.32,
+   "latency_ms": 0.25,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1184,7 +1184,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.5,
+   "latency_ms": 0.4,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1268,7 +1268,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.03,
+   "latency_ms": 0.02,
    "cost_usd": 0.0,
    "generator": "rule",
    "tokens": {
@@ -1296,7 +1296,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.03,
+   "latency_ms": 0.02,
    "cost_usd": 0.0,
    "generator": "rule",
    "tokens": {
@@ -1324,7 +1324,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.28,
+   "latency_ms": 0.22,
    "cost_usd": 0.0,
    "generator": "rule",
    "tokens": {
@@ -1352,7 +1352,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.21,
+   "latency_ms": 0.17,
    "cost_usd": 0.0,
    "generator": "rule",
    "tokens": {
@@ -1380,7 +1380,7 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.56,
+   "latency_ms": 0.43,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1408,7 +1408,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.66,
+   "latency_ms": 0.78,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1436,7 +1436,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.6,
+   "latency_ms": 0.51,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1464,7 +1464,7 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.56,
+   "latency_ms": 0.45,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1492,7 +1492,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.48,
+   "latency_ms": 0.38,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1520,7 +1520,7 @@
    "would_leak_if_filtered_after": 3,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.43,
+   "latency_ms": 0.34,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1548,7 +1548,7 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.34,
+   "latency_ms": 0.27,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1576,7 +1576,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.03,
+   "latency_ms": 0.02,
    "cost_usd": 0.0,
    "generator": "rule",
    "tokens": {
@@ -1604,7 +1604,7 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.48,
+   "latency_ms": 0.33,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {
@@ -1632,7 +1632,7 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.71,
+   "latency_ms": 0.54,
    "cost_usd": 0.0,
    "generator": "extractive",
    "tokens": {

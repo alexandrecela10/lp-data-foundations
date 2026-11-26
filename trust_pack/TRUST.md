@@ -55,6 +55,27 @@ Everything runs on one machine. A live model (Claude) is optional and never rece
 | Planted instruction obeyed | 0 | 0 | 0 | 0 |
 | PII values in answers | 0 | 0 | 0 | 0 |
 
+## Live run with Claude (runs `run-aa7d5122` and `run-31bd6c03`)
+
+Same golden set, same access filter and citation check. `claude-sonnet-5-5` returns passage IDs and exact quotes only. Restricted family passages are never sent, so those questions stay on the offline rules (15 of 51). `claude-opus-5-5` grades every answered question.
+
+| Metric | Offline rules | Live, passages without titles | Live, passages with titles |
+|---|---|---|---|
+| Correct on test (answerable) | 0.833 | 0.889 | 0.944 |
+| Correct on fresh holdout | 0.5 | 1.0 | 1.0 |
+| Passages from a forbidden room | 0 | 0 | 0 |
+| Planted instruction obeyed | 0 | 0 | 0 |
+| Judge: every statement in the cited passage | n/a | 0.815 | 1.0 |
+| Judge agrees with the answer key | n/a | 0.704 | 1.0 |
+| Latency p50, test | 0.5 ms | 1.4 s | 1.4 s |
+| Model cost, whole run (answers + judge) | $0 | $0.23 | $0.20 |
+
+**What the judge caught.** Asked for the net IRR of Halvane Growth Fund III, the assistant quoted "14.1%" from passage I01-c3. The answer key said correct. The judge said no: the passage never names the fund, because the fund name sits in the document title. Adding the title to every passage sent to the model and the judge (prompt `cite-or-abstain-v3`, judge `judge-v2`) took agreement from 0.704 to 1.0. Had I trusted the answer key alone, this gap would not have shown up.
+
+**Still open:** the judge is not yet calibrated on human labels (15 blind labels pending, `trust_pack/judge/to_label.md`); t15 is still wrong, because it reads a restricted document, so it runs on the offline rules.
+
+## Offline detail
+
 Latency p50 0.56 ms, p95 0.81 ms on the test split. Cost per question: $0 (offline). Test split by type: numeric 8 of 8, factual 5 of 7, multi-doc 1 of 2, should-abstain 5 of 5, access-denied 4 of 4, injection 3 of 3, advice 2 of 2, PII 2 of 2.
 
 ## Known limitations
@@ -65,7 +86,8 @@ The full attack list and 9 open gaps are in `RED_TEAM.md`. In short:
 - **The test split is not a clean holdout.** I read its failures while writing the answer rules. The 10 holdout questions are the fair number, and they show 50% coverage.
 - **The offline answerer is brittle to rewording.** "Warehouse sold" doesn't match "sale of a warehouse". It fails safe (abstains), but a live model is needed for useful coverage.
 - **One wrong fact on test (t15):** the right passage was retrieved; the rules picked the wrong sentence. Left unfixed so the number stays honest.
-- **No LLM judge, so no faithfulness score and no judge calibration.** Offline answers are verbatim quotes. The live path (`TRUSTPACK_LIVE=1`) exists but was not run for this report.
+- **Judge not calibrated yet.** It agrees with the answer key on 28 of 28 graded answers, but agreement with human labels is pending.
+- **Answers print the quote and passage ID, not the document title.** The reader has to open the source to see which fund a number belongs to.
 - **Not production grade by design:** no tracing server, no CI workflow, no database, 19 documents. Traces use the fields a self-hosted tracing tool would store.
 - **Access is by room only.** No per-document exceptions, no time-limited access, no login.
 - **Laws are summarised for learning, not legal advice.** See `docs/uae-facts.md` for sources and what could not be verified.

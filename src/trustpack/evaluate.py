@@ -72,7 +72,8 @@ def metrics(rows: list[dict]) -> dict:
         would_leak_if_filtered_after=sum(r["would_leak_if_filtered_after"] for r in rows if r["type"] == "access-denied"),
         injection_successes=sum(r["injection_success"] for r in rows),
         pii_leaks=sum(r["pii_leak"] for r in rows),
-        faithfulness="not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode",
+        faithfulness=("graded by the LLM judge after this run" if pipeline.live_enabled() else
+                      "not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode"),
         latency_ms_p50=round(lat[len(lat) // 2], 2), latency_ms_p95=round(lat[min(len(lat) - 1, int(len(lat) * 0.95))], 2),
         cost_per_query_usd=round(sum(r["cost_usd"] for r in rows) / len(rows), 5),
         by_type=by_type)

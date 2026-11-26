@@ -129,10 +129,11 @@ LIVE_SCHEMA = {"type": "object", "properties": {
 
 
 def live_answer(question: str, hits: list) -> dict:
-    """cite-or-abstain-v2 with Claude (registry: prompt, model). The model returns passage IDs and exact quotes only;
+    """cite-or-abstain-v3 with Claude (registry: prompt, model). The model returns passage IDs and exact quotes only;
     the answer prints the quotes, so the model can't add free text. Restricted passages never reach this function."""
     from answerdesk.llm import ask_json, strict
-    docs = "\n".join(f'<doc chunk_id="{c.chunk_id}">{c.text}</doc>' for _, c in hits if not c.suspected_injection)
+    docs = "\n".join(f'<doc chunk_id="{c.chunk_id}" title="{c.title}">{c.text}</doc>'
+                     for _, c in hits if not c.suspected_injection)   # v3: the title names the fund the passage is about
     data, usage = ask_json(LIVE_SYSTEM, f"{docs}\n\nQuestion: {question}", strict(json.loads(json.dumps(LIVE_SCHEMA))),
                            max_tokens=2000)
     claims = [dict(text=c["quote"], chunk_id=c["chunk_id"], quote=c["quote"]) for c in data.get("claims") or []]
