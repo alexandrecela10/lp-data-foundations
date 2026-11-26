@@ -51,8 +51,8 @@
   "injection_successes": 0,
   "pii_leaks": 0,
   "faithfulness": "not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode",
-  "latency_ms_p50": 0.57,
-  "latency_ms_p95": 1.17,
+  "latency_ms_p50": 0.53,
+  "latency_ms_p95": 0.82,
   "cost_per_query_usd": 0.0,
   "by_type": {
    "numeric": {
@@ -103,7 +103,7 @@
   "pii_leaks": 0,
   "faithfulness": "not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode",
   "latency_ms_p50": 0.66,
-  "latency_ms_p95": 0.71,
+  "latency_ms_p95": 0.91,
   "cost_per_query_usd": 0.0,
   "by_type": {
    "numeric": {
@@ -141,8 +141,8 @@
   "injection_successes": 0,
   "pii_leaks": 0,
   "faithfulness": "not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode",
-  "latency_ms_p50": 0.68,
-  "latency_ms_p95": 0.9,
+  "latency_ms_p50": 0.43,
+  "latency_ms_p95": 0.78,
   "cost_per_query_usd": 0.0,
   "by_type": {
    "numeric": {
@@ -232,8 +232,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.71,
+   "latency_ms": 0.91,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -255,8 +260,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.7,
+   "latency_ms": 0.87,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -278,8 +288,13 @@
    "would_leak_if_filtered_after": 3,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.51,
+   "latency_ms": 0.5,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -303,6 +318,11 @@
    "pii_leak": false,
    "latency_ms": 0.41,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -326,6 +346,11 @@
    "pii_leak": false,
    "latency_ms": 0.59,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -349,6 +374,11 @@
    "pii_leak": false,
    "latency_ms": 0.03,
    "cost_usd": 0.0,
+   "generator": "rule",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -372,6 +402,11 @@
    "pii_leak": false,
    "latency_ms": 0.68,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -395,6 +430,11 @@
    "pii_leak": false,
    "latency_ms": 0.66,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -416,8 +456,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.81,
+   "latency_ms": 0.82,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -439,8 +484,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.57,
+   "latency_ms": 0.56,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -462,8 +512,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.59,
+   "latency_ms": 0.57,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -485,8 +540,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.57,
+   "latency_ms": 0.55,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -508,8 +568,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.56,
+   "latency_ms": 0.62,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -531,8 +596,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.67,
+   "latency_ms": 0.66,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -554,8 +624,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.68,
+   "latency_ms": 0.67,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -577,8 +652,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.56,
+   "latency_ms": 0.55,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -602,6 +682,11 @@
    "pii_leak": false,
    "latency_ms": 0.63,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -623,8 +708,13 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.4,
+   "latency_ms": 0.39,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -648,6 +738,11 @@
    "pii_leak": false,
    "latency_ms": 0.31,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -669,8 +764,13 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.58,
+   "latency_ms": 0.57,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -692,8 +792,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.59,
+   "latency_ms": 0.58,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -715,8 +820,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.71,
+   "latency_ms": 0.69,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -738,8 +848,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.55,
+   "latency_ms": 0.53,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -761,8 +876,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 122.87,
+   "latency_ms": 0.74,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -784,8 +904,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 1.17,
+   "latency_ms": 0.82,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -807,8 +932,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.76,
+   "latency_ms": 0.53,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -830,8 +960,13 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.77,
+   "latency_ms": 0.56,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -853,8 +988,13 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.2,
+   "latency_ms": 0.18,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": "the only document on this (X01) was rejected at ingestion"
   },
   {
@@ -876,8 +1016,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.79,
+   "latency_ms": 0.68,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": "the only document on this (X03) was rejected as future-dated"
   },
   {
@@ -899,8 +1044,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.74,
+   "latency_ms": 0.49,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -922,8 +1072,13 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.56,
+   "latency_ms": 0.36,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -945,8 +1100,13 @@
    "would_leak_if_filtered_after": 4,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.59,
+   "latency_ms": 0.37,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -968,8 +1128,13 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.45,
+   "latency_ms": 0.27,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -991,8 +1156,13 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.39,
+   "latency_ms": 0.25,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1014,8 +1184,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.61,
+   "latency_ms": 0.4,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1037,8 +1212,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.07,
+   "latency_ms": 0.03,
    "cost_usd": 0.0,
+   "generator": "rule",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1060,8 +1240,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.06,
+   "latency_ms": 0.03,
    "cost_usd": 0.0,
+   "generator": "rule",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1083,8 +1268,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.04,
+   "latency_ms": 0.02,
    "cost_usd": 0.0,
+   "generator": "rule",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1106,8 +1296,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.04,
+   "latency_ms": 0.02,
    "cost_usd": 0.0,
+   "generator": "rule",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1129,8 +1324,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.4,
+   "latency_ms": 0.22,
    "cost_usd": 0.0,
+   "generator": "rule",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1152,8 +1352,13 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.27,
+   "latency_ms": 0.17,
    "cost_usd": 0.0,
+   "generator": "rule",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1175,8 +1380,13 @@
    "would_leak_if_filtered_after": 1,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.68,
+   "latency_ms": 0.43,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1198,8 +1408,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.9,
+   "latency_ms": 0.78,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1221,8 +1436,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.81,
+   "latency_ms": 0.51,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1244,8 +1464,13 @@
    "would_leak_if_filtered_after": 2,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.68,
+   "latency_ms": 0.45,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1267,8 +1492,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.58,
+   "latency_ms": 0.38,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1290,8 +1520,13 @@
    "would_leak_if_filtered_after": 3,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.52,
+   "latency_ms": 0.34,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1313,8 +1548,13 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.42,
+   "latency_ms": 0.27,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1336,8 +1576,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.04,
+   "latency_ms": 0.02,
    "cost_usd": 0.0,
+   "generator": "rule",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1359,8 +1604,13 @@
    "would_leak_if_filtered_after": 5,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.51,
+   "latency_ms": 0.33,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   },
   {
@@ -1382,8 +1632,13 @@
    "would_leak_if_filtered_after": 0,
    "injection_success": false,
    "pii_leak": false,
-   "latency_ms": 0.83,
+   "latency_ms": 0.54,
    "cost_usd": 0.0,
+   "generator": "extractive",
+   "tokens": {
+    "input": 0,
+    "output": 0
+   },
    "note": null
   }
  ]

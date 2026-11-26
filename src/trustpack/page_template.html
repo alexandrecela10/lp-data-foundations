@@ -424,6 +424,7 @@ function renderScores() {
     </div>
     <div class="panel"><h3>Release gate (test split)</h3><div class="scroll"><table><thead><tr><th>Metric</th><th>Value</th><th>Needs</th><th>Value vs threshold</th><th></th></tr></thead><tbody>${gateRows}</tbody></table></div>
       <p class="why">Faithfulness: ${esc(T.faithfulness)}. Latency p50 ${T.latency_ms_p50} ms, p95 ${T.latency_ms_p95} ms. Cost per question $${T.cost_per_query_usd}.</p></div>
+    ${liveRuns()}
     <div class="panel"><h3>Three splits, three different stories</h3><div class="scroll"><table><thead><tr><th>Split</th><th>Questions</th><th>Correct (answerable)</th><th>Abstained when it should</th><th>Abstained when it shouldn't</th><th>Access violations</th></tr></thead><tbody>
       ${split("Dev", V, "Used to set the abstain rules. 100% here means nothing on its own.")}
       ${split("Test", T, "Not used to set the floor, but I read its failures while writing the rules, so it is not a clean holdout.")}
@@ -432,6 +433,30 @@ function renderScores() {
     <p class="why">The answerer fails safe: on reworded questions ("the warehouse sold" against "the sale of a warehouse") it says it can't find the answer rather than guessing. That is the right failure for a family office, and the case for a live model behind the same checks.</p></div>
     <div class="cards"><div class="panel"><h3>Test split by question type</h3><div class="scroll"><table><tbody>${types}</tbody></table></div></div>
     <div class="panel"><h3>Every wrong answer</h3><div class="scroll"><table><thead><tr><th>Id</th><th>Question</th><th>Got</th></tr></thead><tbody>${D.wrong.map(w => `<tr><td class="mono">${w.id}</td><td>${esc(w.question)}<br><small class="why">${w.user}, expected ${w.expect}</small></td><td>${chip(w.decision === "answered" ? "bad" : "mid", w.decision)}<br><small>${esc(w.answer.slice(0, 110))}</small></td></tr>`).join("")}</tbody></table></div></div></div>`;
+}
+
+function liveRuns() {
+  const L = D.live || [];
+  if (!L.length) return "";
+  const T = D.run.test, H = D.run.holdout;
+  const cols = [{label: "Offline rules", test: T, holdout: H, judge: null, cost: 0}, ...L];
+  const row = (name, f) => `<tr><td>${name}</td>${cols.map(c => `<td class="mono">${f(c)}</td>`).join("")}</tr>`;
+  const v1 = L.find(c => c.label.includes("without"));
+  const ex = v1 && v1.disagreements.find(d => d.id === "t09");
+  return `<div class="panel"><h3>Live run with Claude: the judge found a gap in the passages</h3>
+    <p class="why">Same 51 questions, same access filter and citation check. The model returns passage IDs and exact quotes only; restricted family passages are never sent to it, so those questions stay on the offline rules. A second model (${esc(L[0].judge.model)}) grades each answer.</p>
+    <div class="scroll"><table><thead><tr><th></th>${cols.map(c => `<th>${esc(c.label)}</th>`).join("")}</tr></thead><tbody>
+      ${row("Correct on test (answerable)", c => c.test.answer_correctness)}
+      ${row("Correct on fresh holdout", c => c.holdout.answer_correctness)}
+      ${row("Passages from a forbidden room", c => c.test.access_violations + c.holdout.access_violations)}
+      ${row("Planted instruction obeyed", c => c.test.injection_successes + c.holdout.injection_successes)}
+      ${row("Judge: every statement in the cited passage", c => c.judge ? c.judge.faithfulness : "n/a")}
+      ${row("Judge agrees with the answer key", c => c.judge ? c.judge.agreement_with_answer_key : "n/a")}
+      ${row("Latency p50 (test)", c => c.test.latency_ms_p50 < 100 ? c.test.latency_ms_p50 + " ms" : (c.test.latency_ms_p50 / 1000).toFixed(1) + " s")}
+      ${row("Model cost, whole run", c => c.judge ? "$" + (c.cost + c.judge.cost_usd).toFixed(2) : "$0")}
+    </tbody></table></div>
+    <p class="why"><b>What the judge caught.</b> ${ex ? `Asked for the net IRR of Halvane Growth Fund III, the assistant quoted "14.1%" from passage I01-c3. The judge said no: that passage never names the fund. The fund name sits in the document title, which the model and the judge weren't shown.` : ""} The answer key said correct; the judge was right that the evidence it saw didn't prove it. Adding the document title to every passage (prompt ${esc(L[L.length - 1].prompt)}, judge ${esc(L[L.length - 1].judge.prompt)}) took judge agreement from ${v1 ? v1.judge.agreement_with_answer_key : "?"} to ${L[L.length - 1].judge.agreement_with_answer_key}. The answer text still shows only the quote and the passage ID; printing the document title beside each quote is an open gap.</p>
+    <p class="why">Judge calibration against human labels: ${D.calibration ? esc(D.calibration) : "15 blind labels pending from the PM."}</p></div>`;
 }
 
 /* ---------- Mapping ---------- */

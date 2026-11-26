@@ -3,7 +3,9 @@
 chunker: paragraph-v1          # one chunk per paragraph, title kept as metadata
 retriever: bm25-v1             # k1=1.2, b=0.75, access filter applied before scoring
 answerer: extractive-v1        # best supporting sentences, abstain under the floor
-prompt: cite-or-abstain-v1     # used only in live mode
+prompt: cite-or-abstain-v3     # used only in live mode: IDs and exact quotes only
+judge_model: claude-opus-5-5   # LLM judge, live eval only
+judge_prompt: judge-v2
 model: claude-sonnet-5-5       # used only in live mode
 pii_rules: uae-pii-v1          # passport, Emirates ID, IBAN, phone, email
 abstain_floor: 3.0             # sentence score floor, set on the 8 dev questions only

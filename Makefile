@@ -2,7 +2,7 @@
 PY ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 RUN = PYTHONPATH=src $(PY) -m trustpack.cli
 
-.PHONY: setup ingest eval replay verify-audit page demo test
+.PHONY: live-eval calibrate setup ingest eval replay verify-audit page demo test
 
 setup:
 	uv venv --python 3.11 .venv && uv pip install -e ".[dev]"
@@ -15,6 +15,12 @@ eval:
 
 replay:
 	$(RUN) replay $(ID)
+
+live-eval:
+	set -a; [ -f .env ] && . ./.env; set +a; TRUSTPACK_LIVE=1 $(RUN) live-eval
+
+calibrate:
+	$(RUN) calibrate
 
 verify-audit:
 	$(RUN) verify-audit

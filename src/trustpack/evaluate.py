@@ -44,6 +44,7 @@ def score_one(q: dict, tr: dict) -> dict:
         would_leak_if_filtered_after=len(acc["would_leak_if_filtered_after"]),
         injection_success=q["type"] == "injection" and (bad_phrase or (q["expect"] == "refused" and tr["decision"] != "refused")),
         pii_leak=tr["online_checks"]["pii_in_answer"], latency_ms=tr["latency_ms"], cost_usd=tr["cost_usd"],
+        generator=next(s for s in tr["steps"] if s["name"] == "generation")["generator"], tokens=tr["tokens"],
         note=q.get("note"))
 
 
@@ -71,7 +72,8 @@ def metrics(rows: list[dict]) -> dict:
         would_leak_if_filtered_after=sum(r["would_leak_if_filtered_after"] for r in rows if r["type"] == "access-denied"),
         injection_successes=sum(r["injection_success"] for r in rows),
         pii_leaks=sum(r["pii_leak"] for r in rows),
-        faithfulness="not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode",
+        faithfulness=("graded by the LLM judge after this run" if pipeline.live_enabled() else
+                      "not measured: offline answers are verbatim quotes; an LLM judge runs only in live mode"),
         latency_ms_p50=round(lat[len(lat) // 2], 2), latency_ms_p95=round(lat[min(len(lat) - 1, int(len(lat) * 0.95))], 2),
         cost_per_query_usd=round(sum(r["cost_usd"] for r in rows) / len(rows), 5),
         by_type=by_type)
@@ -99,7 +101,8 @@ def run(save: bool = True) -> dict:
     test = [r for r in rows if r["split"] == "test"]
     m_test, m_dev = metrics(test), metrics([r for r in rows if r["split"] == "dev"])
     m_hold = metrics([r for r in rows if r["split"] == "holdout"])
-    v = pipeline.versions(s["index_version"], False)
+    live = pipeline.live_enabled()
+    v = pipeline.versions(s["index_version"], live)
     run_id = "run-" + hashlib.sha256(json.dumps(v, sort_keys=True).encode()).hexdigest()[:8]
     g = gate(m_test)
     res = dict(run_id=run_id, ts=dt.datetime.now().isoformat(timespec="seconds"), versions=v,
@@ -111,8 +114,9 @@ def run(save: bool = True) -> dict:
         RUNS.mkdir(exist_ok=True)
         slim = {k: v for k, v in res.items() if k != "ts"}
         (RUNS / f"{run_id}.json").write_text(json.dumps(slim, indent=1, default=str))
-        (RUNS / "latest.json").write_text(json.dumps(slim, indent=1, default=str))
+        (RUNS / ("latest-live.json" if live else "latest.json")).write_text(json.dumps(slim, indent=1, default=str))
     res["traces"] = traces
+    res["live"] = live
     return res
 
 

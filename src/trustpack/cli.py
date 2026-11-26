@@ -34,6 +34,11 @@ def main(argv: list[str]) -> int:
         r = pipeline.replay(argv[1])
         print(json.dumps(r, indent=1))
         return 0 if r["byte_identical"] and not r["problems"] else 1
+    elif cmd == "live-eval":
+        return live_eval()
+    elif cmd == "calibrate":
+        from . import judge
+        print(json.dumps(judge.calibrate(), indent=1, default=str))
     elif cmd == "verify-audit":
         r = pipeline.verify_audit()
         print(json.dumps(r))
@@ -45,6 +50,31 @@ def main(argv: list[str]) -> int:
         print(__doc__)
         return 2
     return 0
+
+
+def live_eval() -> int:
+    """Golden set through Claude, then the judge. Needs ANTHROPIC_API_KEY and TRUSTPACK_LIVE=1. Costs money."""
+    from . import judge
+    if not pipeline.live_enabled():
+        print("Set ANTHROPIC_API_KEY and TRUSTPACK_LIVE=1 first.")
+        return 2
+    res = evaluate.run(save=False)
+    failed = [r["id"] for r in res["rows"] if r["generator"] == "claude-error"]
+    j = judge.run_judge(res)
+    res["judge"] = j
+    res["live_calls"] = sum(1 for r in res["rows"] if r["tokens"]["input"])
+    res["live_cost_usd"] = round(sum(r["cost_usd"] for r in res["rows"]), 4)
+    res["generation_failures"] = failed
+    res["valid"] = not failed and not j["failed"]
+    judge.make_label_sheet(res)
+    slim = {k: v for k, v in res.items() if k not in ("ts", "traces")}
+    evaluate.RUNS.mkdir(exist_ok=True)
+    (evaluate.RUNS / f"{res['run_id']}.json").write_text(json.dumps(slim, indent=1, default=str))
+    (evaluate.RUNS / "latest-live.json").write_text(json.dumps(slim, indent=1, default=str))
+    print(evaluate.report(res))
+    print(json.dumps({k: j[k] for k in j if k != "disagreements"}, indent=1))
+    print(f"live calls {res['live_calls']}, generation cost ${res['live_cost_usd']}, valid {res['valid']}")
+    return 0 if res["valid"] else 1
 
 
 if __name__ == "__main__":

@@ -66,6 +66,19 @@ DEMO_QUESTIONS = [
 ]
 
 
+def live_runs() -> list[dict]:
+    """Saved live runs (they cost money, so the page reads them; it never calls a model)."""
+    out = []
+    for name, label in (("live-v1-no-titles.json", "Live, passages without titles"), ("latest-live.json", "Live, passages with titles")):
+        f = evaluate.RUNS / name
+        if f.exists():
+            r = json.loads(f.read_text())
+            out.append(dict(label=label, run_id=r["run_id"], prompt=r["versions"].get("prompt"), model=r["versions"].get("model"),
+                            test=r["test"], holdout=r["holdout"], judge=r["judge"], cost=r["live_cost_usd"],
+                            valid=r["valid"], disagreements=r["judge"].get("disagreements", [])))
+    return out
+
+
 def build() -> str:
     if pipeline.LOG.exists():
         pipeline.LOG.unlink()   # a fresh chain per build, so the page reports this build only
@@ -106,6 +119,7 @@ def build() -> str:
         wrong=[{k: r[k] for k in ("id", "split", "type", "user", "question", "decision", "answer", "expect")}
                for r in res["rows"] if not r["correct"]],
     )
+    data["live"] = live_runs()
     html = TEMPLATE.read_text().replace("/*__ENGINE__*/", ENGINE.read_text())
     html = html.replace("/*__DATA__*/null", json.dumps(data, default=str).replace("</", "<\\/"))
     OUT.parent.mkdir(exist_ok=True)
