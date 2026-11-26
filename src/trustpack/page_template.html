@@ -123,6 +123,10 @@ svg text { fill: var(--ink); font-family: var(--body) }
 footer { margin-top: 40px; color: var(--muted); font-size: 0.85rem; display: grid; gap: 6px }
 @media (max-width: 640px) { .tryrow { grid-template-columns: minmax(0, 1fr) !important } }
 @media (prefers-reduced-motion: reduce) { .step { transition: none } }
+.tch{display:grid;gap:2px;margin:4px 0}
+.tch dt{font:600 0.72rem/1.5 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tch dd{margin:0 0 8px}
+.tch dt.t{color:var(--deny)}
 </style>
 
 <div class="wrap">
@@ -340,13 +344,21 @@ document.querySelectorAll(".ex").forEach(b => b.onclick = () => { question = D.q
 
 /* ---------- Red team ---------- */
 function caught(a) { return a.input_rule.advice || a.input_rule.prompt_injection || a.input_rule.asks_for_pii; }
+function explain(t, inp, acc) {
+  const kept = acc.would_leak_if_filtered_after.length;
+  const filt = kept ? `The room filter kept ${kept} matching passage${kept > 1 ? "s" : ""} from rooms this person can't see out of the search. ` : "";
+  if (t.decision === "refused") return `A phrase rule matched (${inp.advice ? "investment advice" : "instruction override"}), so the request was refused before any search.`;
+  if (inp.asks_for_pii) return "The personal data rule matched. ID numbers were removed before indexing, so there was none to return anyway.";
+  if (t.decision === "answered") return `${filt}The answer is a quote found word for word in a passage this person may see.`;
+  return `${filt}No passage this person may see contains the answer, so the reply is "not found", the same text whether the answer is hidden or doesn't exist.`;
+}
 function renderRed() {
   const caughtN = D.red.filter(caught).length;
   const leaks = D.red.filter(a => a.answer.includes("[G") && a.user !== "karim").length;
   $("#v-redteam").innerHTML = `
     <div><span class="eyebrow">${D.red.length} attacks, run through the Python pipeline at build time</span>
-    <h2>Each attack, the layer that stopped it, and its audit log line.</h2>
-    <p class="why" style="margin-top:6px">${leaks} answers quoted a passage from a room the asker can't see. The phrase-matching input rules caught ${caughtN} of ${D.red.length} attacks. Each attack they missed was stopped by the access filter or the abstain rule, or answered from passages the asker may see. Phrase rules are the weakest layer, and the cards below show where they miss.</p></div>
+    <h2>${D.red.length} attacks. ${leaks} leaked a passage from a room the asker can't see.</h2>
+    <p class="why" style="margin-top:6px">Each card answers three questions: what the attacker wanted, what happened in this run, and why it holds for any wording. Protection comes from three layers that don't depend on how a question is phrased: the room filter inside search, personal data removed before indexing, and answers limited to checked quotes. A fourth layer, phrase rules on the question, caught ${caughtN} of ${D.red.length}. It is the weakest layer, and attacks 04 and 08 get past it.</p></div>
     <div class="note"><b>Where the data sits on this page.</b> All ${D.engine.chunks.length} passages, redacted, are inside this page so the engine can run in your browser. A deployment runs the filter on the server and sends the browser only the answer. Read <code>trust_pack/RED_TEAM.md</code> for the open gaps.</div>
     <div class="panel"><h3>Try your own attack</h3>
       <div style="display:grid;gap:8px;grid-template-columns:minmax(0,180px) minmax(0,1fr) auto;align-items:start" class="tryrow">
@@ -358,12 +370,14 @@ function renderRed() {
     <div class="cards">${D.red.map((a, i) => {
       const u = D.users[a.user];
       const res = a.decision === "answered" ? chip("ok", "answered safely") : chip(a.decision === "refused" ? "bad" : "mid", a.decision);
-      return `<div class="card"><div class="head" style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="eyebrow">${esc(a.name)}</span>${res}</div>
+      const fill = x => esc(x).replace("{kept}", a.blocked.length).replace("{pii}", D.facts.pii_values);
+      return `<div class="card rt"><div class="head" style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="eyebrow">${String(i).padStart(2, "0")} ${esc(a.name)}</span>${res}</div>
         <p><b>${esc(u.name)}</b> (${esc(u.role)}) types: "${esc(a.question)}"</p>
-        <p class="why">A weak system would: ${esc(a.weak)}</p>
+        <dl class="tch"><dt class="t">Threat</dt><dd>${fill(a.threat)}</dd><dt>What happened</dt><dd>${fill(a.happened)}</dd><dt>Why it holds</dt><dd>${fill(a.holds)}</dd></dl>
+        <details><summary>Technical detail and audit log line</summary>
         ${kv({"answer": a.answer, "stopped at": a.stopped_at || "not stopped: answered from passages the asker may see",
-              "input rule caught it": caught(a) ? "yes" : "no", "passages the filter kept out": a.blocked.length ? `${a.blocked.length}: ${a.blocked.join(", ")}` : "none needed"})}
-        <details><summary>Audit log line</summary><pre>${esc(JSON.stringify(a.audit_line, null, 1))}</pre></details>
+              "phrase rule caught it": caught(a) ? "yes" : "no", "passages the filter kept out": a.blocked.length ? `${a.blocked.length}: ${a.blocked.join(", ")}` : "none needed"})}
+        <pre>${esc(JSON.stringify(a.audit_line, null, 1))}</pre></details>
         <button class="ghost" type="button" data-rt="${i}">Open in Run a request</button></div>`;
     }).join("")}</div>`;
   document.querySelectorAll("[data-rt]").forEach(b => b.onclick = () => {
@@ -373,8 +387,9 @@ function renderRed() {
     const t = ENG.ask($("#rt-user").value, $("#rt-q").value);
     const acc = stepOf(t, "access filter"), inp = stepOf(t, "input guardrails");
     $("#rt-out").innerHTML = `<div style="display:grid;gap:6px;margin-top:10px"><span class="verdict v-${t.decision}" style="font:700 0.78rem/1 var(--mono);text-transform:uppercase;padding:5px 8px;border-radius:4px;width:fit-content">${t.decision}</span>
-      ${kv({"answer": t.answer, "stopped at": t.stopped_at || "not stopped", "input rule caught it": (inp.advice || inp.prompt_injection || inp.asks_for_pii) ? "yes" : "no",
+      ${kv({"answer": t.answer, "stopped at": t.stopped_at || "not stopped", "phrase rule caught it": (inp.advice || inp.prompt_injection || inp.asks_for_pii) ? "yes" : "no",
             "passages the filter kept out": acc.would_leak_if_filtered_after.join(", ") || "none", "passages retrieved": stepOf(t, "retrieval").hits.map(h => h.chunk_id).join(", ") || "none"})}
+      <p class="why">${esc(explain(t, inp, acc))}</p>
       <small class="why">Ran in your browser. Not logged.</small></div>`;
   };
   $("#rt-run").click();
